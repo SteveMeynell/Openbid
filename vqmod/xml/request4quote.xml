@@ -1,0 +1,121 @@
+<!-- Created using vQmod XML Generator by UKSB - http://uksb.github.com/vqgen/ //-->
+<modification>
+	<id><![CDATA[Request4Quote]]></id>
+	<version><![CDATA[2.3.0.2]]></version>
+	<vqmver><![CDATA[2.6.1]]></vqmver>
+	<author><![CDATA[atom:engineering@meynell.ca]]></author>
+	<file name="catalog/view/theme/*/template/information/quote.tpl">
+		<operation errot="skip">
+			<search position="before" error="log"><![CDATA[<?php echo $captcha; ?>
+]]></search>
+			<add><![CDATA[
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-file">File</label>
+    <div class="col-sm-10">
+		<img id="upimg">
+        <button type="button" id="button-upload" data-loading-text="Uploading.." class="btn btn-default btn-block"><i class="fa fa-upload"></i> <?php echo 'Upload'; ?></button>
+        <input type="hidden" name="file" value="" id="file"/>
+    </div>
+</div>
+]]></add>
+		</operation>
+
+		<operation error="skip">
+			<search position="before"><![CDATA[<?php echo $footer; ?>]]></search>
+			<add><![CDATA[
+
+<script>
+    $('button[id^=\'button-upload\']').on('click', function() {
+        var node = this;
+
+        $('#form-upload').remove();
+
+        $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+        $('#form-upload input[name=\'file\']').trigger('click');
+
+        timer = setInterval(function() {
+            if ($('#form-upload input[name=\'file\']').val() != '') {
+                clearInterval(timer);
+
+                $.ajax({
+                    url: 'index.php?route=tool/upload',
+                    type: 'post',
+                    dataType: 'json',
+                    data: new FormData($('#form-upload')[0]),
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $(node).button('loading');
+                    },
+                    complete: function() {
+                        $(node).button('reset');
+                    },
+                    success: function(json) {
+                        $('.text-danger').remove();
+
+                        if (json['error']) {
+                            $(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+                        }
+
+                        if (json['success']) {
+                            alert(json['success']);
+
+                            $(node).parent().find('input').attr('value', json['code']);
+                            $(node).parent().find('img').attr('src', json['image']);
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        }, 500);
+    });
+</script>
+
+]]></add>
+		</operation>
+		
+	</file>
+
+	<file name="catalog/controller/information/quote.php">
+		<operation errot="skip">
+			<search position="replace" error="log"><![CDATA[$mail->send();
+]]></search>
+			<add><![CDATA[
+    if($this->request->post['file']){
+      $this->load->model('tool/upload');
+      $upload_info = $this->model_tool_upload->getUploadByCode($this->request->post['file']);
+      $phyname = DIR_UPLOAD.$upload_info['filename'];
+      $temp_name = DIR_UPLOAD.$upload_info['name'];
+      copy($phyname,$temp_name);
+      $mail->AddAttachment($temp_name);
+    }
+
+    $mail->send();
+    if(isset($temp_name)){
+     unlink( $temp_name );
+    }
+	]]></add>
+		</operation>
+
+	</file>
+
+	<file name="catalog/controller/tool/upload.php">
+		<operation errot="skip">
+			<search position="after" error="log"><![CDATA[			$json['success'] = $this->language->get('text_upload');
+]]></search>
+			<add><![CDATA[
+			$phyname =  DIR_UPLOAD . $file;
+			$temp_name = DIR_IMAGE . $filename;
+			copy($phyname,$temp_name);
+			unlink($temp_name);
+			$json['image'] = $filename;
+	]]></add>
+		</operation>
+
+	</file>
+
+</modification>
