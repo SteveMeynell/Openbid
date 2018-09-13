@@ -4,7 +4,7 @@ class ControllerAuctionAuctionSetting extends Controller {
 	private $error = array();
 
 	public function index() {
-		debuglog("controler loaded");
+		debuglog("controller loaded");
 		$this->load->language('auction/auction_setting');
 		debuglog($this->language->get('debugging'));
 
@@ -26,9 +26,21 @@ class ControllerAuctionAuctionSetting extends Controller {
 			//$this->response->redirect($this->url->link('auction_setting/store', 'token=' . $this->session->data['token'], true));
 		}
 
+		$data['recaptcha_public'] = 'not sure';
+		$data['recaptcha_private'] = 'not sure';
+		$data['entry_recaptcha_registration'] = $this->language->get('entry_recaptcha_registration');
+		
 		$data['heading_title'] = $this->language->get('heading_title');
         $data['text_edit'] = $this->language->get('text_edit');
+		$data['text_none'] = $this->language->get('text_none');
+		$data['text_use_recaptcha'] = $this->language->get('text_use_recaptcha');
+		$data['text_use_image'] = $this->language->get('text_use_image');
 		
+		$data['text_recaptcha'] = $this->language->get('text_recaptcha');
+		$data['text_recaptcha_description'] = $this->language->get('text_recaptcha_description');
+		$data['entry_recaptcha_public'] = $this->language->get('entry_recaptcha_public');
+		$data['entry_recaptcha_private'] = $this->language->get('entry_recaptcha_private');
+		$data['entry_recaptcha_registration'] = $this->language->get('entry_recaptcha_registration');
 		
 		
 		$data['button_save'] = $this->language->get('button_save');
@@ -38,6 +50,7 @@ class ControllerAuctionAuctionSetting extends Controller {
 		$data['tab_auction'] = $this->language->get('tab_auction');
 		$data['tab_display'] = $this->language->get('tab_display');
 		$data['tab_option'] = $this->language->get('tab_option');
+		$data['tab_spam'] = $this->language->get('tab_spam');
         
         
         

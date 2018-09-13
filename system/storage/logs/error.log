@@ -1,74 +1,106 @@
-2018-09-13 7:08:54 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 7:08:54 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:00:52 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:00:52 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:07:28 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:07:28 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:12:48 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:12:48 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:13:02 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:13:02 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:13:02 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:13:02 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:13:02 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:13:02 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:13:02 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:13:02 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:24:19 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:24:19 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:24:19 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:25:33 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:25:33 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:25:33 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:26:58 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:26:58 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:26:58 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:34:52 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:34:52 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:34:52 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:41:26 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:41:26 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:41:26 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:41:26 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:41:26 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:41:26 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:41:26 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:41:26 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:43:09 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:43:09 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:43:09 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:43:20 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:43:20 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:43:20 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:43:20 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:43:20 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:43:20 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:43:20 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:43:20 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:43:56 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:43:56 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:43:56 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:49:31 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:49:31 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
-2018-09-13 8:49:31 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:49:31 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
-2018-09-13 8:49:31 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:49:31 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
-2018-09-13 8:49:31 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:49:31 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: tab_general in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 34
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: tab_auction in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 35
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: tab_display in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 36
-2018-09-13 8:49:38 - PHP Notice:  Undefined variable: tab_option in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 37
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: text_edit in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 29
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: tab_general in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 34
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: tab_auction in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 35
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: tab_display in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 36
-2018-09-13 8:54:25 - PHP Notice:  Undefined variable: tab_option in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 37
-2018-09-13 8:57:21 - PHP Notice:  Undefined variable: button_save in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 6
-2018-09-13 8:57:21 - PHP Notice:  Undefined variable: button_cancel in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 7
+2018-09-13 10:15:06 - PHP Notice:  Undefined variable: tab_spam in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 38
+2018-09-13 10:15:06 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:15:06 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:15:06 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:15:19 - PHP Notice:  Undefined variable: tab_spam in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 38
+2018-09-13 10:15:19 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:15:19 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:15:19 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:15:48 - PHP Notice:  Undefined variable: tab_spam in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 38
+2018-09-13 10:15:48 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:15:48 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:15:48 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:18:47 - PHP Notice:  Undefined variable: tab_spam in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 38
+2018-09-13 10:18:47 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:18:47 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:18:47 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:19:28 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:19:28 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:19:28 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:21:56 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:21:56 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:21:56 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:21:56 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 59
+2018-09-13 10:21:56 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 59
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: entry_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:23:03 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:26:02 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:26:02 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:26:02 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:26:02 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:27:00 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 10:27:00 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 10:27:00 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 10:27:00 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 10:27:00 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 10:27:00 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 10:27:00 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
+2018-09-13 10:27:00 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: text_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: entry_recaptcha_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: entry_recaptcha_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:30:42 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: text_recaptcha in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 56
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: entry_recaptcha_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: entry_recaptcha_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:31:38 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: entry_recaptcha_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 58
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: entry_recaptcha_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 62
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:32:07 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:34:56 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:34:56 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:34:56 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:34:56 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:35:54 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:35:54 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:35:54 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:35:54 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:39:20 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:39:20 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 60
+2018-09-13 10:39:20 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:39:20 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 64
+2018-09-13 10:41:34 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:41:34 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:41:34 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 10:41:34 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 10:42:14 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:42:14 - PHP Notice:  Undefined variable: recaptch_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:42:14 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 10:42:14 - PHP Notice:  Undefined variable: recaptch_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 10:43:06 - PHP Notice:  Undefined variable: recaptcha_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:43:06 - PHP Notice:  Undefined variable: recaptcha_public in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 61
+2018-09-13 10:43:06 - PHP Notice:  Undefined variable: recaptcha_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 10:43:06 - PHP Notice:  Undefined variable: recaptcha_private in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 65
+2018-09-13 11:15:58 - PHP Notice:  Undefined variable: config_auction_count in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 68
+2018-09-13 11:15:58 - PHP Notice:  Undefined variable: text_no in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 70
+2018-09-13 11:20:35 - PHP Notice:  Undefined variable: text_no in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 69
+2018-09-13 11:20:35 - PHP Notice:  Undefined variable: text_no in D:\xampp\htdocs\OpenBid\admin\view\template\setting\auction_setting.tpl on line 71
+2018-09-13 11:29:50 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 11:29:50 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 11:29:50 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 11:29:50 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 11:29:50 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 11:29:50 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 11:29:50 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
+2018-09-13 11:29:50 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
+2018-09-13 11:56:45 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 11:56:45 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 704
+2018-09-13 11:56:45 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 11:56:45 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 718
+2018-09-13 11:56:45 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 11:56:45 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 741
+2018-09-13 11:56:45 - PHP Notice:  Undefined variable: order_statuses in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764
+2018-09-13 11:56:45 - PHP Warning:  Invalid argument supplied for foreach() in D:\xampp\htdocs\OpenBid\admin\view\template\setting\setting.tpl on line 764

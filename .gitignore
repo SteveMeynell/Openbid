@@ -20,7 +20,8 @@
 *.tar
 *.zip
 *.komodoproject
-/cache
+/system/storage/cache
+/system/storage/logs
 /uploaded
 
 # Logs and databases #
