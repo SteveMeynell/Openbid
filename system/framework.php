@@ -91,7 +91,8 @@ if ($config->has('model_autoload')) {
 
 // Front Controller
 $controller = new Front($registry);
-
+//print("controller: ");
+//print_r($controller);
 // Pre Actions
 if ($config->has('action_pre_action')) {
 	foreach ($config->get('action_pre_action') as $value) {

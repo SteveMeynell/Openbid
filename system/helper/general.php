@@ -37,3 +37,13 @@ if(!function_exists('hash_equals')) {
 		}
 	}
 }
+
+function debuglog($something, $dump = false){
+        
+		$debug_log = new Log('debug.txt');
+		if(!$dump){
+        $debug_log->write($something);
+        } else {
+            $debug_log->write(var_export($something));
+        }
+	}

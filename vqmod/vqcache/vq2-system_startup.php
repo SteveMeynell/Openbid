@@ -1,15 +1,6 @@
 <?php
 // Error Reporting
 error_reporting(E_ALL);
-	
-
-				// Weblog
-
-				require_once(VQMod::modCheck(DIR_SYSTEM . 'weblog.php'));	
-					
-				// END Weblog
-				
-				
 
 // Check Version
 if (version_compare(phpversion(), '5.4.0', '<') == true) {
@@ -77,7 +68,7 @@ if ((isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTP
 function modification($filename) {
 	if (defined('DIR_CATALOG')) {
 		$file = DIR_MODIFICATION . 'admin/' .  substr($filename, strlen(DIR_APPLICATION));
-	} elseif (defined('DIR_OPENCART')) {
+	} elseif (defined('DIR_OPENBID')) {
 		$file = DIR_MODIFICATION . 'install/' .  substr($filename, strlen(DIR_APPLICATION));
 	} else {
 		$file = DIR_MODIFICATION . 'catalog/' . substr($filename, strlen(DIR_APPLICATION));
