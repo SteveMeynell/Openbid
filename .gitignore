@@ -20,7 +20,7 @@
 *.tar
 *.zip
 *.komodoproject
-system/storage/logs
+system/storage
 /uploaded
 
 # Logs and databases #
@@ -28,6 +28,7 @@ system/storage/logs
 *.log
 *.sql
 *.sqlite
+*.cache
 
 # OS generated files #
 ######################

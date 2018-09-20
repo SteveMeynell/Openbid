@@ -35,7 +35,6 @@
             <li><a href="#tab-auction" data-toggle="tab"><?php echo $tab_auction; ?></a></li>
             <li><a href="#tab-display" data-toggle="tab"><?php echo $tab_display; ?></a></li>
             <li><a href="#tab-option" data-toggle="tab"><?php echo $tab_option; ?></a></li>
-            <li><a href="#tab-spam" data-toggle="tab"><?php echo $tab_spam; ?></a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab-general">
@@ -51,31 +50,7 @@
               
             </div>
 
-            <div class="tab-pane" id="tab-spam">
-              <fieldset>
-                <legend><?php echo $text_recaptcha; ?></legend>
-                  <p><?php echo $text_recaptcha_description; ?></p>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label" for="input-fax"><?php echo $entry_recaptcha_public; ?></label>
-                    <div class="col-sm-10">
-                      <input type="text" name="recaptcha-public-key" value="<?php echo $recaptcha_public; ?>" placeholder="<?php echo $recaptcha_public; ?>" id="input-recaptcha-public" class="form-control" />
-                    </div>
-                    <label class="col-sm-2 control-label" for="input-fax"><?php echo $entry_recaptcha_private; ?></label>
-                    <div class="col-sm-10">
-                      <input type="text" name="recaptcha-private-key" value="<?php echo $recaptcha_private; ?>" placeholder="<?php echo $recaptcha_private; ?>" id="input-recaptcha-private" class="form-control" />
-                    </div>
-                    <div class="col-sm-2 input-group-prepend">
-                      <label class="col-sm-10 input-group-text control-label" for="inputGroupSelect01"><?php echo $entry_recaptcha_registration; ?></label>
-                      <select class="custom-select" id="inputGroupSelect01">
-                        <option value="0" selected><?php echo $text_none; ?></option>
-                        <option value="1"><?php echo $text_use_recaptcha; ?></option>
-                        <option value="2"><?php echo $text_use_image; ?></option>
-                      </select>
-                    </div>
-                  </div>
-                  
-              </fieldset>
-            </div>
+            
           </div>
         
         
