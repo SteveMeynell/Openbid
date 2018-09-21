@@ -1,6 +1,17 @@
 <?php
 class ModelReportCustomer extends Model {
-	public function getTotalCustomersByDay() {
+	public function getTotalCustomersByDay($type = "both") {
+		switch ($type) {
+			case "bidders":
+				$group = 1;
+				break;
+			case "sellers":
+				$group = 2;
+				break;
+			default:
+				$group = 3;
+		}
+		
 		$customer_data = array();
 
 		for ($i = 0; $i < 24; $i++) {
@@ -10,7 +21,7 @@ class ModelReportCustomer extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_added) AS hour FROM `" . DB_PREFIX . "customer` WHERE DATE(date_added) = DATE(NOW()) GROUP BY HOUR(date_added) ORDER BY date_added ASC");
+		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_added) AS hour FROM `" . DB_PREFIX . "customer` WHERE customer_group_id = '" . $group . "' AND DATE(date_added) = DATE(NOW()) GROUP BY HOUR(date_added) ORDER BY date_added ASC");
 
 		foreach ($query->rows as $result) {
 			$customer_data[$result['hour']] = array(
@@ -22,7 +33,18 @@ class ModelReportCustomer extends Model {
 		return $customer_data;
 	}
 
-	public function getTotalCustomersByWeek() {
+	public function getTotalCustomersByWeek($type = "both") {
+		switch ($type) {
+			case "bidders":
+				$group = 1;
+				break;
+			case "sellers":
+				$group = 2;
+				break;
+			default:
+				$group = 3;
+		}
+		
 		$customer_data = array();
 
 		$date_start = strtotime('-' . date('w') . ' days');
@@ -36,7 +58,7 @@ class ModelReportCustomer extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE DATE(date_added) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_added)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE customer_group_id = '" . $group . "' AND DATE(date_added) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_added)");
 
 		foreach ($query->rows as $result) {
 			$customer_data[date('w', strtotime($result['date_added']))] = array(
@@ -48,7 +70,18 @@ class ModelReportCustomer extends Model {
 		return $customer_data;
 	}
 
-	public function getTotalCustomersByMonth() {
+	public function getTotalCustomersByMonth($type = "both") {
+		switch ($type) {
+			case "bidders":
+				$group = 1;
+				break;
+			case "sellers":
+				$group = 2;
+				break;
+			default:
+				$group = 3;
+		}
+		
 		$customer_data = array();
 
 		for ($i = 1; $i <= date('t'); $i++) {
@@ -60,7 +93,7 @@ class ModelReportCustomer extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE DATE(date_added) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_added)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE customer_group_id = '" . $group . "' AND DATE(date_added) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_added)");
 
 		foreach ($query->rows as $result) {
 			$customer_data[date('j', strtotime($result['date_added']))] = array(
@@ -72,7 +105,18 @@ class ModelReportCustomer extends Model {
 		return $customer_data;
 	}
 
-	public function getTotalCustomersByYear() {
+	public function getTotalCustomersByYear($type = "both") {
+		switch ($type) {
+			case "bidders":
+				$group = 1;
+				break;
+			case "sellers":
+				$group = 2;
+				break;
+			default:
+				$group = 3;
+		}
+		
 		$customer_data = array();
 
 		for ($i = 1; $i <= 12; $i++) {
@@ -82,7 +126,7 @@ class ModelReportCustomer extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE YEAR(date_added) = YEAR(NOW()) GROUP BY MONTH(date_added)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "customer` WHERE customer_group_id = '" . $group . "' AND YEAR(date_added) = YEAR(NOW()) GROUP BY MONTH(date_added)");
 
 		foreach ($query->rows as $result) {
 			$customer_data[date('n', strtotime($result['date_added']))] = array(
