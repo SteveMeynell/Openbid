@@ -107,20 +107,66 @@ class ModelLocalisationCurrency extends Model {
 
 	public function refresh($force = false) {
 		$data = array();
+		$data[] = $this->config->get('config_currency');
 
 		if ($force) {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code != '" . $this->db->escape($this->config->get('config_currency')) . "'");
 		} else {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code != '" . $this->db->escape($this->config->get('config_currency')) . "' AND date_modified < '" .  $this->db->escape(date('Y-m-d H:i:s', strtotime('-1 day'))) . "'");
 		}
+		
+		
 
 		foreach ($query->rows as $result) {
-			$data[] = $this->config->get('config_currency') . $result['code'] . '=X';
+			$data[] = $result['code'];
 		}
 
+		$Rates = [];
+		// https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+
+		$XML = simplexml_load_file("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml");
+		$currentRates = $XML->Cube->Cube->Cube;
+		$currate_date = $XML->Cube->Cube['time'];
+		
+			foreach ($currentRates as $rate) {
+				if(in_array($rate['currency'], $data)) {
+					$currencyCodes[] = strval($rate['currency']);
+					$currencyRates[] = floatval($rate['rate']);
+				} else {
+					// Save as historical records maybe?
+				}; 
+			}
+			if(in_array("EUR", $data)){
+				$currencyCodes[] = "EUR";
+				$currencyRates[] = 1.0;
+			}
+			
+			$Rates = array_combine($currencyCodes, $currencyRates);
+			// All these rates are based on the EUR.
+			// If the configured currency is the EUR then the currency codes stand as they are.
+			// If not then the currency rates are CCRates/ConRate and the EUR if it is in the list is 1/ConRate
+			if($this->config->get('config_currency') != "EUR") {
+				$baseRate = $Rates[$this->config->get('config_currency')];
+				foreach ($Rates as $CCode => $otherRate) {
+					$updatedRate[$CCode] = $otherRate/$baseRate;
+					$this->db->query("UPDATE " . DB_PREFIX . "currency SET value = '" . (float)$updatedRate[$CCode] . "', date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "' WHERE code = '" . $this->db->escape($CCode) . "'");
+				}
+			} else {
+				foreach($Rates as $CCode => $otherRate) {
+					$this->db->query("UPDATE " . DB_PREFIX . "currency SET value = '" . (float)$otherRate . "', date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "' WHERE code = '" . $this->db->escape($CCode) . "'");
+				}
+			}
+			$this->cache->delete('currency');
+			//debuglog($updatedRate);
+			
+			
+			
+		/*
 		$curl = curl_init();
 
-		curl_setopt($curl, CURLOPT_URL, 'http://download.finance.yahoo.com/d/quotes.csv?s=' . implode(',', $data) . '&f=sl1&e=.csv');
+		//curl_setopt($curl, CURLOPT_URL, 'http://download.finance.yahoo.com/d/quotes.csv?s=' . implode(',', $data) . '&f=sl1&e=.csv');
+		
+		curl_setopt($curl, CURLOPT_URL, 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
@@ -129,6 +175,7 @@ class ModelLocalisationCurrency extends Model {
 		$content = curl_exec($curl);
 
 		curl_close($curl);
+		debuglog($content);
 
 		$lines = explode("\n", trim($content));
 
@@ -144,6 +191,7 @@ class ModelLocalisationCurrency extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "currency SET value = '1.00000', date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "' WHERE code = '" . $this->db->escape($this->config->get('config_currency')) . "'");
 
 		$this->cache->delete('currency');
+		*/
 	}
 
 	public function getTotalCurrencies() {
