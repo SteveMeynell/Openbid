@@ -277,62 +277,9 @@
                   </label>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-length-class"><?php echo $entry_length_class; ?></label>
-                <div class="col-sm-10">
-                  <select name="config_length_class_id" id="input-length-class" class="form-control">
-                    <?php foreach ($length_classes as $length_class) { ?>
-                    <?php if ($length_class['length_class_id'] == $config_length_class_id) { ?>
-                    <option value="<?php echo $length_class['length_class_id']; ?>" selected="selected"><?php echo $length_class['title']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $length_class['length_class_id']; ?>"><?php echo $length_class['title']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-weight-class"><?php echo $entry_weight_class; ?></label>
-                <div class="col-sm-10">
-                  <select name="config_weight_class_id" id="input-weight-class" class="form-control">
-                    <?php foreach ($weight_classes as $weight_class) { ?>
-                    <?php if ($weight_class['weight_class_id'] == $config_weight_class_id) { ?>
-                    <option value="<?php echo $weight_class['weight_class_id']; ?>" selected="selected"><?php echo $weight_class['title']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $weight_class['weight_class_id']; ?>"><?php echo $weight_class['title']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
             </div>
             <div class="tab-pane" id="tab-option">
-              <fieldset>
-                <legend><?php echo $text_auction; ?></legend>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_auction_count; ?>"><?php echo $entry_auction_count; ?></span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_auction_count) { ?>
-                      <input type="radio" name="config_auction_count" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_auction_count" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_auction_count) { ?>
-                      <input type="radio" name="config_auction_count" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_auction_count" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group required">
+              <div class="form-group required">
                   <label class="col-sm-2 control-label" for="input-admin-limit"><span data-toggle="tooltip" title="<?php echo $help_limit_admin; ?>"><?php echo $entry_limit_admin; ?></span></label>
                   <div class="col-sm-10">
                     <input type="text" name="config_limit_admin" value="<?php echo $config_limit_admin; ?>" placeholder="<?php echo $entry_limit_admin; ?>" id="input-admin-limit" class="form-control" />
@@ -340,8 +287,7 @@
                     <div class="text-danger"><?php echo $error_limit_admin; ?></div>
                     <?php } ?>
                   </div>
-                </div>
-              </fieldset>
+              </div>
               <fieldset>
                 <legend><?php echo $text_review; ?></legend>
                 <div class="form-group">
@@ -409,68 +355,6 @@
                     <?php if ($error_voucher_max) { ?>
                     <div class="text-danger"><?php echo $error_voucher_max; ?></div>
                     <?php } ?>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend><?php echo $text_tax; ?></legend>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label"><?php echo $entry_tax; ?></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_tax) { ?>
-                      <input type="radio" name="config_tax" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_tax" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_tax) { ?>
-                      <input type="radio" name="config_tax" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_tax" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-tax-default"><span data-toggle="tooltip" title="<?php echo $help_tax_default; ?>"><?php echo $entry_tax_default; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_tax_default" id="input-tax-default" class="form-control">
-                      <option value=""><?php echo $text_none; ?></option>
-                      <?php  if ($config_tax_default == 'shipping') { ?>
-                      <option value="shipping" selected="selected"><?php echo $text_shipping; ?></option>
-                      <?php } else { ?>
-                      <option value="shipping"><?php echo $text_shipping; ?></option>
-                      <?php } ?>
-                      <?php  if ($config_tax_default == 'payment') { ?>
-                      <option value="payment" selected="selected"><?php echo $text_payment; ?></option>
-                      <?php } else { ?>
-                      <option value="payment"><?php echo $text_payment; ?></option>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-tax-customer"><span data-toggle="tooltip" title="<?php echo $help_tax_customer; ?>"><?php echo $entry_tax_customer; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_tax_customer" id="input-tax-customer" class="form-control">
-                      <option value=""><?php echo $text_none; ?></option>
-                      <?php  if ($config_tax_customer == 'shipping') { ?>
-                      <option value="shipping" selected="selected"><?php echo $text_shipping; ?></option>
-                      <?php } else { ?>
-                      <option value="shipping"><?php echo $text_shipping; ?></option>
-                      <?php } ?>
-                      <?php  if ($config_tax_customer == 'payment') { ?>
-                      <option value="payment" selected="selected"><?php echo $text_payment; ?></option>
-                      <?php } else { ?>
-                      <option value="payment"><?php echo $text_payment; ?></option>
-                      <?php } ?>
-                    </select>
                   </div>
                 </div>
               </fieldset>
@@ -637,29 +521,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_cart_weight; ?>"><?php echo $entry_cart_weight; ?></span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_cart_weight) { ?>
-                      <input type="radio" name="config_cart_weight" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_cart_weight" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_cart_weight) { ?>
-                      <input type="radio" name="config_cart_weight" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_cart_weight" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
                   <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_checkout_guest; ?>"><?php echo $entry_checkout_guest; ?></span></label>
                   <div class="col-sm-10">
                     <label class="radio-inline">
@@ -698,80 +559,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-order-status"><span data-toggle="tooltip" title="<?php echo $help_order_status; ?>"><?php echo $entry_order_status; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_order_status_id" id="input-order-status" class="form-control">
-                      <?php foreach ($order_statuses as $order_status) { ?>
-                      <?php if ($order_status['order_status_id'] == $config_order_status_id) { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                      <?php } else { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                      <?php } ?>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-process-status"><span data-toggle="tooltip" title="<?php echo $help_processing_status; ?>"><?php echo $entry_processing_status; ?></span></label>
-                  <div class="col-sm-10">
-                    <div class="well well-sm" style="height: 150px; overflow: auto;">
-                      <?php foreach ($order_statuses as $order_status) { ?>
-                      <div class="checkbox">
-                        <label>
-                          <?php if (in_array($order_status['order_status_id'], $config_processing_status)) { ?>
-                          <input type="checkbox" name="config_processing_status[]" value="<?php echo $order_status['order_status_id']; ?>" checked="checked" />
-                          <?php echo $order_status['name']; ?>
-                          <?php } else { ?>
-                          <input type="checkbox" name="config_processing_status[]" value="<?php echo $order_status['order_status_id']; ?>" />
-                          <?php echo $order_status['name']; ?>
-                          <?php } ?>
-                        </label>
-                      </div>
-                      <?php } ?>
-                    </div>
-                    <?php if ($error_processing_status) { ?>
-                    <div class="text-danger"><?php echo $error_processing_status; ?></div>
-                    <?php } ?>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-complete-status"><span data-toggle="tooltip" title="<?php echo $help_complete_status; ?>"><?php echo $entry_complete_status; ?></span></label>
-                  <div class="col-sm-10">
-                    <div class="well well-sm" style="height: 150px; overflow: auto;">
-                      <?php foreach ($order_statuses as $order_status) { ?>
-                      <div class="checkbox">
-                        <label>
-                          <?php if (in_array($order_status['order_status_id'], $config_complete_status)) { ?>
-                          <input type="checkbox" name="config_complete_status[]" value="<?php echo $order_status['order_status_id']; ?>" checked="checked" />
-                          <?php echo $order_status['name']; ?>
-                          <?php } else { ?>
-                          <input type="checkbox" name="config_complete_status[]" value="<?php echo $order_status['order_status_id']; ?>" />
-                          <?php echo $order_status['name']; ?>
-                          <?php } ?>
-                        </label>
-                      </div>
-                      <?php } ?>
-                    </div>
-                    <?php if ($error_complete_status) { ?>
-                    <div class="text-danger"><?php echo $error_complete_status; ?></div>
-                    <?php } ?>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-fraud-status"><span data-toggle="tooltip" title="<?php echo $help_fraud_status; ?>"><?php echo $entry_fraud_status; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_fraud_status_id" id="input-fraud-status" class="form-control">
-                      <?php foreach ($order_statuses as $order_status) { ?>
-                      <?php if ($order_status['order_status_id'] == $config_fraud_status_id) { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                      <?php } else { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                      <?php } ?>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
                   <label class="col-sm-2 control-label" for="input-api"><span data-toggle="tooltip" title="<?php echo $help_api; ?>"><?php echo $entry_api; ?></span></label>
                   <div class="col-sm-10">
                     <select name="config_api_id" id="input-api" class="form-control">
@@ -784,78 +571,6 @@
                       <?php } ?>
                       <?php } ?>
                     </select>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend><?php echo $text_stock; ?></legend>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_stock_display; ?>"><?php echo $entry_stock_display; ?></span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_stock_display) { ?>
-                      <input type="radio" name="config_stock_display" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_display" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_stock_display) { ?>
-                      <input type="radio" name="config_stock_display" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_display" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_stock_warning; ?>"><?php echo $entry_stock_warning; ?></span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_stock_warning) { ?>
-                      <input type="radio" name="config_stock_warning" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_warning" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_stock_warning) { ?>
-                      <input type="radio" name="config_stock_warning" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_warning" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_stock_checkout; ?>"><?php echo $entry_stock_checkout; ?></span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <?php if ($config_stock_checkout) { ?>
-                      <input type="radio" name="config_stock_checkout" value="1" checked="checked" />
-                      <?php echo $text_yes; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_checkout" value="1" />
-                      <?php echo $text_yes; ?>
-                      <?php } ?>
-                    </label>
-                    <label class="radio-inline">
-                      <?php if (!$config_stock_checkout) { ?>
-                      <input type="radio" name="config_stock_checkout" value="0" checked="checked" />
-                      <?php echo $text_no; ?>
-                      <?php } else { ?>
-                      <input type="radio" name="config_stock_checkout" value="0" />
-                      <?php echo $text_no; ?>
-                      <?php } ?>
-                    </label>
                   </div>
                 </div>
               </fieldset>
@@ -888,7 +603,7 @@
                   <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_affiliate_auto; ?>"><?php echo $entry_affiliate_auto; ?></span></label>
                   <div class="col-sm-10">
                     <label class="radio-inline">
-                      <?php if ($config_stock_checkout) { ?>
+                      <?php if ($config_affiliate_auto) { ?>
                       <input type="radio" name="config_affiliate_auto" value="1" checked="checked" />
                       <?php echo $text_yes; ?>
                       <?php } else { ?>
@@ -897,7 +612,7 @@
                       <?php } ?>
                     </label>
                     <label class="radio-inline">
-                      <?php if (!$config_stock_checkout) { ?>
+                      <?php if (!$config_affiliate_auto) { ?>
                       <input type="radio" name="config_affiliate_auto" value="0" checked="checked" />
                       <?php echo $text_no; ?>
                       <?php } else { ?>
@@ -923,38 +638,6 @@
                       <option value="<?php echo $information['information_id']; ?>" selected="selected"><?php echo $information['title']; ?></option>
                       <?php } else { ?>
                       <option value="<?php echo $information['information_id']; ?>"><?php echo $information['title']; ?></option>
-                      <?php } ?>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend><?php echo $text_return; ?></legend>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-return"><span data-toggle="tooltip" title="<?php echo $help_return; ?>"><?php echo $entry_return; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_return_id" id="input-return" class="form-control">
-                      <option value="0"><?php echo $text_none; ?></option>
-                      <?php foreach ($informations as $information) { ?>
-                      <?php if ($information['information_id'] == $config_return_id) { ?>
-                      <option value="<?php echo $information['information_id']; ?>" selected="selected"><?php echo $information['title']; ?></option>
-                      <?php } else { ?>
-                      <option value="<?php echo $information['information_id']; ?>"><?php echo $information['title']; ?></option>
-                      <?php } ?>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-return-status"><span data-toggle="tooltip" title="<?php echo $help_return_status; ?>"><?php echo $entry_return_status; ?></span></label>
-                  <div class="col-sm-10">
-                    <select name="config_return_status_id" id="input-return-status" class="form-control">
-                      <?php foreach ($return_statuses as $return_status) { ?>
-                      <?php if ($return_status['return_status_id'] == $config_return_status_id) { ?>
-                      <option value="<?php echo $return_status['return_status_id']; ?>" selected="selected"><?php echo $return_status['name']; ?></option>
-                      <?php } else { ?>
-                      <option value="<?php echo $return_status['return_status_id']; ?>"><?php echo $return_status['name']; ?></option>
                       <?php } ?>
                       <?php } ?>
                     </select>

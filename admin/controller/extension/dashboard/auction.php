@@ -122,15 +122,15 @@ class ControllerExtensionDashboardAuction extends Controller {
 		$sale_total = $this->model_report_auction->getTotalAuctions();
 
 		if ($sale_total > 1000000000000) {
-			$data['total'] = round($sale_total / 1000000000000, 1) . 'T';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000000000, 2)) . 'T';
 		} elseif ($sale_total > 1000000000) {
-			$data['total'] = round($sale_total / 1000000000, 1) . 'B';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000000, 2)) . 'B';
 		} elseif ($sale_total > 1000000) {
-			$data['total'] = round($sale_total / 1000000, 1) . 'M';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000, 2)) . 'M';
 		} elseif ($sale_total > 1000) {
-			$data['total'] = round($sale_total / 1000, 1) . 'K';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000, 2)) . 'K';
 		} else {
-			$data['total'] = round($sale_total);
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total,2));
 		}
 
 		$data['sale'] = $this->url->link('auction/auction', 'token=' . $this->session->data['token'], true);

@@ -1,7 +1,10 @@
 <?php
 class ModelReportAuction extends Model {
 	public function getTotalClosedAuctions($data = array()) {
-		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status = '2'";
+		
+		$auction_status = $this->config->get('config_auction_closed_status');
+		
+		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "'";
 
 		if (!empty($data['filter_date_added'])) {
 			$sql .= " AND DATE(date_created) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
@@ -13,7 +16,10 @@ class ModelReportAuction extends Model {
 	}
 	
 	public function getTotalOpenAuctions($data = array()) {
-		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status = '1'";
+		
+		$auction_status = $this->config->get('config_auction_open_status');
+		
+		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "'";
 
 		if (!empty($data['filter_date_added'])) {
 			$sql .= " AND DATE(date_created) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
@@ -25,7 +31,10 @@ class ModelReportAuction extends Model {
 	}
 	
 	public function getTotalAuctions($data = array()) {
-		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status > '0'";
+		
+		$auction_status = $this->config->get('config_auction_moderation_status');
+		
+		$sql = "SELECT SUM(winning_bid) AS total FROM `" . DB_PREFIX . "auctions` WHERE status > '" . $auction_status . "'";
 
 		if (!empty($data['filter_date_added'])) {
 			$sql .= " AND DATE(date_created) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
@@ -43,239 +52,215 @@ class ModelReportAuction extends Model {
 	}
 
 	public function getTotalClosedAuctionsByDay() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_closed_status');
+		
 
-		foreach ($this->config->get('config_closed_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 0; $i < 24; $i++) {
-			$order_data[$i] = array(
+			$auction_data[$i] = array(
 				'hour'  => $i,
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
+		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
 
 		foreach ($query->rows as $result) {
-			$order_data[$result['hour']] = array(
+			$auction_data[$result['hour']] = array(
 				'hour'  => $result['hour'],
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 	
 	public function getTotalOpenAuctionsByDay() {
-		$implode = array();
+		$auction_status = $this->config->get('config_auction_open_status');
 
-		foreach ($this->config->get('config_open_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 0; $i < 24; $i++) {
-			$order_data[$i] = array(
+			$auction_data[$i] = array(
 				'hour'  => $i,
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
+		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
 
 		foreach ($query->rows as $result) {
-			$order_data[$result['hour']] = array(
+			$auction_data[$result['hour']] = array(
 				'hour'  => $result['hour'],
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 
 	public function getTotalClosedAuctionsByWeek() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_closed_status');
 
-		foreach ($this->config->get('config_closed_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		$date_start = strtotime('-' . date('w') . ' days');
 
 		for ($i = 0; $i < 7; $i++) {
 			$date = date('Y-m-d', $date_start + ($i * 86400));
 
-			$order_data[date('w', strtotime($date))] = array(
+			$auction_data[date('w', strtotime($date))] = array(
 				'day'   => date('D', strtotime($date)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('w', strtotime($result['date_created']))] = array(
+			$auction_data[date('w', strtotime($result['date_created']))] = array(
 				'day'   => date('D', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 	
 	public function getTotalOpenAuctionsByWeek() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_open_status');
 
-		foreach ($this->config->get('config_open_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		$date_start = strtotime('-' . date('w') . ' days');
 
 		for ($i = 0; $i < 7; $i++) {
 			$date = date('Y-m-d', $date_start + ($i * 86400));
 
-			$order_data[date('w', strtotime($date))] = array(
+			$auction_data[date('w', strtotime($date))] = array(
 				'day'   => date('D', strtotime($date)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('w', strtotime($result['date_created']))] = array(
+			$auction_data[date('w', strtotime($result['date_created']))] = array(
 				'day'   => date('D', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 
 	public function getTotalClosedAuctionsByMonth() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_closed_status');
 
-		foreach ($this->config->get('config_closed_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 1; $i <= date('t'); $i++) {
 			$date = date('Y') . '-' . date('m') . '-' . $i;
 
-			$order_data[date('j', strtotime($date))] = array(
+			$auction_data[date('j', strtotime($date))] = array(
 				'day'   => date('d', strtotime($date)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('j', strtotime($result['date_created']))] = array(
+			$auction_data[date('j', strtotime($result['date_created']))] = array(
 				'day'   => date('d', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 	
 	public function getTotalOpenAuctionsByMonth() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_open_status');
 
-		foreach ($this->config->get('config_open_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 1; $i <= date('t'); $i++) {
 			$date = date('Y') . '-' . date('m') . '-' . $i;
 
-			$order_data[date('j', strtotime($date))] = array(
+			$auction_data[date('j', strtotime($date))] = array(
 				'day'   => date('d', strtotime($date)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('j', strtotime($result['date_created']))] = array(
+			$auction_data[date('j', strtotime($result['date_created']))] = array(
 				'day'   => date('d', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 
 	public function getTotalClosedAuctionsByYear() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_closed_status');
 
-		foreach ($this->config->get('config_closed_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 1; $i <= 12; $i++) {
-			$order_data[$i] = array(
+			$auction_data[$i] = array(
 				'month' => date('M', mktime(0, 0, 0, $i)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('n', strtotime($result['date_created']))] = array(
+			$auction_data[date('n', strtotime($result['date_created']))] = array(
 				'month' => date('M', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 	
 	public function getTotalOpenAuctionsByYear() {
-		$implode = array();
+		
+		$auction_status = $this->config->get('config_auction_open_status');
 
-		foreach ($this->config->get('config_open_auction_status') as $order_status_id) {
-			$implode[] = "'" . (int)$order_status_id . "'";
-		}
-
-		$order_data = array();
+		$auction_data = array();
 
 		for ($i = 1; $i <= 12; $i++) {
-			$order_data[$i] = array(
+			$auction_data[$i] = array(
 				'month' => date('M', mktime(0, 0, 0, $i)),
 				'total' => 0
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status IN(" . implode(",", $implode) . ") AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
 
 		foreach ($query->rows as $result) {
-			$order_data[date('n', strtotime($result['date_created']))] = array(
+			$auction_data[date('n', strtotime($result['date_created']))] = array(
 				'month' => date('M', strtotime($result['date_created'])),
 				'total' => $result['total']
 			);
 		}
 
-		return $order_data;
+		return $auction_data;
 	}
 
 	public function getOrders($data = array()) {

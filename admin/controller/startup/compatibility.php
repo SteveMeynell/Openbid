@@ -6,6 +6,7 @@ class ControllerStartupCompatibility extends Controller {
 				'extension/analytics',
 				'extension/captcha',
 				'extension/feed',
+				'extension/fees',
 				'extension/fraud',
 				'extension/module',
 				'extension/payment',

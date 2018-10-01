@@ -39,6 +39,7 @@ $_['action_event'] = array(
 	
 	'model/extension/analytics/*/before'    => 'event/compatibility/beforeModel',
 	'model/extension/captcha/*/before'      => 'event/compatibility/beforeModel',
+    'model/extension/fees/*/before'      => 'event/compatibility/beforeModel',
 	'model/extension/credit_card/*/before'  => 'event/compatibility/beforeModel',
 	'model/extension/feed/*/before'         => 'event/compatibility/beforeModel',
 	'model/extension/fraud/*/before'        => 'event/compatibility/beforeModel',
@@ -51,6 +52,7 @@ $_['action_event'] = array(
 	 	
 	'model/analytics/*/after'               => 'event/compatibility/afterModel',
 	'model/captcha/*/after'                 => 'event/compatibility/afterModel',
+    'model/fees/*/after'                 => 'event/compatibility/afterModel',
 	'model/credit_card/*/after'             => 'event/compatibility/afterModel',
 	'model/feed/*/after'                    => 'event/compatibility/afterModel',
 	'model/fraud/*/after'                   => 'event/compatibility/afterModel',
@@ -64,6 +66,7 @@ $_['action_event'] = array(
 	//'language/extension/*/before'         => 'event/translation',
 	'language/extension/analytics/*/before' => 'event/compatibility/language',
 	'language/extension/captcha/*/before'   => 'event/compatibility/language',
+    'language/extension/fees/*/before'   => 'event/compatibility/language',
 	'language/extension/feed/*/before'      => 'event/compatibility/language',
 	'language/extension/fraud/*/before'     => 'event/compatibility/language',
 	'language/extension/module/*/before'    => 'event/compatibility/language',

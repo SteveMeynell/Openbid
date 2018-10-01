@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Total Auctions';
+$_['heading_title']    = 'Total Amount of Winning Bids';
 
 // Text
 $_['text_extension']   = 'Extensions';
