@@ -288,7 +288,7 @@ class ControllerCommonColumnLeft extends Controller {
 			if ($auction) {
 				$data['menus'][] = array(
 					'id'       => 'menu-auction',
-					'icon'	   => 'fa-shopping-cart', 
+					'icon'	   => 'fa-gavel', 
 					'name'	   => $this->language->get('text_auction'),
 					'href'     => '',
 					'children' => $auction

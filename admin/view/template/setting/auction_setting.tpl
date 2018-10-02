@@ -121,14 +121,14 @@
                   </div>
                   <label class="col-sm-2 control-label" for="input-admin-extension"><span data-toggle="tooltip" title="<?php echo $help_auction_extension_left; ?>"><?php echo $entry_auction_extension_left; ?></span></label>
                   <div class="col-sm-1">
-                    <input type="text" name="config_auction_extension_left" value="<?php echo $config_auction_extension_left; ?>" placeholder="<?php echo $entry_auction_extension_left; ?>" id="input-auction-extension" class="form-control" />
+                    <input type="text" name="config_auction_extension_left" value="<?php echo $config_auction_extension_left; ?>" placeholder="<?php echo $entry_auction_extension_left; ?>" id="input-auction-extension" class="form-control" />Minutes
                     <?php if ($error_auction_extension_left) { ?>
                     <div class="text-danger"><?php echo $error_auction_extension_left; ?></div>
                     <?php } ?>
                   </div>
                   <label class="col-sm-2 control-label" for="input-admin-extension-for"><span data-toggle="tooltip" title="<?php echo $help_auction_extension_for; ?>"><?php echo $entry_auction_extension_for; ?></span></label>
                   <div class="col-sm-1">
-                    <input type="text" name="config_auction_extension_for" value="<?php echo $config_auction_extension_for; ?>" placeholder="<?php echo $entry_auction_extension_for; ?>" id="input-auction-extension-for" class="form-control" />
+                    <input type="text" name="config_auction_extension_for" value="<?php echo $config_auction_extension_for; ?>" placeholder="<?php echo $entry_auction_extension_for; ?>" id="input-auction-extension-for" class="form-control" />Minutes
                     <?php if ($error_auction_extension_for) { ?>
                     <div class="text-danger"><?php echo $error_auction_extension_for; ?></div>
                     <?php } ?>
@@ -159,7 +159,7 @@
                   </div>
                   <label class="col-sm-2 control-label" for="input-admin-countdown"><span data-toggle="tooltip" title="<?php echo $help_auction_countdown_time; ?>"><?php echo $entry_auction_countdown_time; ?></span></label>
                   <div class="col-sm-1">
-                    <input type="text" name="config_auction_countdown_time" value="<?php echo $config_auction_countdown_time; ?>" placeholder="<?php echo $entry_auction_countdown_time; ?>" id="input-auction-countdown" class="form-control" />
+                    <input type="text" name="config_auction_countdown_time" value="<?php echo $config_auction_countdown_time; ?>" placeholder="<?php echo $entry_auction_countdown_time; ?>" id="input-auction-countdown" class="form-control" />Hours
                     <?php if ($error_auction_countdown_time) { ?>
                     <div class="text-danger"><?php echo $error_auction_countdown_time; ?></div>
                     <?php } ?>
@@ -278,7 +278,7 @@
                       <?php } ?>
                   </label>
                   <div class="col-sm-1">
-                    <input type="text" name="config_auction_max_picture_size" value="<?php echo $config_auction_max_picture_size; ?>" placeholder="<?php echo $entry_auction_max_picture_size; ?>" id="input-max-pictures-size" class="form-control" />
+                    <input type="text" name="config_auction_max_picture_size" value="<?php echo $config_auction_max_picture_size; ?>" placeholder="<?php echo $entry_auction_max_picture_size; ?>" id="input-max-pictures-size" class="form-control" />kB
                   </div>
                 </div>
               </fieldset>

@@ -5,7 +5,7 @@ $_['heading_title']         =   'Auction Setup Fee';
 $_['text_extension']        =   'Extensions';
 $_['text_success']          =   'Success: You have modified Auction Setup Fee!';
 $_['text_edit']             =   'Edit Auction Setup Fee';
-$_['text_description']      =   'Enter Fee to setup an Auction.';
+$_['text_description']      =   'Enter Fee for setting up an Auction.';
 
 // Buttons
 $_['button_cancel']         =   'Return';

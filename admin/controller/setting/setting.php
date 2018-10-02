@@ -899,11 +899,6 @@ class ControllerSettingSetting extends Controller {
 		);
 
 		$data['captcha_pages'][] = array(
-			'text'  => $this->language->get('text_return'),
-			'value' => 'return'
-		);
-
-		$data['captcha_pages'][] = array(
 			'text'  => $this->language->get('text_contact'),
 			'value' => 'contact'
 		);

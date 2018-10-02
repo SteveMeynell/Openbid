@@ -499,7 +499,7 @@ $auction_total = 1;
 		if (isset($this->request->get['auction_id'])) {
 			$auction_info = $this->model_auction_auction->getAuction($this->request->get['auction_id']);
 		}
-debuglog($auction_info);
+//debuglog($auction_info);
 		if (!empty($auction_info)) {
 			$data['auction_id'] = $this->request->get['auction_id'];
 			$data['store_id'] = $auction_info['store_id'];

@@ -9,32 +9,65 @@ class ControllerExtensionFeesAuctionSetup extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('setting/setting');
+	
+		$setting_code = $this->language->get('setting_code');
 		
-		$data['setting_code'] = $this->language->get('setting_code');
-		$existing_fees = $this->model_setting_setting->getSetting($data['setting_code']);
-		$existing_fees_count = count($existing_fees) / 5;
-		
-		
-		/*	debuglog("got something");
-			debuglog($this->request->post);
-			exit;
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			
+			if (!isset($setting_code)){
+				$setting_code = $this->language->get('setting_code');
+			}
+			$existing_fees = $this->model_setting_setting->getSetting($setting_code);
+			$existing_fees_count = round(count($existing_fees) / 5);
+			
 			$new_fees = $this->request->post;
 			
 			foreach($new_fees as $key => $value){
-				$new_key = $data['setting_code'] . '_' . $key . '_' . strval($existing_fees_count + 1);
+				$new_key = $setting_code . '_' . $key . '_' . strval($existing_fees_count + 1);
 				$feePost[$new_key] = $value;
 			}
 			
-			$new_key = $data['setting_code'] . '_status_' . strval($existing_fees_count + 1);
+			$new_key = $setting_code . '_status_' . strval($existing_fees_count + 1);
 			$feePost[$new_key] = '1';
-			$feePost[$data['setting_code'] . '_status']	=	'1';
+			$feePost[$setting_code . '_status']	=	'1';
 			$fee2Post = array_merge($existing_fees,$feePost);
-			$this->model_setting_setting->editSetting($data['setting_code'], $fee2Post);
+			
+			$this->model_setting_setting->editSetting($setting_code, $fee2Post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			//$this->response->redirect($this->url->link('extension/fees/auction_setup', 'token=' . $this->session->data['token'] . '&type=fees', true));
-*/			
+		}
+		
+		
+		$existing_fees = $this->model_setting_setting->getSetting($setting_code);
+		$existing_fees_count = count($existing_fees) / 5;
+		
+		$data['fee_datas'] = array();
+		
+			if (count($existing_fees)){
+				for($row_counter=1; $row_counter<$existing_fees_count;$row_counter++){
+					$data['fee_datas'][$row_counter] = array(
+						'feeRow'		=> $row_counter,
+						'fromAmount'	=> $existing_fees[$setting_code . '_fromAmount_' . $row_counter],
+						'toAmount'		=> $existing_fees[$setting_code . '_toAmount_' . $row_counter],
+						'feeAmount'		=> $existing_fees[$setting_code . '_feeAmount_' . $row_counter],
+						'feeType'		=> $existing_fees[$setting_code . '_feeType_' . $row_counter],
+						'feeStatus'		=> $existing_fees[$setting_code . '_status_' . $row_counter],
+						'feeAction'		=> 'button here'
+					);
+				};
+			} else {
+				$data['fee_datas'][0] = array(
+					'feeRow'		=> '0',
+					'fromAmount'	=> 'Nothing Yet',
+					'toAmount'		=> 'Nothing Yet',
+					'feeAmount'		=> 'Nothing Yet',
+					'feeType'		=> 'Nothing Yet',
+					'feeStatus'		=> 'Nothing Yet',
+					'feeAction'		=> 'Nothing Yet'
+				);
+			};
+
 				
 		$data['heading_title'] = $this->language->get('heading_title');
 
@@ -83,24 +116,12 @@ class ControllerExtensionFeesAuctionSetup extends Controller {
 			'href' => $this->url->link('extension/fees/auction_setup', 'token=' . $this->session->data['token'], true)
 		);
 
-		$data['action'] = $this->url->link('extension/fees/auction_setup/addSetting', 'token=' . $this->session->data['token'], true);
+		$data['action'] = $this->url->link('extension/fees/auction_setup', 'token=' . $this->session->data['token'], true);
 
 		$data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=fees', true);
 		
 		$data['token'] = $this->session->data['token'];
 				
-		/*if (isset($this->request->post['fees_auction_setup_fee'])) {
-			$data['fees_auction_setup_fee'] = $this->request->post['fees_auction_setup_fee'];
-		} else {
-			$data['fees_auction_setup_fee'] = $this->config->get('fees_auction_setup_fee');
-		}
-		
-		if ($existing_fees_count > 0) {
-			$data['fees_auction_setup_status'] = '1';
-		} else {
-			$data['fees_auction_setup_status'] = '0';
-		}
-		*/
 		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
@@ -117,24 +138,4 @@ class ControllerExtensionFeesAuctionSetup extends Controller {
 		return !$this->error;
 	}
 	
-	public function addSetting(){
-		debuglog("got something");
-		$this->load->language('extension/fees/auction_setup');
-
-		$json = array();
-		
-		$this->load->model('setting/setting');
-		
-		$data['setting_code'] = $this->language->get('setting_code');
-		$existing_fees = $this->model_setting_setting->getSetting($data['setting_code']);
-		$existing_fees_count = count($existing_fees) / 5;
-		
-		
-		debuglog("got something");
-		debuglog($this->request->post);
-		$json['success'] = sprintf($this->language->get('text_success'));
-		
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
 }

@@ -24,7 +24,7 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
       </div>
       <div class="panel-body">
-        <form action="<?php echo $action; ?>" id="form-auction-setup" class="form-horizontal">
+        <form method="post" action="<?php echo $action; ?>" id="form-auction-setup" class="form-horizontal">
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> <?php echo $text_description; ?>
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
@@ -66,7 +66,7 @@
                       </div>
                     </td>
                     <td>
-                      <button type="submit" class="btn btn-secondary btn-sm" id="saveButton" onclick="auction.addFeeSetting();">Add Fee</button>
+                      <button type="submit" class="btn btn-secondary btn-sm" id="saveButton">Add Fee</button>
                     </td>
                   </tr>
                 <tr>
@@ -84,8 +84,21 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <?php foreach ($fee_datas as $fee_data) { ?>
+                  <tr>
+                    <td><?php echo $fee_data['feeRow']; ?></td>
+                    <td><?php echo $fee_data['fromAmount']; ?></td>
+                    <td><?php echo $fee_data['toAmount']; ?></td>
+                    <td><?php echo $fee_data['feeAmount']; ?></td>
+                    <td><?php echo $fee_data['feeType']; ?></td>
+                    <td><?php echo $fee_data['feeStatus']; ?></td>
+                    <td><?php echo $fee_data['feeAction']; ?></td>
+                  </tr>
+                    <?php } ?>
+                </tbody>
               </table>
-          </div>
+      
+
         </form>
       </div>
     </div>
