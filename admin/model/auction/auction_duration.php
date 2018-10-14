@@ -1,5 +1,5 @@
 <?php
-class ModelLocalisationAuctionDuration extends Model {
+class ModelAuctionAuctionDuration extends Model {
     
     public function getAllDurations($data){
         

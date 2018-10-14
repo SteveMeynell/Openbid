@@ -1,13 +1,13 @@
 <?php
-class ControllerLocalisationAuctionDuration extends Controller {
+class ControllerAuctionAuctionDuration extends Controller {
 	private $error = array();
 
 	public function index() {
-		$this->load->language('localisation/auction_duration');
+		$this->load->language('auction/auction_duration');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('localisation/auction_duration');
+		$this->load->model('auction/auction_duration');
 
 		$this->getList();
 	}
@@ -55,12 +55,12 @@ class ControllerLocalisationAuctionDuration extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true)
+			'href' => $this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true)
 		);
 
 		
-		$data['add'] = $this->url->link('localisation/auction_duration/add', 'token=' . $this->session->data['token'], true);
-		$data['delete'] = $this->url->link('localisation/auction_duration/delete', 'token=' . $this->session->data['token'], true);
+		$data['add'] = $this->url->link('auction/auction_duration/add', 'token=' . $this->session->data['token'], true);
+		$data['delete'] = $this->url->link('auction/auction_duration/delete', 'token=' . $this->session->data['token'], true);
 
 		$data['durations'] = array();
         
@@ -71,14 +71,14 @@ class ControllerLocalisationAuctionDuration extends Controller {
 			'limit'                => $this->config->get('config_limit_admin')
 		);
         
-        $results = $this->model_localisation_auction_duration->getAllDurations($filter_data);
+        $results = $this->model_auction_auction_duration->getAllDurations($filter_data);
         
         foreach($results as $result){
             $data['durations'][] = array(
                 'duration_id'   => $result['duration_id'],
                 'duration'          => $result['duration'],
                 'description'   => $result['description'],
-                'edit'       => $this->url->link('localisation/auction_duration/edit', 'token=' . $this->session->data['token'] . '&duration_id=' . $result['duration_id'] . $url, true)
+                'edit'       => $this->url->link('auction/auction_duration/edit', 'token=' . $this->session->data['token'] . '&duration_id=' . $result['duration_id'] . $url, true)
             );
         }
         
@@ -123,13 +123,13 @@ class ControllerLocalisationAuctionDuration extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
         
-        $duration_total = $this->model_localisation_auction_duration->getTotalDurations();
+        $duration_total = $this->model_auction_auction_duration->getTotalDurations();
 
 		$pagination = new Pagination();
 		$pagination->total = $duration_total;
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url . '&page={page}', true);
+		$pagination->url = $this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url . '&page={page}', true);
 
 		$data['pagination'] = $pagination->render();
 
@@ -142,7 +142,7 @@ class ControllerLocalisationAuctionDuration extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('localisation/auction_duration_list', $data));
+		$this->response->setOutput($this->load->view('auction/auction_duration_list', $data));
 
         
         
@@ -185,19 +185,19 @@ class ControllerLocalisationAuctionDuration extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true)
+			'href' => $this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true)
 		);
 
 		if (!isset($this->request->get['duration_id'])) {
-			$data['action'] = $this->url->link('localisation/auction_duration/add', 'token=' . $this->session->data['token'] . $url, true);
+			$data['action'] = $this->url->link('auction/auction_duration/add', 'token=' . $this->session->data['token'] . $url, true);
 		} else {
-			$data['action'] = $this->url->link('localisation/auction_duration/edit', 'token=' . $this->session->data['token'] . '&duration_id=' . $this->request->get['duration_id'] . $url, true);
+			$data['action'] = $this->url->link('auction/auction_duration/edit', 'token=' . $this->session->data['token'] . '&duration_id=' . $this->request->get['duration_id'] . $url, true);
 		}
 
-		$data['cancel'] = $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true);
+		$data['cancel'] = $this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true);
 
 		if (isset($this->request->get['duration_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$duration_info = $this->model_localisation_auction_duration->getDuration($this->request->get['duration_id']);
+			$duration_info = $this->model_auction_auction_duration->getDuration($this->request->get['duration_id']);
 		}
 
 		$data['token'] = $this->session->data['token'];
@@ -225,46 +225,46 @@ class ControllerLocalisationAuctionDuration extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('localisation/auction_duration_form', $data));    
+		$this->response->setOutput($this->load->view('auction/auction_duration_form', $data));    
 
     }
     
     public function add() {
-		$this->load->language('localisation/auction_duration');
+		$this->load->language('auction/auction_duration');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('localisation/auction_duration');
+		$this->load->model('auction/auction_duration');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_localisation_auction_duration->addDuration($this->request->post);
+			$this->model_auction_auction_duration->addDuration($this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
 
-			$this->response->redirect($this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
+			$this->response->redirect($this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
 		}
 
 		$this->getForm();
 	}
 
 	public function edit() {
-		$this->load->language('localisation/auction_duration');
+		$this->load->language('auction/auction_duration');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('localisation/auction_duration');
+		$this->load->model('auction/auction_duration');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
             
-			$this->model_localisation_auction_duration->editDuration($this->request->get['duration_id'], $this->request->post);
+			$this->model_auction_auction_duration->editDuration($this->request->get['duration_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
 
-			$this->response->redirect($this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
+			$this->response->redirect($this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
 		}
 
 		$this->getForm();
@@ -272,23 +272,23 @@ class ControllerLocalisationAuctionDuration extends Controller {
 
 	public function delete() {
 
-		$this->load->language('localisation/auction_duration');
+		$this->load->language('auction/auction_duration');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('localisation/auction_duration');
+		$this->load->model('auction/auction_duration');
 
 		if (isset($this->request->post['selected'])) {
             
 			foreach ($this->request->post['selected'] as $duration_id) {
-				$this->model_localisation_auction_duration->deleteDuration($duration_id);
+				$this->model_auction_auction_duration->deleteDuration($duration_id);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
 
-			$this->response->redirect($this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
+			$this->response->redirect($this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'] . $url, true));
 		}
 
 		$this->getList();
@@ -296,7 +296,7 @@ class ControllerLocalisationAuctionDuration extends Controller {
     
     
     protected function validateForm() {
-		if (!$this->user->hasPermission('modify', 'localisation/auction_duration')) {
+		if (!$this->user->hasPermission('modify', 'auction/auction_duration')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 

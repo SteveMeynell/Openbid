@@ -79,7 +79,33 @@ class ControllerCatalogAuction extends Controller {
  *
 */
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_auction->editAuction($this->request->get['auction_id'], $this->request->post);
+			
+			// testing
+			$testdata = $this->request->post;
+			$allow_custom_start_date = $this->config->get('config_auction_custom_start_date');
+			$allow_custom_end_date = $this->config->get('config_auction_custom_end_date');
+			
+			if(!$allow_custom_start_date && !isset($testdata['custom_start_date'])){
+					$testdata['custom_start_date'] = date("Y-m-d H:i:s");
+			}
+			if(!$allow_custom_end_date) {
+				$myStartDate = date_create($testdata['custom_start_date']);
+				date_add($myStartDate, date_interval_create_from_date_string(($testdata['duration'] * 24) . ' hours'));
+				$myEndDate = get_object_vars($myStartDate);
+				$testdata['custom_end_date'] = $myEndDate['date'];
+			}
+			
+			if($allow_custom_end_date && !isset($testdata['duration'])){
+				$myStartDate = date_create($testdata['custom_start_date']);
+				$myEndDate = date_create($testdata['custom_end_date']);
+				$myDuration = date_diff($myStartDate, $myEndDate);
+				$testdata['duration'] = $myDuration->days;
+			}
+			
+			
+			
+			$this->model_catalog_auction->editAuction($this->request->get['auction_id'], $testdata);
+			//$this->model_catalog_auction->editAuction($this->request->get['auction_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -947,10 +973,8 @@ class ControllerCatalogAuction extends Controller {
 		
 		if (isset($this->request->post['custom_start_date'])) {
 			$data['custom_start_date'] = $this->request->post['custom_start_date'];
-		} elseif (!empty($auction_info)) {
+		} elseif ($auction_info['start_date']) {
 			$data['custom_start_date'] = $auction_info['start_date'];
-		} elseif (!$data['allow_custom_start_date']) {
-			$data['custom_start_date'] = date("Y-m-d H:i:s");
 		} else {
 			$data['custom_start_date'] = '';
 		}
@@ -960,16 +984,16 @@ class ControllerCatalogAuction extends Controller {
 			$data['custom_end_date'] = $this->request->post['custom_end_date'];
 		} elseif ($auction_info['end_date']) {
 			$data['custom_end_date'] = $auction_info['end_date'];
-		} elseif (!$data['allow_custom_end_date']) {
-			$data['custom_end_date'] = date_add(date_create($data['custom_start_date']),$this->request->post['duration']);
 		} else {
 			$data['custom_end_date'] = '';
 		}
 		
+		// $data['custom_end_date'] = date_add(date_create($data['custom_start_date']),$this->request->post['duration']);
+		
 		if(!$data['allow_custom_end_date']) {
-			$this->load->model('localisation/auction_duration');
+			$this->load->model('auction/auction_duration');
 			$filter = '';
-			$data['durations'] = $this->model_localisation_auction_duration->getAllDurations($filter);
+			$data['durations'] = $this->model_auction_auction_duration->getAllDurations($filter);
 		}
 		
 		if (isset($this->request->post['duration'])) {
@@ -1160,6 +1184,11 @@ class ControllerCatalogAuction extends Controller {
 				$this->error['meta_title'][$language_id] = $this->language->get('error_meta_title');
 			}
 		}
+		
+		// *************************************************************************************************************************************
+		// check that the end date is later than the start date.  if custom start dates are not allowed then the start date is NOW,
+		// end date must be after this.  If custom end dates are not allowed then duration must exist so that it can be added to the start date.
+		// *************************************************************************************************************************************
 
 		if (utf8_strlen($this->request->post['keyword']) > 0) {
 			$this->load->model('catalog/url_alias');
@@ -1178,6 +1207,8 @@ class ControllerCatalogAuction extends Controller {
 		if ($this->error && !isset($this->error['warning'])) {
 			$this->error['warning'] = $this->language->get('error_warning');
 		}
+		
+		
 
 		return !$this->error;
 	}

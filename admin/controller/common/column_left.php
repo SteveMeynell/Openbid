@@ -273,9 +273,25 @@ class ControllerCommonColumnLeft extends Controller {
 			}
 			*/
 			
-			
+			// steve
 			
 			$auction = array();
+			
+			if ($this->user->hasPermission('access','auction/auction_setting')) {
+				$auction[] = array(
+					'name'	   => $this->language->get('text_auction_settings'),
+					'href'     => $this->url->link('auction/auction_setting','token=' . $this->session->data['token'], true),
+					'children' => array()	
+				);
+			}
+			
+			if ($this->user->hasPermission('access', 'auction/auction_duration')) {
+				$auction[] = array(
+					'name'	   => $this->language->get('text_auction_duration'),
+					'href'     => $this->url->link('auction/auction_duration', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);
+			}
 			
 			if ($this->user->hasPermission('access', 'catalog/auction')) {
 				$auction[] = array(
@@ -452,13 +468,9 @@ class ControllerCommonColumnLeft extends Controller {
 				);	
 			}
 			
-			if ($this->user->hasPermission('access','auction/auction_setting')) {
-				$system[] = array(
-					'name'	   => $this->language->get('text_auction_settings'),
-					'href'     => $this->url->link('auction/auction_setting','token=' . $this->session->data['token'], true),
-					'children' => array()	
-				);
-			}
+			
+		
+			
 		
 			// Users
 			$user = array();
@@ -538,13 +550,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
-			if ($this->user->hasPermission('access', 'localisation/auction_duration')) {
-				$localisation[] = array(
-					'name'	   => $this->language->get('text_auction_duration'),
-					'href'     => $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'], true),
-					'children' => array()		
-				);
-			}
+			
 			
 			// Returns
 			$return = array();

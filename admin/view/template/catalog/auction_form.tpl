@@ -196,43 +196,45 @@
                         <input type="text" name="num_relist" value="<?php echo $num_relist; ?>" placeholder="<?php echo $entry_auto_relist_times; ?>" id="input-num-relist" class="form-control" <?php if(!$allow_auto_relist) {?> disabled <?php };?>/>
                       </div>
               </div>
+              <?php if($allow_custom_start_date) {?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-date-start"><?php echo $entry_start_date; ?></label>
                 <div class="col-sm-3">
-                  <div class="input-group date">
-                    <input type="text" name="custom_start_date" value="<?php echo $custom_start_date; ?>" placeholder="<?php echo $entry_start_date; ?>" data-date-format="YYYY-MM-DD" id="input-date-start" class="form-control" <?php if(!$allow_custom_start_date) {?> disabled <?php };?>/>
+                  <div class="input-group datetime">
+                    <input type="text" name="custom_start_date" value="<?php echo $custom_start_date; ?>" placeholder="<?php echo $entry_start_date; ?>" data-date-format="YYYY-MM-DD H:m" id="input-date-start" class="form-control" />
                     <span class="input-group-btn">
                     <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
                     </span></div>
                 </div>
               </div>
+              <?php } else { ?>
+              <input type="hidden" name="custom_start_date" value="<?php echo $custom_start_date; ?>">
+              <?php };
+               if($allow_custom_end_date) {?> 
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-date-end"><?php echo $entry_end_date; ?></label>
                 <div class="col-sm-3">
-                  <div class="input-group date">
-                    <input type="text" name="custom_end_date" value="<?php echo $custom_end_date; ?>" placeholder="<?php echo $entry_end_date; ?>" data-date-format="YYYY-MM-DD" id="input-date-end" class="form-control" <?php if(!$allow_custom_end_date) {?> disabled <?php };?>/>
+                  <div class="input-group datetime">
+                    <input type="text" name="custom_end_date" value="<?php echo $custom_end_date; ?>" placeholder="<?php echo $entry_end_date; ?>" data-date-format="YYYY-MM-DD H:m" id="input-date-end" class="form-control" />
                     <span class="input-group-btn">
                     <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
                     </span></div>
                 </div>
               </div>
+              <?php } else { ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-duration"><span data-toggle="tooltip" title="<?php echo $help_duration; ?>"><?php echo $entry_duration; ?></span></label>
-                <?php if ($durations) { ?>
                   <div class="col-sm-10">
                     <select name="duration" id="input-duration" class="form-control">
                       <option value="0"><?php echo $text_none; ?></option>
                       <?php
                         foreach($durations as $duration) { ?>
                       <option value="<?php echo $duration['duration']; ?>" selected="selected"><?php echo $duration['description']; ?></option>
+                      <?php } ?>
                     </select>
                   </div>
-                  <?php } } else { ?>
-                  <div class="col-sm-10">
-                    <input type="text" name="duration" value="<?php echo $duration; ?>" placeholder="<?php echo $entry_duration; ?>" id="input-duration" class="form-control" />
-                  </div>
-                  <?php  } ?>
               </div>
+              <?php };?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-isbn"><span data-toggle="tooltip" title="<?php echo $help_isbn; ?>"><?php echo $entry_isbn; ?></span></label>
                 <div class="col-sm-10">
