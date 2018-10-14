@@ -14,7 +14,7 @@ abstract class VQMod {
 	private static $_folderChecks = false;						// Flag for already checked log/cache folders exist
 	private static $_cachePathFull = '';						// Full cache folder path
 	private static $_lastModifiedTime = 0;						// Integer representing the last time anything was modified
-	private static $_devMode = false;							// Flag for developer mode - disables caching while true
+	private static $_devMode = true;							// Flag for developer mode - disables caching while true
 
 	public static $logFolder = 'vqmod/logs/';					// Path log folders are stored in
 	public static $vqCachePath = 'vqmod/vqcache/';				// Relative path to cache file directory

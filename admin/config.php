@@ -20,6 +20,7 @@ define('DIR_LOGS', 'D:/xampp/htdocs/OpenBid/system/storage/logs/');
 define('DIR_MODIFICATION', 'D:/xampp/htdocs/OpenBid/system/storage/modification/');
 define('DIR_UPLOAD', 'D:/xampp/htdocs/OpenBid/system/storage/upload/');
 define('DIR_CATALOG', 'D:/xampp/htdocs/OpenBid/catalog/');
+define('DIR_TEMPDATA', 'D:/xampp/htdocs/OpenBid/admin/tempdata/');
 
 // DB
 define('DB_DRIVER', 'mysqli');

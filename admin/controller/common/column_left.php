@@ -51,13 +51,13 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
-			if ($this->user->hasPermission('access', 'catalog/product')) {
+			/*if ($this->user->hasPermission('access', 'catalog/auction')) {
 				$catalog[] = array(
-					'name'	   => $this->language->get('text_product'),
-					'href'     => $this->url->link('catalog/product', 'token=' . $this->session->data['token'], true),
+					'name'	   => $this->language->get('text_auction'),
+					'href'     => $this->url->link('catalog/auction', 'token=' . $this->session->data['token'], true),
 					'children' => array()		
 				);
-			}
+			}*/
 			
 			if ($this->user->hasPermission('access', 'catalog/recurring')) {
 				$catalog[] = array(
@@ -277,10 +277,10 @@ class ControllerCommonColumnLeft extends Controller {
 			
 			$auction = array();
 			
-			if ($this->user->hasPermission('access', 'auction/auction')) {
+			if ($this->user->hasPermission('access', 'catalog/auction')) {
 				$auction[] = array(
 					'name'		=> $this->language->get('text_auctions'),
-					'href'     => $this->url->link('auction/auction', 'token=' . $this->session->data['token'], true),
+					'href'     => $this->url->link('catalog/auction', 'token=' . $this->session->data['token'], true),
 					'children' => array()
 				);
 			}
@@ -538,6 +538,14 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
+			if ($this->user->hasPermission('access', 'localisation/auction_duration')) {
+				$localisation[] = array(
+					'name'	   => $this->language->get('text_auction_duration'),
+					'href'     => $this->url->link('localisation/auction_duration', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);
+			}
+			
 			// Returns
 			$return = array();
 			
@@ -650,6 +658,14 @@ class ControllerCommonColumnLeft extends Controller {
 			
 			// Tools	
 			$tool = array();
+			
+			if ($this->user->hasPermission('access', 'tool/simulate_data')) {
+				$tool[] = array(
+					'name'	   => $this->language->get('text_simulate_data'),
+					'href'     => $this->url->link('tool/simulate_data', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);	
+			}
 			
 			if ($this->user->hasPermission('access', 'tool/upload')) {
 				$tool[] = array(
@@ -914,9 +930,9 @@ class ControllerCommonColumnLeft extends Controller {
 			$data['text_suspend_status'] = $this->language->get('text_suspend_status');
 			$data['text_moderation_status'] = $this->language->get('text_moderation_status');
 	
-			$this->load->model('auction/auction');
+			$this->load->model('catalog/auction');
 			$filter = array('dashboard' => 'true');
-			$auction_totals = $this->model_auction_auction->getTotalAuctions($filter);
+			$auction_totals = $this->model_catalog_auction->getTotalAuctions($filter);
 
 			$data['moderation_status']		=	$auction_totals['0'];
 			$data['open_auction_status']	=	$auction_totals['1'];

@@ -56,10 +56,10 @@ class ControllerCommonHeader extends Controller {
 			$data['logout'] = $this->url->link('common/logout', 'token=' . $this->session->data['token'], true);
 
 			// Auctions
-			$this->load->model('auction/auction');
+			$this->load->model('catalog/auction');
 			
 			// Open Auctions
-			$auction_totals = $this->model_auction_auction->getTotalAuctions(array('dashboard' => 'true'));
+			$auction_totals = $this->model_catalog_auction->getTotalAuctions(array('dashboard' => 'true'));
 			
 			$data['moderation_status_total'] = $auction_totals['0'];
 			$data['moderation_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
@@ -98,14 +98,14 @@ class ControllerCommonHeader extends Controller {
 			$data['customer_total'] = $customer_total;
 			$data['customer_approval'] = $this->url->link('customer/customer', 'token=' . $this->session->data['token'] . '&filter_approved=0', true);
 
-			// Products
-			$this->load->model('catalog/product');
+			// Auctions
+			$this->load->model('catalog/auction');
 
-			$product_total = $this->model_catalog_product->getTotalProducts(array('filter_quantity' => 0));
+			$auction_total = $this->model_catalog_auction->getTotalAuctions(array('filter_auction_status' => 0));
 
-			$data['product_total'] = $product_total;
+			$data['auction_total'] = $auction_total;
 
-			$data['product'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&filter_quantity=0', true);
+			$data['auction'] = $this->url->link('catalog/auction', 'token=' . $this->session->data['token'] . '&filter_quantity=0', true);
 
 			// Reviews
 			$this->load->model('catalog/review');
@@ -124,7 +124,7 @@ class ControllerCommonHeader extends Controller {
 			$data['affiliate_total'] = $affiliate_total;
 			$data['affiliate_approval'] = $this->url->link('marketing/affiliate', 'token=' . $this->session->data['token'] . '&filter_approved=1', true);
 
-			$data['alerts'] = $customer_total + $product_total + $review_total + $affiliate_total;
+			$data['alerts'] = $customer_total + $auction_total + $review_total + $affiliate_total;
 
 			// Online Stores
 			$data['stores'] = array();

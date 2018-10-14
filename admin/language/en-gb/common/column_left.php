@@ -93,3 +93,5 @@ $_['text_closed_auction_status']        = 'Closed Auctions';
 $_['text_open_auction_status']          = 'Open Auctions'; 
 $_['text_suspend_status']              = 'Suspended Auctions'; 
 $_['text_debuglog']                 = 'Debugging Log';
+$_['text_simulate_data']                 = 'Simulate Data';
+$_['text_auction_duration']         = 'Auction Duration';
