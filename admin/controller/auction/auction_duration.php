@@ -151,7 +151,7 @@ class ControllerAuctionAuctionDuration extends Controller {
     protected function getForm() {
 		$data['heading_title'] = $this->language->get('heading_title');
 
-		$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
+		$data['text_form'] = !isset($this->request->get['duration_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
         $data['entry_name'] = $this->language->get('entry_name');
 		$data['entry_description'] = $this->language->get('entry_description');
         $data['button_save'] = $this->language->get('button_save');

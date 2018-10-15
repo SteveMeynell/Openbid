@@ -293,6 +293,14 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
+			if ($this->user->hasPermission('access', 'auction/bid_increments')) {
+				$auction[] = array(
+					'name'	   => $this->language->get('text_bid_increments'),
+					'href'     => $this->url->link('auction/bid_increments', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);
+			}
+			
 			if ($this->user->hasPermission('access', 'catalog/auction')) {
 				$auction[] = array(
 					'name'		=> $this->language->get('text_auctions'),

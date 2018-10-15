@@ -95,3 +95,4 @@ $_['text_suspend_status']              = 'Suspended Auctions';
 $_['text_debuglog']                 = 'Debugging Log';
 $_['text_simulate_data']                 = 'Simulate Data';
 $_['text_auction_duration']         = 'Auction Duration';
+$_['text_bid_increments']         = 'Bid Increments';
