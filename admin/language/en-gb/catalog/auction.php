@@ -20,6 +20,11 @@ $_['text_sales_history']             = 'Items Auctioned';
 $_['text_bidding_history']             = 'Items Bid On';
 $_['text_closing_date']             = 'Auction Closing Date';
 $_['text_reserved_bid']             = 'Reserved Bid';
+$_['text_bid_increments']           = 'Standard Bid Increments';
+$_['text_bid_low']              = 'Bid From';
+$_['text_bid_high']              = 'Bid To';
+$_['text_bid_increment']              = 'Bid Increment';
+
 
 // Column
 $_['column_image']            = 'Image';
@@ -31,6 +36,8 @@ $_['column_startdate']        = 'Start Date';
 $_['column_enddate']        = 'End Date';
 $_['column_status']          = 'Status';
 $_['column_action']          = 'Action';
+$_['column_fee_name']       =   'Fee Name';
+$_['column_fee_amount']     =   'Fee Amount';
 
 // Entry
 $_['entry_seller']             = 'Sellers Name';
@@ -51,12 +58,20 @@ $_['entry_reserve_price']             = 'Reserve Bid';
 $_['entry_auto_relist']              = 'Automatically Relist';
 $_['entry_auto_relist_times']         = 'Number of Times to Relist';
 $_['entry_shipping']         = 'Requires Shipping';
-$_['entry_shipping_amount']    = 'Shipping Cost';
+$_['entry_shipping_cost']    = 'Shipping Cost';
 $_['entry_international_shipping']     = 'Allow International Shipping';
 $_['entry_additional_shipping']         = 'Additional Shipping Costs';
 $_['entry_store']            = 'Stores';
+$_['entry_sellers_name']            = 'Sellers Name';
+$_['entry_sellers_email']            = 'Sellers Email';
+$_['entry_sellers_address1']            = 'Address Line 1';
+$_['entry_sellers_address2']            = 'Address Line 2';
+$_['entry_sellers_city']            = 'City';
+$_['entry_sellers_zone']            = 'Province/State';
+$_['entry_sellers_country']            = 'Country';
+$_['entry_sellers_postcode']            = 'Post Code';
 
-$_['entry_quantity']         = 'Quantity';
+$_['entry_initial_quantity']         = 'Quantity';
 
 $_['entry_duration']          = 'Auction Duration';
 $_['entry_increments']     = 'Bid Increments';
@@ -65,6 +80,7 @@ $_['entry_bid_to']        = 'Bid Amount To';
 $_['entry_bid_increment']           = 'Bid Increment';
 
 
+$_['entry_buy_now_only']     = 'Buy Now Only?';
 $_['entry_buy_now']     = 'Allow Buy Now?';
 $_['entry_buy_now_price']           = 'Buy Now Price';
 $_['entry_bolded']        = 'Bold Your Auction';

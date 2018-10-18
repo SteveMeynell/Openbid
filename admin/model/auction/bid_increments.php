@@ -8,7 +8,7 @@ class ModelAuctionBidIncrements extends Model {
         if (isset($data['sort']) && !empty($data['sort'])) {
 			$sql .= " ORDER BY " . $data['sort'];
 		} else {
-			$sql .= " ORDER BY duration";
+			$sql .= " ORDER BY increment_id";
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {

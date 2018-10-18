@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        
+        <button type="submit" form="form-basic-auction-setup" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
         <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -24,85 +24,36 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
       </div>
       <div class="panel-body">
-        <form method="post" action="<?php echo $action; ?>" id="form-auction-setup" class="form-horizontal">
+        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-basic-auction-setup" class="form-horizontal">
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> <?php echo $text_description; ?>
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
             <div class="form-group">
-              
-              <table class="table table-hover table-bordered table-sm" id="feesInput">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col-auto"><?php echo $column_from; ?></th>
-                    <th scope="col-auto"><?php echo $column_to; ?></th>
-                    <th scope="col-auto"><?php echo $column_amount; ?></th>
-                    <th scope="col-auto"><?php echo $column_type; ?></th>
-                    <th scope="col-auto"><?php echo $column_action; ?></th>
-                  </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                      <input type="text" class="form-control" name="fromAmount" id="fromAmount" aria-label="Amount (to the nearest dollar)">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control" name="toAmount" id="toAmount" aria-label="Amount (to the nearest dollar)">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control" name="feeAmount" id="feeAmount" aria-label="Amount (to the nearest dollar)">
-                    </td>
-                    <td>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="feeType" id="exampleRadios1" value="flat" checked>
-                        <label class="form-check-label" for="exampleRadios1">
-                          Flat Fee
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="feeType" id="exampleRadios2" value="percent">
-                        <label class="form-check-label" for="exampleRadios2">
-                          Percent Fee
-                        </label>
-                      </div>
-                    </td>
-                    <td>
-                      <button type="submit" class="btn btn-secondary btn-sm" id="saveButton">Add Fee</button>
-                    </td>
-                  </tr>
-                <tr>
-              </table>
-              <table class="table table-hover table-bordered table-sm" id="feesList">
-                <thead class="thead-dark" id="listOfFees">
-                  <tr>
-                    <th scope="col-auto">Row #</th>
-                    <th scope="col-auto"><?php echo $column_from; ?></th>
-                    <th scope="col-auto"><?php echo $column_to; ?></th>
-                    <th scope="col-auto"><?php echo $column_amount; ?></th>
-                    <th scope="col-auto"><?php echo $column_type; ?></th>
-                    <th scope="col-auto"><?php echo $column_status; ?></th>
-                    <th scope="col-auto"><?php echo $column_action; ?></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($fee_datas as $fee_data) { ?>
-                  <tr>
-                    <td><?php echo $fee_data['feeRow']; ?></td>
-                    <td><?php echo $fee_data['fromAmount']; ?></td>
-                    <td><?php echo $fee_data['toAmount']; ?></td>
-                    <td><?php echo $fee_data['feeAmount']; ?></td>
-                    <td><?php echo $fee_data['feeType']; ?></td>
-                    <td><?php echo $fee_data['feeStatus']; ?></td>
-                    <td><?php echo $fee_data['feeAction']; ?></td>
-                  </tr>
-                    <?php } ?>
-                </tbody>
-              </table>
-      
-
+            <label class="col-sm-2 control-label" for="input-fee"><?php echo $entry_fee; ?></label>
+            <div class="col-sm-10">
+              <input type="text" name="fees_auction_setup_fee" value="<?php echo $fees_auction_setup_fee; ?>" placeholder="<?php echo $entry_fee; ?>" id="input-fee" class="form-control" />
+              <?php if ($error_fees) { ?>
+              <div class="text-danger"><?php echo $error_fees; ?></div>
+              <?php } ?>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
+            <div class="col-sm-10">
+              <select name="fees_auction_setup_status" id="input-status" class="form-control">
+                <?php if ($fees_auction_setup_status) { ?>
+                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+                <option value="0"><?php echo $text_disabled; ?></option>
+                <?php } else { ?>
+                <option value="1"><?php echo $text_enabled; ?></option>
+                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </div>
 <?php echo $footer; ?>
-

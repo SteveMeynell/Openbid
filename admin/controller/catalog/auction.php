@@ -417,6 +417,7 @@ class ControllerCatalogAuction extends Controller {
 				'seller'            => ucwords($result['firstname'] . ' ' . $result['lastname']),
 				'auction_status'    => $result['status_name'] ? $result['status_name'] : $this->language->get('text_missing'),
 				'title'       		=> $result['title'],
+				'subtitle'			=> $result['subtitle'],
 				'date_created'      => date($this->language->get('date_format_short'), strtotime($result['date_created'])),
 				'start_date'        => date($this->language->get('datetime_format'), strtotime($result['start_date'])),
                 'end_date'          => date($this->language->get('datetime_format'), strtotime($result['end_date'])),
@@ -662,9 +663,9 @@ class ControllerCatalogAuction extends Controller {
 		
 		// Tab Data ******************************************************
 		// Entry items on Data Tab
-		$data['entry_store'] = $this->language->get('entry_store');
 		$data['entry_type'] = $this->language->get('entry_type');
 		$data['entry_auction_status'] = $this->language->get('entry_auction_status');
+		$data['entry_buy_now_only'] = $this->language->get('entry_buy_now_only');
 		$data['entry_min_bid'] = $this->language->get('entry_min_bid');
 		$data['entry_reserve_price'] = $this->language->get('entry_reserve_price');
 		// If admin allows
@@ -682,11 +683,16 @@ class ControllerCatalogAuction extends Controller {
 		$data['entry_bid_from'] = $this->language->get('entry_bid_from');
 		$data['entry_bid_to'] = $this->language->get('entry_bid_to');
 		$data['entry_bid_increment'] = $this->language->get('entry_bid_increment');
+		$data['text_bid_increments'] = $this->language->get('text_bid_increments');
+		$data['text_bid_low'] = $this->language->get('text_bid_low');
+		$data['text_bid_high'] = $this->language->get('text_bid_high');
+		$data['text_bid_increment'] = $this->language->get('text_bid_increment');
 		//
 		$data['entry_shipping'] = $this->language->get('entry_shipping');
 		$data['entry_international_shipping'] = $this->language->get('entry_international_shipping');
-		$data['entry_shipping_amount'] = $this->language->get('entry_shipping_amount');
-		$data['entry_additional_shipping'] = $this->language->get('entry_addtional_shipping');
+		$data['entry_shipping_cost'] = $this->language->get('entry_shipping_cost');
+		$data['entry_additional_shipping'] = $this->language->get('entry_additional_shipping');
+		$data['entry_initial_quantity'] = $this->language->get('entry_initial_quantity');
 		// Help items on Data
 		$data['help_type'] = $this->language->get('help_type');
 		$data['help_min_bid'] = $this->language->get('help_min_bid');
@@ -702,6 +708,7 @@ class ControllerCatalogAuction extends Controller {
 		
 		// Tab Links
 		// Entry items for tab Links
+		$data['entry_store'] = $this->language->get('entry_store');
 		$data['entry_category'] = $this->language->get('entry_category');
 		$data['entry_buy_now'] = $this->language->get('entry_buy_now');
 		// if buy now selected
@@ -739,8 +746,16 @@ class ControllerCatalogAuction extends Controller {
 		
 		// Sellers Info Tab
 		// Entry items for tab Seller
-		$data['entry_sellers_firstname'] = $this->language->get('entry_sellers_firstname');
-		$data['entry_sellers_lastname'] = $this->language->get('entry_sellers_lastname');
+		$data['entry_sellers_name'] = $this->language->get('entry_sellers_name');
+		$data['entry_sellers_email'] = $this->language->get('entry_sellers_email');
+		$data['entry_sellers_address1'] = $this->language->get('entry_sellers_address1');
+		$data['entry_sellers_address2'] = $this->language->get('entry_sellers_address2');
+		$data['entry_sellers_city'] = $this->language->get('entry_sellers_city');
+		$data['entry_sellers_zone'] = $this->language->get('entry_sellers_zone');
+		$data['entry_sellers_country'] = $this->language->get('entry_sellers_country');
+		$data['entry_sellers_postcode'] = $this->language->get('entry_sellers_postcode');
+		$data['entry_customer_group'] = $this->language->get('entry_customer_group');
+		
 		// Text items for tab Seller
 		$data['text_sales_history'] = $this->language->get('text_sales_history');
 		$data['text_bidding_history'] = $this->language->get('text_bidding_history');
@@ -807,6 +822,7 @@ class ControllerCatalogAuction extends Controller {
 		$data['button_cancel'] = $this->language->get('button_cancel');
 
 		$data['button_image_add'] = $this->language->get('button_image_add');
+		$data['button_seller_file'] = $this->language->get('button_seller_file');
 		$data['button_remove'] = $this->language->get('button_remove');
 
 
@@ -878,14 +894,24 @@ class ControllerCatalogAuction extends Controller {
 
 		if (isset($this->request->get['auction_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$auction_info = $this->model_catalog_auction->getAuction($this->request->get['auction_id']);
+			$auction_options = $this->model_catalog_auction->getAuctionOptions($this->request->get['auction_id']);
 		}
 
+		$data['seller_file'] = $this->url->link('customer/customer/edit', 'token=' . $this->session->data['token'] . '&customer_id=' . $auction_info['customer_id'] . $url, true);
+		
 		$data['token'] = $this->session->data['token'];
 
 		$this->load->model('localisation/language');
 
 		$data['languages'] = $this->model_localisation_language->getLanguages();
 
+		$data['allow_subtitles'] = $this->config->get('config_auction_subtitles');
+		$data['allow_auto_relist'] = $this->config->get('config_auction_auto_relist');
+		$data['allow_custom_start_date'] = $this->config->get('config_auction_custom_start_date');
+		$data['allow_custom_end_date'] = $this->config->get('config_auction_custom_end_date');
+		$data['allow_custom_bid_increments'] = $this->config->get('config_auction_bid_increments');
+		
+		
 		if (isset($this->request->post['auction_description'])) {
 			$data['auction_description'] = $this->request->post['auction_description'];
 		} elseif (isset($this->request->get['auction_id'])) {
@@ -894,6 +920,62 @@ class ControllerCatalogAuction extends Controller {
 			$data['auction_description'] = array();
 		}
 
+		if (isset($this->request->post['bolded_item'])) {
+			$data['bolded_item'] = $this->request->post['bolded_item'];
+		} elseif (!empty($auction_options)) {
+			$data['bolded_item'] = $auction_options['bolded_item'];
+		} else {
+			$data['bolded_item'] = '0';
+		}
+		
+		if (isset($this->request->post['on_carousel'])) {
+			$data['on_carousel'] = $this->request->post['on_carousel'];
+		} elseif (!empty($auction_options)) {
+			$data['on_carousel'] = $auction_options['on_carousel'];
+		} else {
+			$data['on_carousel'] = '0';
+		}
+		
+		if (isset($this->request->post['featured'])) {
+			$data['featured'] = $this->request->post['featured'];
+		} elseif (!empty($auction_options)) {
+			$data['featured'] = $auction_options['featured'];
+		} else {
+			$data['featured'] = '0';
+		}
+		
+		if (isset($this->request->post['highlighted'])) {
+			$data['highlighted'] = $this->request->post['highlighted'];
+		} elseif (!empty($auction_options)) {
+			$data['highlighted'] = $auction_options['highlighted'];
+		} else {
+			$data['highlighted'] = '0';
+		}
+		
+		if (isset($this->request->post['slideshow'])) {
+			$data['slideshow'] = $this->request->post['slideshow'];
+		} elseif (!empty($auction_options)) {
+			$data['slideshow'] = $auction_options['slideshow'];
+		} else {
+			$data['slideshow'] = '0';
+		}
+		
+		if (isset($this->request->post['buy_now_only'])) {
+			$data['buy_now_only'] = $this->request->post['buy_now_only'];
+		} elseif (!empty($auction_options)) {
+			$data['buy_now_only'] = $auction_options['buy_now_only'];
+		} else {
+			$data['buy_now_only'] = '0';
+		}
+		
+		if (isset($this->request->post['social_media'])) {
+			$data['social_media'] = $this->request->post['social_media'];
+		} elseif (!empty($auction_options)) {
+			$data['social_media'] = $auction_options['social_media'];
+		} else {
+			$data['social_media'] = '0';
+		}
+		
 		if (isset($this->request->post['keyword'])) {
 			$data['keyword'] = $this->request->post['keyword'];
 		} elseif (!empty($auction_info)) {
@@ -913,6 +995,7 @@ class ControllerCatalogAuction extends Controller {
 		} else {
 			$data['auction_store'] = array(0);
 		}
+		//debuglog($data['auction_store']);
 		
 		$this->load->model('auction/auction_setting');
 		$data['types'] = $this->model_auction_auction_setting->getAuctionTypes();
@@ -936,6 +1019,18 @@ class ControllerCatalogAuction extends Controller {
 			$data['auction_status'] = '0';
 		}
 		
+		if (isset($this->request->post['initial_quantity'])) {
+			if ($this->request->post['auction_status'] == '0') {
+				$data['initial_quantity'] = '1';
+			} else {
+				$data['initial_quantity'] = $this->request->post['initial_quantity'];
+			}
+		} elseif (!empty($auction_info)) {
+			$data['initial_quantity'] = $auction_info['initial_quantity'];
+		} else {
+			$data['initial_quantity'] = '1';
+		}
+		
 		if (isset($this->request->post['min_bid'])) {
 			$data['min_bid'] = $this->request->post['min_bid'];
 		} elseif (!empty($auction_info)) {
@@ -952,7 +1047,15 @@ class ControllerCatalogAuction extends Controller {
 			$data['reserve_price'] = '';
 		}
 		
-		$data['allow_auto_relist'] = $this->config->get('config_auction_auto_relist');
+		if (isset($this->request->post['buy_now_price'])) {
+			$data['buy_now_price'] = $this->request->post['buy_now_price'];
+		} elseif (!empty($auction_info)) {
+			$data['buy_now_price'] = $auction_info['buy_now_price'];
+		} else {
+			$data['buy_now_price'] = '';
+		}
+		
+		
 		if (isset($this->request->post['auto_relist'])) {
 			$data['auto_relist'] = $this->request->post['auto_relist'];
 		} elseif (!empty($auction_info)) {
@@ -969,7 +1072,7 @@ class ControllerCatalogAuction extends Controller {
 			$data['num_relist'] = '';
 		}
 
-		$data['allow_custom_start_date'] = $this->config->get('config_auction_custom_start_date');
+		
 		
 		if (isset($this->request->post['custom_start_date'])) {
 			$data['custom_start_date'] = $this->request->post['custom_start_date'];
@@ -979,7 +1082,7 @@ class ControllerCatalogAuction extends Controller {
 			$data['custom_start_date'] = '';
 		}
 		
-		$data['allow_custom_end_date'] = $this->config->get('config_auction_custom_end_date');
+		
 		if (isset($this->request->post['custom_end_date'])) {
 			$data['custom_end_date'] = $this->request->post['custom_end_date'];
 		} elseif ($auction_info['end_date']) {
@@ -1004,6 +1107,13 @@ class ControllerCatalogAuction extends Controller {
 			$data['duration'] = '';
 		}
 		
+		// Bid Increments
+		
+		$this->load->model('auction/bid_increments');
+		$data['bid_increments'] = $this->model_auction_bid_increments->getAllIncrements($filter);
+		
+		
+		
 		
 		
 		if (isset($this->request->post['shipping'])) {
@@ -1011,16 +1121,40 @@ class ControllerCatalogAuction extends Controller {
 		} elseif (!empty($auction_info)) {
 			$data['shipping'] = $auction_info['shipping'];
 		} else {
-			$data['shipping'] = 1;
+			$data['shipping'] = 0;
+		}
+		
+		if (isset($this->request->post['shipping_cost'])) {
+			$data['shipping_cost'] = $this->request->post['shipping_cost'];
+		} elseif (!empty($auction_info)) {
+			$data['shipping_cost'] = $auction_info['shipping_cost'];
+		} else {
+			$data['shipping_cost'] = 0;
+		}
+		
+		if (isset($this->request->post['international_shipping'])) {
+			$data['international_shipping'] = $this->request->post['international_shipping'];
+		} elseif (!empty($auction_info)) {
+			$data['international_shipping'] = $auction_info['international_shipping'];
+		} else {
+			$data['international_shipping'] = 0;
+		}
+		
+		if (isset($this->request->post['additional_shipping'])) {
+			$data['additional_shipping'] = $this->request->post['additional_shipping'];
+		} elseif (!empty($auction_info)) {
+			$data['additional_shipping'] = $auction_info['additional_shipping'];
+		} else {
+			$data['additional_shipping'] = 0;
 		}
 
-		if (isset($this->request->post['start_date'])) {
+		/*if (isset($this->request->post['start_date'])) {
 			$data['start_date'] = $this->request->post['start_date'];
 		} elseif (!empty($auction_info)) {
 			$data['start_date'] = ($auction_info['start_date'] != '0000-00-00') ? $auction_info['start_date'] : '';
 		} else {
 			$data['start_date'] = date('Y-m-d H:i:s');
-		}
+		}*/
 
 
 		if (isset($this->request->post['sort_order'])) {
@@ -1060,11 +1194,21 @@ class ControllerCatalogAuction extends Controller {
 		}
 
 
+		// Sellers Information
 		$this->load->model('customer/customer_group');
 
 		$data['customer_groups'] = $this->model_customer_customer_group->getCustomerGroups();
 
+
+		$this->load->model('customer/customer');
+		$customer_info = $this->model_customer_customer->getCustomer($auction_info['customer_id']);
+		$customer_address = $this->model_customer_customer->getAddress($customer_info['address_id']);
+
+		$data['seller_info'] = $customer_address;
+		$data['seller_info']['customer_group'] = $this->model_customer_customer_group->getCustomerGroup($customer_info['customer_group_id']);
+		$data['seller_info']['email'] = $customer_info['email'];
 		
+				
 		// Image
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];
@@ -1112,45 +1256,29 @@ class ControllerCatalogAuction extends Controller {
 				'sort_order' => $auction_image['sort_order']
 			);
 		}
+		
+		
+		
+		// Fees
+		
+		$fees_data = array(
+			'store'				=> $auction_info['store_id'],
+			'bolded_item'		=> $auction_options['bolded_item'],
+			'on_carousel'		=> $auction_options['on_carousel'],
+			'buy_now_only'		=> $auction_options['buy_now_only'],
+			'featured'			=> $auction_options['featured'],
+			'highlighted'		=> $auction_options['highlighted'],
+			'slideshow'			=> $auction_options['slideshow'],
+			'social_media'		=> $auction_options['social_media'],
+			'relist'			=> $auction_options['relisted'],
+			'reserve_price'		=> $auction_info['reserve_price'],
+			'buy_now_price'		=> $auction_info['buy_now_price'],
+			'subtitle'			=> $auction_info['subtitle']
+		);
+		
+		$this->load->model('auction/auction_fees');
+		$data['all_fees'] = $this->model_auction_auction_fees->getAllCharges($fees_data);
 
-
-/*		if (isset($this->request->post['auction_related'])) {
-			$auctions = $this->request->post['auction_related'];
-		} elseif (isset($this->request->get['auction_id'])) {
-			$auctions = $this->model_catalog_auction->getAuctionRelated($this->request->get['auction_id']);
-		} else {
-			$auctions = array();
-		}
-
-		$data['auction_relateds'] = array();
-
-		foreach ($auctions as $auction_id) {
-			$related_info = $this->model_catalog_auction->getAuction($auction_id);
-
-			if ($related_info) {
-				$data['auction_relateds'][] = array(
-					'auction_id' => $related_info['auction_id'],
-					'name'       => $related_info['name']
-				);
-			}
-		}
-
-		if (isset($this->request->post['points'])) {
-			$data['points'] = $this->request->post['points'];
-		} elseif (!empty($auction_info)) {
-			$data['points'] = $auction_info['points'];
-		} else {
-			$data['points'] = '';
-		}
-
-		if (isset($this->request->post['auction_reward'])) {
-			$data['auction_reward'] = $this->request->post['auction_reward'];
-		} elseif (isset($this->request->get['auction_id'])) {
-			$data['auction_reward'] = $this->model_catalog_auction->getAuctionRewards($this->request->get['auction_id']);
-		} else {
-			$data['auction_reward'] = array();
-		}
-*/
 		if (isset($this->request->post['auction_layout'])) {
 			$data['auction_layout'] = $this->request->post['auction_layout'];
 		} elseif (isset($this->request->get['auction_id'])) {
@@ -1234,20 +1362,13 @@ class ControllerCatalogAuction extends Controller {
 
 		if (isset($this->request->get['filter_seller'])) {
 			$this->load->model('catalog/auction');
-			//$this->load->model('catalog/option');
 
 			if (isset($this->request->get['filter_seller'])) {
 				$filter_seller = $this->request->get['filter_seller'];
 			} else {
 				$filter_seller = '';
 			}
-/*
-			if (isset($this->request->get['filter_model'])) {
-				$filter_model = $this->request->get['filter_model'];
-			} else {
-				$filter_model = '';
-			}
-*/
+
 			if (isset($this->request->get['limit'])) {
 				$limit = $this->request->get['limit'];
 			} else {
@@ -1263,42 +1384,7 @@ class ControllerCatalogAuction extends Controller {
 			$results = $this->model_catalog_auction->getAuctions($filter_data);
 
 			foreach ($results as $result) {
-/*				$option_data = array();
 
-				$product_options = $this->model_catalog_product->getProductOptions($result['product_id']);
-
-				foreach ($product_options as $product_option) {
-					$option_info = $this->model_catalog_option->getOption($product_option['option_id']);
-
-					if ($option_info) {
-						$product_option_value_data = array();
-
-						foreach ($product_option['product_option_value'] as $product_option_value) {
-							$option_value_info = $this->model_catalog_option->getOptionValue($product_option_value['option_value_id']);
-
-							if ($option_value_info) {
-								$product_option_value_data[] = array(
-									'product_option_value_id' => $product_option_value['product_option_value_id'],
-									'option_value_id'         => $product_option_value['option_value_id'],
-									'name'                    => $option_value_info['name'],
-									'price'                   => (float)$product_option_value['price'] ? $this->currency->format($product_option_value['price'], $this->config->get('config_currency')) : false,
-									'price_prefix'            => $product_option_value['price_prefix']
-								);
-							}
-						}
-
-						$option_data[] = array(
-							'product_option_id'    => $product_option['product_option_id'],
-							'product_option_value' => $product_option_value_data,
-							'option_id'            => $product_option['option_id'],
-							'name'                 => $option_info['name'],
-							'type'                 => $option_info['type'],
-							'value'                => $product_option['value'],
-							'required'             => $product_option['required']
-						);
-					}
-				}
-*/
 				$json[] = array(
 					'auction_id' => $result['auction_id'],
 					//'seller'       => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8')),

@@ -155,7 +155,7 @@ class ModelCatalogAuction extends Model {
 
 		return $query->rows;
 	}
-
+	
 	
 	public function addAuction($data) {
 		
@@ -214,6 +214,7 @@ class ModelCatalogAuction extends Model {
 							 auction_id = '" . (int)$auction_id . "',
 							 language_id = '" . (int)$language_id . "',
 							 name = '" . $this->db->escape($value['name']) . "',
+							 subname = '" . $this->db->escape($value['subname']) . "',
 							 description = '" . $this->db->escape($value['description']) . "',
 							 tag = '" . $this->db->escape($value['tag']) . "',
 							 meta_title = '" . $this->db->escape($value['meta_title']) . "',
@@ -454,15 +455,32 @@ class ModelCatalogAuction extends Model {
 		$this->cache->delete('auction');
 	}
 
+	public function getAuctionDetails($auction_id) {
+		$sql = "SELECT DISTINCT * FROM " . DB_PREFIX . "auction_details ad WHERE ad.auction_id = '" . (int)$auction_id . "'";							
+								  
+		$query = $this->db->query($sql);
+
+		return $query->row;
+	}
+	
 	public function getAuction($auction_id) {
-		$query = $this->db->query("SELECT DISTINCT *, (SELECT keyword
+		$sql = "SELECT DISTINCT *, (SELECT keyword
 								  FROM " . DB_PREFIX . "url_alias
 								  WHERE query = 'auction_id=" . (int)$auction_id . "')
 								  AS keyword FROM " . DB_PREFIX . "auctions p
 								  LEFT JOIN " . DB_PREFIX . "auction_details pd
 								  ON (p.auction_id = pd.auction_id)
-								  WHERE p.auction_id = '" . (int)$auction_id . "'");
+								  WHERE p.auction_id = '" . (int)$auction_id . "'";
+								  
+		$query = $this->db->query($sql);
 
+		return $query->row;
+	}
+	
+	public function getAuctionOptions($auction_id) {
+		$sql = "SELECT * FROM " . DB_PREFIX . "auction_options
+		WHERE auction_id = '" . $auction_id . "'";
+		$query = $this->db->query($sql);
 		return $query->row;
 	}
 
@@ -489,6 +507,7 @@ class ModelCatalogAuction extends Model {
 		foreach ($query->rows as $result) {
 			$auction_description_data[$result['language_id']] = array(
 				'name'             => $result['name'],
+				'subname'             => $result['subname'],
 				'description'      => $result['description'],
 				'meta_title'       => $result['meta_title'],
 				'meta_description' => $result['meta_description'],

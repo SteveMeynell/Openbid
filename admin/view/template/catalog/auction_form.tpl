@@ -58,6 +58,17 @@
                       <?php } ?>
                     </div>
                   </div>
+                  <?php if ($allow_subtitles) { ?>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-subname<?php echo $language['language_id']; ?>"><?php echo $entry_subname; ?></label>
+                    <div class="col-sm-10">
+                      <input type="text" name="auction_description[<?php echo $language['language_id']; ?>][subname]" value="<?php echo isset($auction_description[$language['language_id']]) ? $auction_description[$language['language_id']]['subname'] : ''; ?>" placeholder="<?php echo $entry_subname; ?>" id="input-subname<?php echo $language['language_id']; ?>" class="form-control" />
+                      <?php if (isset($error_subname[$language['language_id']])) { ?>
+                      <div class="text-danger"><?php echo $error_subname[$language['language_id']]; ?></div>
+                      <?php } ?>
+                    </div>
+                  </div>
+                  <?php } ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label" for="input-description<?php echo $language['language_id']; ?>"><?php echo $entry_description; ?></label>
                     <div class="col-sm-10">
@@ -99,39 +110,8 @@
             
             <div class="tab-pane" id="tab-data">
               <div class="form-group">
-                <label class="col-sm-2 control-label"><?php echo $entry_store; ?></label>
-                <div class="col-sm-10">
-                  <div class="well well-sm" style="height: 150px; overflow: auto;">
-                    <div class="checkbox">
-                      <label>
-                        <?php if (in_array(0, $auction_store)) { ?>
-                        <input type="checkbox" name="auction_store[]" value="0" checked="checked" />
-                        <?php echo $text_default; ?>
-                        <?php } else { ?>
-                        <input type="checkbox" name="auction_store[]" value="0" />
-                        <?php echo $text_default; ?>
-                        <?php } ?>
-                      </label>
-                    </div>
-                    <?php foreach ($stores as $store) { ?>
-                    <div class="checkbox">
-                      <label>
-                        <?php if (in_array($store['store_id'], $auction_store)) { ?>
-                        <input type="checkbox" name="auction_store[]" value="<?php echo $store['store_id']; ?>" checked="checked" />
-                        <?php echo $store['name']; ?>
-                        <?php } else { ?>
-                        <input type="checkbox" name="auction_store[]" value="<?php echo $store['store_id']; ?>" />
-                        <?php echo $store['name']; ?>
-                        <?php } ?>
-                      </label>
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-auction-type"><?php echo $entry_type; ?></label>
-                <div class="col-sm-10">
+                <div class="col-sm-2">
                   <select name="auction_type" id="input-auction-type" class="form-control">
                     <?php foreach ($types as $type) { ?>
                     <?php if ($type['type'] == $auction_type) { ?>
@@ -145,7 +125,7 @@
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-auction-status"><?php echo $entry_auction_status; ?></label>
-                <div class="col-sm-10">
+                <div class="col-sm-2">
                   <select name="auction_status" id="input-auction-status" class="form-control">
                     <?php foreach ($statuses as $status) { ?>
                     <?php if ($status['auction_status_id'] == $auction_status) { ?>
@@ -157,21 +137,56 @@
                   </select>
                 </div>
               </div>
+              <?php if ($auction_type == '1') { ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-initial-quantity"><span data-toggle="tooltip" title="<?php echo $help_initial_quantity; ?>"><?php echo $entry_initial_quantity; ?></span></label>
+                <div class="col-sm-2">
+                  <input type="text" name="initial_quantity" value="<?php echo $initial_quantity; ?>" placeholder="<?php echo $entry_initial_quantity; ?>" id="input-initial-quantity" class="form-control" />
+                </div>
+              </div>
+              <?php } ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_buy_now_only; ?>"><?php echo $entry_buy_now_only; ?></span></label>
+                <div class="col-sm-2">
+                  <label class="radio-inline">
+                    <?php if ($buy_now_only) { ?>
+                    <input type="radio" name="buy_now_only" value="1" checked="checked" />
+                    <?php echo $text_yes; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="buy_now_only" value="1" />
+                    <?php echo $text_yes; ?>
+                    <?php } ?>
+                  </label>
+                  <label class="radio-inline">
+                    <?php if (!$buy_now_only) { ?>
+                    <input type="radio" name="buy_now_only" value="0" checked="checked" />
+                    <?php echo $text_no; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="buy_now_only" value="0" />
+                    <?php echo $text_no; ?>
+                    <?php } ?>
+                  </label>
+                </div>
+                <label class="col-sm-2 control-label" for="input-buy-now-price"><span data-toggle="tooltip" title="<?php echo $help_buy_now_price; ?>"><?php echo $entry_buy_now_price; ?></span></label>
+                <div class="col-sm-2">
+                  <input type="text" name="buy_now_price" value="<?php echo $buy_now_price; ?>" placeholder="<?php echo $entry_buy_now_price; ?>" id="input-buy-now-price" class="form-control" />
+                </div>
+              </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-min-bid"><span data-toggle="tooltip" title="<?php echo $help_min_bid; ?>"><?php echo $entry_min_bid; ?></span></label>
-                <div class="col-sm-10">
+                <div class="col-sm-2">
                   <input type="text" name="min_bid" value="<?php echo $min_bid; ?>" placeholder="<?php echo $entry_min_bid; ?>" id="input-min-bid" class="form-control" />
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-reserve-price"><span data-toggle="tooltip" title="<?php echo $help_reserve_price; ?>"><?php echo $entry_reserve_price; ?></span></label>
-                <div class="col-sm-10">
+                <div class="col-sm-2">
                   <input type="text" name="reserve_price" value="<?php echo $reserve_price; ?>" placeholder="<?php echo $entry_reserve_price; ?>" id="input-reserve-price" class="form-control" />
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-auto-relist"><span data-toggle="tooltip" title="<?php echo $help_auto_relist; ?>"><?php echo $entry_auto_relist; ?></span></label>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <label class="radio-inline">
                     <?php if ($auto_relist) { ?>
                     <input type="radio" name="auto_relist" value="1" checked="checked" <?php if(!$allow_auto_relist) {?> disabled <?php };?>/>
@@ -192,7 +207,7 @@
                   </label>
                 </div>
                 <label class="col-sm-2 control-label" for="input-num-relist"><span data-toggle="tooltip" title="<?php echo $help_auto_relist_times; ?>"><?php echo $entry_auto_relist_times; ?></span></label>
-                      <div class="col-sm-3">
+                      <div class="col-sm-2">
                         <input type="text" name="num_relist" value="<?php echo $num_relist; ?>" placeholder="<?php echo $entry_auto_relist_times; ?>" id="input-num-relist" class="form-control" <?php if(!$allow_auto_relist) {?> disabled <?php };?>/>
                       </div>
               </div>
@@ -224,7 +239,7 @@
               <?php } else { ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-duration"><span data-toggle="tooltip" title="<?php echo $help_duration; ?>"><?php echo $entry_duration; ?></span></label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-2">
                     <select name="duration" id="input-duration" class="form-control">
                       <option value="0"><?php echo $text_none; ?></option>
                       <?php
@@ -236,15 +251,410 @@
               </div>
               <?php };?>
               <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-isbn"><span data-toggle="tooltip" title="<?php echo $help_isbn; ?>"><?php echo $entry_isbn; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="isbn" value="<?php echo $isbn; ?>" placeholder="<?php echo $entry_isbn; ?>" id="input-isbn" class="form-control" />
+                <label class="col-sm-2 control-label" for="input-bid-increments"><span data-toggle="tooltip" title="<?php echo $help_bid_increments; ?>"><?php echo $entry_increments; ?></span></label>
+                <div class="col-sm-6">
+                  <table class="table table-sm table-dark table-bordered table-hover">
+                    <caption><?php echo $text_bid_increments; ?></caption>
+                    <thead class="thead-dark">
+                      <tr>
+                        <th class="text-right"><?php echo $text_bid_low; ?></th>
+                        <th class="text-right"><?php echo $text_bid_high; ?></th>
+                        <th class="text-right"><?php echo $text_bid_increment; ?></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($bid_increments as $bid_increment) { ?>
+                      <tr>
+                        <td class="text-right"><?php echo $bid_increment['bid_low'];?></td>
+                        <td class="text-right"><?php echo $bid_increment['bid_high'];?></td>
+                        <td class="text-right"><?php echo $bid_increment['increment'];?></td>
+                      </tr>
+                    <?php }; ?>
+                    </tbody>
+                  </table>
                 </div>
               </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label"><?php echo $entry_shipping; ?></label>
+                <div class="col-sm-2">
+                  <label class="radio-inline">
+                    <?php if ($shipping) { ?>
+                    <input type="radio" name="shipping" value="1" checked="checked" />
+                    <?php echo $text_yes; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="shipping" value="1" />
+                    <?php echo $text_yes; ?>
+                    <?php } ?>
+                  </label>
+                  <label class="radio-inline">
+                    <?php if (!$shipping) { ?>
+                    <input type="radio" name="shipping" value="0" checked="checked" />
+                    <?php echo $text_no; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="shipping" value="0" />
+                    <?php echo $text_no; ?>
+                    <?php } ?>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-shipping-cost"><span data-toggle="tooltip" title="<?php echo $help_shipping_cost; ?>"><?php echo $entry_shipping_cost; ?></span></label>
+                  <div class="col-sm-2">
+                    <input type="text" name="shipping_cost" value="<?php echo $shipping_cost; ?>" placeholder="<?php echo $entry_shipping_cost; ?>" id="input-shipping-cost" class="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label"><?php echo $entry_international_shipping; ?></label>
+                <div class="col-sm-2">
+                  <label class="radio-inline">
+                    <?php if ($international_shipping) { ?>
+                    <input type="radio" name="international_shipping" value="1" checked="checked" />
+                    <?php echo $text_yes; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="international_shipping" value="1" />
+                    <?php echo $text_yes; ?>
+                    <?php } ?>
+                  </label>
+                  <label class="radio-inline">
+                    <?php if (!$international_shipping) { ?>
+                    <input type="radio" name="international_shipping" value="0" checked="checked" />
+                    <?php echo $text_no; ?>
+                    <?php } else { ?>
+                    <input type="radio" name="international_shipping" value="0" />
+                    <?php echo $text_no; ?>
+                    <?php } ?>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-additional-shipping"><span data-toggle="tooltip" title="<?php echo $help_additional_shipping; ?>"><?php echo $entry_additional_shipping; ?></span></label>
+                  <div class="col-sm-2">
+                    <input type="text" name="additional_shipping" value="<?php echo $additional_shipping; ?>" placeholder="<?php echo $entry_additional_shipping; ?>" id="input-additional-shipping" class="form-control" />
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
+            
+            
+            <div class="tab-pane" id="tab-links">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-keyword"><span data-toggle="tooltip" title="<?php echo $help_keyword; ?>"><?php echo $entry_keyword; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="keyword" value="<?php echo $keyword; ?>" placeholder="<?php echo $entry_keyword; ?>" id="input-keyword" class="form-control" />
+                  <?php if ($error_keyword) { ?>
+                  <div class="text-danger"><?php echo $error_keyword; ?></div>
+                  <?php } ?>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label"><?php echo $entry_store; ?></label>
+                <div class="col-sm-10">
+                  <div class="well well-sm" style="height: 150px; overflow: auto;">
+                    <div class="checkbox">
+                      <label>
+                        <?php if (in_array(0, $auction_store)) { ?>
+                        <input type="checkbox" name="auction_store[]" value="0" checked="checked" />
+                        <?php echo $text_default; ?>
+                        <?php } else { ?>
+                        <input type="checkbox" name="auction_store[]" value="0" />
+                        <?php echo $text_default; ?>
+                        <?php } ?>
+                      </label>
+                    </div>
+                    <?php foreach ($stores as $store) { ?>
+                    <div class="checkbox">
+                      <label>
+                        <?php if (in_array($store['store_id'], $auction_store)) { ?>
+                        <input type="checkbox" name="auction_store[]" value="<?php echo $store['store_id']; ?>" checked="checked" />
+                        <?php echo $store['name']; ?>
+                        <?php } else { ?>
+                        <input type="checkbox" name="auction_store[]" value="<?php echo $store['store_id']; ?>" />
+                        <?php echo $store['name']; ?>
+                        <?php } ?>
+                      </label>
+                    </div>
+                    <?php } ?>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="<?php echo $help_category; ?>"><?php echo $entry_category; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="category" value="" placeholder="<?php echo $entry_category; ?>" id="input-category" class="form-control" />
+                  <div id="auction-category" class="well well-sm" style="height: 150px; overflow: auto;">
+                    <?php foreach ($auction_categories as $auction_category) { ?>
+                    <div id="auction-category<?php echo $auction_category['category_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $auction_category['name']; ?>
+                      <input type="hidden" name="auction_category[]" value="<?php echo $auction_category['category_id']; ?>" />
+                    </div>
+                    <?php } ?>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="tab-pane" id="tab-image">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <td class="text-left"><?php echo $entry_image; ?></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-left"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="<?php echo $thumb; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image" /></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-responsive">
+                <table id="images" class="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <td class="text-left"><?php echo $entry_additional_image; ?></td>
+                      <td class="text-right"><?php echo $entry_sort_order; ?></td>
+                      <td></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $image_row = 0; ?>
+                    <?php foreach ($auction_images as $auction_image) { ?>
+                    <tr id="image-row<?php echo $image_row; ?>">
+                      <td class="text-left"><a href="" id="thumb-image<?php echo $image_row; ?>" data-toggle="image" class="img-thumbnail"><img src="<?php echo $auction_image['thumb']; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="auction_image[<?php echo $image_row; ?>][image]" value="<?php echo $auction_image['image']; ?>" id="input-image<?php echo $image_row; ?>" /></td>
+                      <td class="text-right"><input type="text" name="auction_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $auction_image['sort_order']; ?>" placeholder="<?php echo $entry_sort_order; ?>" class="form-control" /></td>
+                      <td class="text-left"><button type="button" onclick="$('#image-row<?php echo $image_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                    </tr>
+                    <?php $image_row++; ?>
+                    <?php } ?>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2"></td>
+                      <td class="text-left"><button type="button" onclick="addImage();" data-toggle="tooltip" title="<?php echo $button_image_add; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            
+            
+            
+            <div class="tab-pane" id="tab-seller">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-name"><span data-toggle="tooltip" title="<?php echo $help_seller; ?>"><?php echo $entry_sellers_name; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_name" value="<?php echo ucwords($seller_info['firstname'] . ' ' . $seller_info['lastname']); ?>" placeholder="<?php echo $entry_sellers_name; ?>" id="input-seller-name" class="form-control" />
+                </div>
+                <label class="col-sm-2 control-label" for="input-seller-email"><span data-toggle="tooltip" title="<?php echo $help_email; ?>"><?php echo $entry_sellers_email; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_email" value="<?php echo $seller_info['email']; ?>" placeholder="<?php echo $entry_sellers_email; ?>" id="input-seller-email" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-address1"><span data-toggle="tooltip" title="<?php echo $help_address1; ?>"><?php echo $entry_sellers_address1; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_address1" value="<?php echo ucwords($seller_info['address_1']); ?>" placeholder="<?php echo $entry_sellers_address1; ?>" id="input-seller-address1" class="form-control" />
+                </div>
+                <label class="col-sm-2 control-label" for="input-customer-group"><span data-toggle="tooltip" title="<?php echo $help_customer_group; ?>"><?php echo $entry_customer_group; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_customer_group" value="<?php echo ucwords($seller_info['customer_group']['name']); ?>" placeholder="<?php echo $entry_customer_group; ?>" id="input-customer-group" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-address2"><span data-toggle="tooltip" title="<?php echo $help_address2; ?>"><?php echo $entry_sellers_address2; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_address2" value="<?php echo ucwords($seller_info['address_2']); ?>" placeholder="<?php echo $entry_sellers_address2; ?>" id="input-seller-address2" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-city"><span data-toggle="tooltip" title="<?php echo $help_city; ?>"><?php echo $entry_sellers_city; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_city" value="<?php echo ucwords($seller_info['city']); ?>" placeholder="<?php echo $entry_sellers_city; ?>" id="input-seller-city" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-zone"><span data-toggle="tooltip" title="<?php echo $help_zone; ?>"><?php echo $entry_sellers_zone; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_zone" value="<?php echo ucwords($seller_info['zone']); ?>" placeholder="<?php echo $entry_sellers_zone; ?>" id="input-seller-zone" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-country"><span data-toggle="tooltip" title="<?php echo $help_country; ?>"><?php echo $entry_sellers_country; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_country" value="<?php echo ucwords($seller_info['country']); ?>" placeholder="<?php echo $entry_sellers_country; ?>" id="input-seller-country" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-seller-postcode"><span data-toggle="tooltip" title="<?php echo $help_postcode; ?>"><?php echo $entry_sellers_postcode; ?></span></label>
+                <div class="col-sm-4">
+                  <input type="text" name="seller_postcode" value="<?php echo strtoupper($seller_info['postcode']); ?>" placeholder="<?php echo $entry_sellers_postcode; ?>" id="input-seller-postcode" class="form-control" />
+                </div>
+                <div class="col-sm-2">
+                  <a href="<?php echo $seller_file; ?>" data-toggle="tooltip" title="<?php echo $button_seller_file; ?>" class="btn btn-primary"><i class="fa fa-vcard-o"></i></a>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table id="auction_history" class="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <td class="text-left"><?php echo $entry_sell_history; ?></td>
+                      <td class="text-right"><?php echo $entry_sort_order; ?></td>
+                      <td></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $auction_row = 0; ?>
+                    <?php foreach ($auction_history as $customers_auction) { ?>
+                    <tr id="auction-row<?php echo $auction_row; ?>">
+                      <td class="text-left"></td>
+                      <td class="text-right"></td>
+                      <td class="text-left"></td>
+                    </tr>
+                    <?php $auction_row++; ?>
+                    <?php } ?>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2"></td>
+                      <td class="text-left"><button type="button" data-toggle="tooltip" title="<?php echo $button_auction; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            
+            
+            
+            <div class="tab-pane" id="tab-design">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <td class="text-left"><?php echo $entry_store; ?></td>
+                      <td class="text-left"><?php echo $entry_layout; ?></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-left"><?php echo $text_default; ?></td>
+                      <td class="text-left"><select name="auction_layout[0]" class="form-control">
+                          <option value=""></option>
+                          <?php foreach ($layouts as $layout) { ?>
+                          <?php if (isset($auction_layout[0]) && $auction_layout[0] == $layout['layout_id']) { ?>
+                          <option value="<?php echo $layout['layout_id']; ?>" selected="selected"><?php echo $layout['name']; ?></option>
+                          <?php } else { ?>
+                          <option value="<?php echo $layout['layout_id']; ?>"><?php echo $layout['name']; ?></option>
+                          <?php } ?>
+                          <?php } ?>
+                        </select></td>
+                    </tr>
+                    <?php foreach ($stores as $store) { ?>
+                    <tr>
+                      <td class="text-left"><?php echo $store['name']; ?></td>
+                      <td class="text-left"><select name="auction_layout[<?php echo $store['store_id']; ?>]" class="form-control">
+                          <option value=""></option>
+                          <?php foreach ($layouts as $layout) { ?>
+                          <?php if (isset($auction_layout[$store['store_id']]) && $auction_layout[$store['store_id']] == $layout['layout_id']) { ?>
+                          <option value="<?php echo $layout['layout_id']; ?>" selected="selected"><?php echo $layout['name']; ?></option>
+                          <?php } else { ?>
+                          <option value="<?php echo $layout['layout_id']; ?>"><?php echo $layout['name']; ?></option>
+                          <?php } ?>
+                          <?php } ?>
+                        </select></td>
+                    </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tab-pane" id="tab-fees">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <caption>List of Fees</caption>
+                  <thead>
+                    <tr>
+                      <td class="text-left col-sm-2"><?php echo $column_fee_name; ?></td>
+                      <td class="text-left col-sm-2"><?php echo $column_fee_amount; ?></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php if($all_fees) { 
+                        foreach($all_fees as $fee) { ?>
+                        <tr>
+                          <td class="col-sm-2">
+                            <?php echo $fee['fee_name']; ?>
+                          </td>
+                          <td class="col-sm-2">
+                            <?php echo $fee['fee_charge']; ?>
+                          </td>
+                        </tr>
+                       <?php }
+                       } ?>
+                  </tbody>
+                </table>
+              </div>
+              
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-mpn"><span data-toggle="tooltip" title="<?php echo $help_mpn; ?>"><?php echo $entry_mpn; ?></span></label>
                 <div class="col-sm-10">
                   <input type="text" name="mpn" value="<?php echo $mpn; ?>" placeholder="<?php echo $entry_mpn; ?>" id="input-mpn" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="<?php echo $help_manufacturer; ?>"><?php echo $entry_manufacturer; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="manufacturer" value="<?php echo $manufacturer; ?>" placeholder="<?php echo $entry_manufacturer; ?>" id="input-manufacturer" class="form-control" />
+                  <input type="hidden" name="manufacturer_id" value="<?php echo $manufacturer_id; ?>" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-filter"><span data-toggle="tooltip" title="<?php echo $help_filter; ?>"><?php echo $entry_filter; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="filter" value="" placeholder="<?php echo $entry_filter; ?>" id="input-filter" class="form-control" />
+                  <div id="product-filter" class="well well-sm" style="height: 150px; overflow: auto;">
+                    <?php foreach ($product_filters as $product_filter) { ?>
+                    <div id="product-filter<?php echo $product_filter['filter_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_filter['name']; ?>
+                      <input type="hidden" name="product_filter[]" value="<?php echo $product_filter['filter_id']; ?>" />
+                    </div>
+                    <?php } ?>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-download"><span data-toggle="tooltip" title="<?php echo $help_download; ?>"><?php echo $entry_download; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="download" value="" placeholder="<?php echo $entry_download; ?>" id="input-download" class="form-control" />
+                  <div id="product-download" class="well well-sm" style="height: 150px; overflow: auto;">
+                    <?php foreach ($product_downloads as $product_download) { ?>
+                    <div id="product-download<?php echo $product_download['download_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_download['name']; ?>
+                      <input type="hidden" name="product_download[]" value="<?php echo $product_download['download_id']; ?>" />
+                    </div>
+                    <?php } ?>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-related"><span data-toggle="tooltip" title="<?php echo $help_related; ?>"><?php echo $entry_related; ?></span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="related" value="" placeholder="<?php echo $entry_related; ?>" id="input-related" class="form-control" />
+                  <div id="product-related" class="well well-sm" style="height: 150px; overflow: auto;">
+                    <?php foreach ($product_relateds as $product_related) { ?>
+                    <div id="product-related<?php echo $product_related['product_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_related['name']; ?>
+                      <input type="hidden" name="product_related[]" value="<?php echo $product_related['product_id']; ?>" />
+                    </div>
+                    <?php } ?>
+                  </div>
                 </div>
               </div>
               <div class="form-group">
@@ -314,39 +724,6 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label"><?php echo $entry_shipping; ?></label>
-                <div class="col-sm-10">
-                  <label class="radio-inline">
-                    <?php if ($shipping) { ?>
-                    <input type="radio" name="shipping" value="1" checked="checked" />
-                    <?php echo $text_yes; ?>
-                    <?php } else { ?>
-                    <input type="radio" name="shipping" value="1" />
-                    <?php echo $text_yes; ?>
-                    <?php } ?>
-                  </label>
-                  <label class="radio-inline">
-                    <?php if (!$shipping) { ?>
-                    <input type="radio" name="shipping" value="0" checked="checked" />
-                    <?php echo $text_no; ?>
-                    <?php } else { ?>
-                    <input type="radio" name="shipping" value="0" />
-                    <?php echo $text_no; ?>
-                    <?php } ?>
-                  </label>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-keyword"><span data-toggle="tooltip" title="<?php echo $help_keyword; ?>"><?php echo $entry_keyword; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="keyword" value="<?php echo $keyword; ?>" placeholder="<?php echo $entry_keyword; ?>" id="input-keyword" class="form-control" />
-                  <?php if ($error_keyword) { ?>
-                  <div class="text-danger"><?php echo $error_keyword; ?></div>
-                  <?php } ?>
-                </div>
-              </div>
-              
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-length"><?php echo $entry_dimension; ?></label>
                 <div class="col-sm-10">
@@ -420,68 +797,7 @@
             </div>
             
             
-            <div class="tab-pane" id="tab-links">
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="<?php echo $help_manufacturer; ?>"><?php echo $entry_manufacturer; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="manufacturer" value="<?php echo $manufacturer; ?>" placeholder="<?php echo $entry_manufacturer; ?>" id="input-manufacturer" class="form-control" />
-                  <input type="hidden" name="manufacturer_id" value="<?php echo $manufacturer_id; ?>" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="<?php echo $help_category; ?>"><?php echo $entry_category; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="category" value="" placeholder="<?php echo $entry_category; ?>" id="input-category" class="form-control" />
-                  <div id="product-category" class="well well-sm" style="height: 150px; overflow: auto;">
-                    <?php foreach ($product_categories as $product_category) { ?>
-                    <div id="product-category<?php echo $product_category['category_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_category['name']; ?>
-                      <input type="hidden" name="product_category[]" value="<?php echo $product_category['category_id']; ?>" />
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-filter"><span data-toggle="tooltip" title="<?php echo $help_filter; ?>"><?php echo $entry_filter; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="filter" value="" placeholder="<?php echo $entry_filter; ?>" id="input-filter" class="form-control" />
-                  <div id="product-filter" class="well well-sm" style="height: 150px; overflow: auto;">
-                    <?php foreach ($product_filters as $product_filter) { ?>
-                    <div id="product-filter<?php echo $product_filter['filter_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_filter['name']; ?>
-                      <input type="hidden" name="product_filter[]" value="<?php echo $product_filter['filter_id']; ?>" />
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-download"><span data-toggle="tooltip" title="<?php echo $help_download; ?>"><?php echo $entry_download; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="download" value="" placeholder="<?php echo $entry_download; ?>" id="input-download" class="form-control" />
-                  <div id="product-download" class="well well-sm" style="height: 150px; overflow: auto;">
-                    <?php foreach ($product_downloads as $product_download) { ?>
-                    <div id="product-download<?php echo $product_download['download_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_download['name']; ?>
-                      <input type="hidden" name="product_download[]" value="<?php echo $product_download['download_id']; ?>" />
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-related"><span data-toggle="tooltip" title="<?php echo $help_related; ?>"><?php echo $entry_related; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="related" value="" placeholder="<?php echo $entry_related; ?>" id="input-related" class="form-control" />
-                  <div id="product-related" class="well well-sm" style="height: 150px; overflow: auto;">
-                    <?php foreach ($product_relateds as $product_related) { ?>
-                    <div id="product-related<?php echo $product_related['product_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $product_related['name']; ?>
-                      <input type="hidden" name="product_related[]" value="<?php echo $product_related['product_id']; ?>" />
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
             
             
             <div class="tab-pane" id="tab-attribute">
@@ -519,8 +835,6 @@
                 </table>
               </div>
             </div>
-            
-            
             <div class="tab-pane" id="tab-option">
               <div class="row">
                 <div class="col-sm-2">
@@ -887,125 +1201,6 @@
             
             
             
-            <div class="tab-pane" id="tab-image">
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <td class="text-left"><?php echo $entry_image; ?></td>
-                    </tr>
-                  </thead>
-                  
-                  <tbody>
-                    <tr>
-                      <td class="text-left"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="<?php echo $thumb; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image" /></td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="table-responsive">
-                <table id="images" class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <td class="text-left"><?php echo $entry_additional_image; ?></td>
-                      <td class="text-right"><?php echo $entry_sort_order; ?></td>
-                      <td></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $image_row = 0; ?>
-                    <?php foreach ($product_images as $product_image) { ?>
-                    <tr id="image-row<?php echo $image_row; ?>">
-                      <td class="text-left"><a href="" id="thumb-image<?php echo $image_row; ?>" data-toggle="image" class="img-thumbnail"><img src="<?php echo $product_image['thumb']; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="input-image<?php echo $image_row; ?>" /></td>
-                      <td class="text-right"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" placeholder="<?php echo $entry_sort_order; ?>" class="form-control" /></td>
-                      <td class="text-left"><button type="button" onclick="$('#image-row<?php echo $image_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
-                    </tr>
-                    <?php $image_row++; ?>
-                    <?php } ?>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="2"></td>
-                      <td class="text-left"><button type="button" onclick="addImage();" data-toggle="tooltip" title="<?php echo $button_image_add; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-            
-            
-            
-            <div class="tab-pane" id="tab-reward">
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-points"><span data-toggle="tooltip" title="<?php echo $help_points; ?>"><?php echo $entry_points; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="points" value="<?php echo $points; ?>" placeholder="<?php echo $entry_points; ?>" id="input-points" class="form-control" />
-                </div>
-              </div>
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <td class="text-left"><?php echo $entry_customer_group; ?></td>
-                      <td class="text-right"><?php echo $entry_reward; ?></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($customer_groups as $customer_group) { ?>
-                    <tr>
-                      <td class="text-left"><?php echo $customer_group['name']; ?></td>
-                      <td class="text-right"><input type="text" name="product_reward[<?php echo $customer_group['customer_group_id']; ?>][points]" value="<?php echo isset($product_reward[$customer_group['customer_group_id']]) ? $product_reward[$customer_group['customer_group_id']]['points'] : ''; ?>" class="form-control" /></td>
-                    </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            
-            
-            <div class="tab-pane" id="tab-design">
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <td class="text-left"><?php echo $entry_store; ?></td>
-                      <td class="text-left"><?php echo $entry_layout; ?></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="text-left"><?php echo $text_default; ?></td>
-                      <td class="text-left"><select name="auction_layout[0]" class="form-control">
-                          <option value=""></option>
-                          <?php foreach ($layouts as $layout) { ?>
-                          <?php if (isset($auction_layout[0]) && $auction_layout[0] == $layout['layout_id']) { ?>
-                          <option value="<?php echo $layout['layout_id']; ?>" selected="selected"><?php echo $layout['name']; ?></option>
-                          <?php } else { ?>
-                          <option value="<?php echo $layout['layout_id']; ?>"><?php echo $layout['name']; ?></option>
-                          <?php } ?>
-                          <?php } ?>
-                        </select></td>
-                    </tr>
-                    <?php foreach ($stores as $store) { ?>
-                    <tr>
-                      <td class="text-left"><?php echo $store['name']; ?></td>
-                      <td class="text-left"><select name="auction_layout[<?php echo $store['store_id']; ?>]" class="form-control">
-                          <option value=""></option>
-                          <?php foreach ($layouts as $layout) { ?>
-                          <?php if (isset($auction_layout[$store['store_id']]) && $auction_layout[$store['store_id']] == $layout['layout_id']) { ?>
-                          <option value="<?php echo $layout['layout_id']; ?>" selected="selected"><?php echo $layout['name']; ?></option>
-                          <?php } else { ?>
-                          <option value="<?php echo $layout['layout_id']; ?>"><?php echo $layout['name']; ?></option>
-                          <?php } ?>
-                          <?php } ?>
-                        </select></td>
-                    </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
             
             
           </div>
@@ -1064,13 +1259,13 @@ $('input[name=\'category\']').autocomplete({
 	'select': function(item) {
 		$('input[name=\'category\']').val('');
 
-		$('#product-category' + item['value']).remove();
+		$('#auction-category' + item['value']).remove();
 
-		$('#product-category').append('<div id="product-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product_category[]" value="' + item['value'] + '" /></div>');
+		$('#auction-category').append('<div id="auction-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="auction_category[]" value="' + item['value'] + '" /></div>');
 	}
 });
 
-$('#product-category').delegate('.fa-minus-circle', 'click', function() {
+$('#auction-category').delegate('.fa-minus-circle', 'click', function() {
 	$(this).parent().remove();
 });
 
@@ -1446,8 +1641,8 @@ var image_row = <?php echo $image_row; ?>;
 
 function addImage() {
 	html  = '<tr id="image-row' + image_row + '">';
-	html += '  <td class="text-left"><a href="" id="thumb-image' + image_row + '"data-toggle="image" class="img-thumbnail"><img src="<?php echo $placeholder; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="product_image[' + image_row + '][image]" value="" id="input-image' + image_row + '" /></td>';
-	html += '  <td class="text-right"><input type="text" name="product_image[' + image_row + '][sort_order]" value="" placeholder="<?php echo $entry_sort_order; ?>" class="form-control" /></td>';
+	html += '  <td class="text-left"><a href="" id="thumb-image' + image_row + '"data-toggle="image" class="img-thumbnail"><img src="<?php echo $placeholder; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a><input type="hidden" name="auction_image[' + image_row + '][image]" value="" id="input-image' + image_row + '" /></td>';
+	html += '  <td class="text-right"><input type="text" name="auction_image[' + image_row + '][sort_order]" value="" placeholder="<?php echo $entry_sort_order; ?>" class="form-control" /></td>';
 	html += '  <td class="text-left"><button type="button" onclick="$(\'#image-row' + image_row  + '\').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
 	html += '</tr>';
 

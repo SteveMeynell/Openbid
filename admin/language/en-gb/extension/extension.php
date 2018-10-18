@@ -19,3 +19,4 @@ $_['text_payment']   = 'Payments';
 $_['text_shipping']  = 'Shipping';
 $_['text_theme']     = 'Themes';
 $_['text_total']     = 'Order Totals';
+$_['text_accounting']   = 'Accounting Package';
