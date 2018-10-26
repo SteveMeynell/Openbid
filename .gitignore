@@ -22,6 +22,7 @@
 *.komodoproject
 system/storage
 /uploaded
+/image
 
 # Logs and databases #
 ######################

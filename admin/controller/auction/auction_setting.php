@@ -40,6 +40,7 @@ class ControllerAuctionAuctionSetting extends Controller {
 		$data['entry_auction_extension_for'] = $this->language->get('entry_auction_extension_for');
 		$data['entry_auction_countdown'] = $this->language->get('entry_auction_countdown');
 		$data['entry_auction_countdown_time'] = $this->language->get('entry_auction_countdown_time');
+		$data['entry_auction_created_status'] = $this->language->get('entry_auction_created_status');
 		$data['entry_auction_open_status'] = $this->language->get('entry_auction_open_status');
 		$data['entry_auction_closed_status'] = $this->language->get('entry_auction_closed_status');
 		$data['entry_auction_suspended_status'] = $this->language->get('entry_auction_suspended_status');
@@ -66,6 +67,7 @@ class ControllerAuctionAuctionSetting extends Controller {
 		$data['help_auction_extension_for'] = $this->language->get('help_auction_extension_for');
 		$data['help_auction_countdown'] = $this->language->get('help_auction_countdown');
 		$data['help_auction_countdown_time'] = $this->language->get('help_auction_countdown_time');
+		$data['help_auction_created_status'] = $this->language->get('help_auction_created_status');
 		$data['help_auction_open_status'] = $this->language->get('help_auction_open_status');
 		$data['help_auction_closed_status'] = $this->language->get('help_auction_closed_status');
 		$data['help_auction_suspended_status'] = $this->language->get('help_auction_suspended_status');
@@ -139,6 +141,12 @@ class ControllerAuctionAuctionSetting extends Controller {
 			$data['config_auction_countdown_time'] = $this->request->post['config_auction_countdown_time'];
 		} else {
 			$data['config_auction_countdown_time'] = $this->config->get('config_auction_countdown_time');
+		}
+		
+		if (isset($this->request->post['config_auction_created_status'])) {
+			$data['config_auction_created_status'] = $this->request->post['config_auction_created_status'];
+		} else {
+			$data['config_auction_created_status'] = $this->config->get('config_auction_created_status');
 		}
 		
 		if (isset($this->request->post['config_auction_closed_status'])) {

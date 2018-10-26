@@ -8,13 +8,16 @@ class ModelCatalogAuction extends Model {
             $query = $this->db->query("SELECT COUNT(auction_id) AS other FROM "  . DB_PREFIX . "auctions WHERE status = 0");
             $result = $query->row;
             array_push($auctions, $result['other']);
-            $query = $this->db->query("SELECT COUNT(auction_id) AS open FROM "  . DB_PREFIX . "auctions WHERE status = 1");
+			$query = $this->db->query("SELECT COUNT(auction_id) AS created FROM "  . DB_PREFIX . "auctions WHERE status = 1");
+            $result = $query->row;
+            array_push($auctions, $result['created']);
+            $query = $this->db->query("SELECT COUNT(auction_id) AS open FROM "  . DB_PREFIX . "auctions WHERE status = 2");
             $result = $query->row;
             array_push($auctions, $result['open']);
-            $query = $this->db->query("SELECT COUNT(auction_id) AS closed FROM "  . DB_PREFIX . "auctions WHERE status = 2");
+            $query = $this->db->query("SELECT COUNT(auction_id) AS closed FROM "  . DB_PREFIX . "auctions WHERE status = 3");
             $result = $query->row;
             array_push($auctions, $result['closed']);
-            $query = $this->db->query("SELECT COUNT(auction_id) AS suspended FROM "  . DB_PREFIX . "auctions WHERE status = 3");
+            $query = $this->db->query("SELECT COUNT(auction_id) AS suspended FROM "  . DB_PREFIX . "auctions WHERE status = 4");
             $result = $query->row;
             array_push($auctions, $result['suspended']);
             return $auctions;
@@ -158,57 +161,31 @@ class ModelCatalogAuction extends Model {
 	
 	
 	public function addAuction($data) {
-		
+		debuglog($data);
 		// add in the actual auction table
 		
 		$this->db->query("INSERT INTO " . DB_PREFIX . "auctions
 						 SET
-						 store_id = '" . $this->db->escape($data['store_id']) . "',
-						 customer_id = '" . $this->db->escape($data['customer_id']) . "',
+						 customer_id = '" . $this->db->escape($data['seller_id']) . "',
 						 auction_type = '" . $this->db->escape($data['auction_type']) . "',
-						 status = '" . $this->db->escape($data['status']) . "',
-						 relisted = '" . $this->db->escape($data['relisted']) . "',
-						 num_bids = '" . $this->db->escape($data['num_bids']) . "',
-						 current_fee = '" . $this->db->escape($data['current_fee']) . "',
-						 date_modified = NOW(),
-						 date_created = NOW()");
+						 status = '" . $this->db->escape($data['auction_status']) . "',
+						 num_relist = '" . $this->db->escape($data['num_relist']) . "',
+						 date_created = '" . $this->db->escape($data['date_created']) . "'
+						 ");
 
 		$auction_id = $this->db->getLastId();
 
 		if (isset($data['image'])) {
-			$this->db->query("UPDATE " . DB_PREFIX . "auction
+			$this->db->query("UPDATE " . DB_PREFIX . "auctions
 							 SET
 							 image = '" . $this->db->escape($data['image']) . "'
 							 WHERE auction_id = '" . (int)$auction_id . "'");
 		}
+		
 
-		// details
-		$this->db->query("INSERT INTO " . DB_PREFIX . "auction_details
-						 SET
-						 auction_id = '" . (int)$auction_id . "',
-						 title = '" . $this->db->escape($data['title']) . "',
-						 subtitle = '" . $this->db->escape($data['subtitle']) . "',
-						 start_date = '" . $this->db->escape($data['start_date']) . "',
-						 end_date = '" . $this->db->escape($data['end_date']) . "',
-						 min_bid = '" . $this->db->escape((float)$data['min_bid']) . "',
-						 shipping_cost = '" . $this->db->escape((float)$data['shipping_cost']) . "',
-						 additional_shipping = '" . $this->db->escape((float)$data['additional_shipping']) . "',
-						 reserve_price = '" . $this->db->escape((float)$data['reserve_price']) . "',
-						 duration = '" . $this->db->escape((float)$data['duration']) . "',
-						 increment = '" . $this->db->escape((float)$data['increment']) . "',
-						 shipping = '" . $this->db->escape((int)$data['shipping']) . "',
-						 payment = '" . $this->db->escape((int)$data['payment']) . "',
-						 international_shipping = '" . $this->db->escape((int)$data['international_shipping']) . "',
-						 quantity = '" . $this->db->escape((int)$data['quantity']) . "',
-						 relist = '" . $this->db->escape((int)$data['relist']) . "',
-						 current_fee = '" . $this->db->escape((float)$data['current_fee']) . "',
-						 tax = '" . $this->db->escape((int)$data['tax']) . "',
-						 taxinc = '" . $this->db->escape((int)$data['taxinc']) . "',
-						 buy_now_price = '" . $this->db->escape((float)$data['buy_now_price']) . "'
-						 ");
-		
-		
 		foreach ($data['auction_description'] as $language_id => $value) {
+			$title = $value['name'];
+			$subtitle = $value['subname'];
 			$this->db->query("INSERT INTO " . DB_PREFIX . "auction_description
 							 SET
 							 auction_id = '" . (int)$auction_id . "',
@@ -219,9 +196,47 @@ class ModelCatalogAuction extends Model {
 							 tag = '" . $this->db->escape($value['tag']) . "',
 							 meta_title = '" . $this->db->escape($value['meta_title']) . "',
 							 meta_description = '" . $this->db->escape($value['meta_description']) . "',
-							 meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+							 meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'
+							 ");
 		}
 
+		
+		// details
+		$this->db->query("INSERT INTO " . DB_PREFIX . "auction_details
+						 SET
+						 auction_id = '" . (int)$auction_id . "',
+						 title = '" . $this->db->escape($title) . "',
+						 subtitle = '" . $this->db->escape($subtitle) . "',
+						 start_date = '" . $this->db->escape($data['custom_start_date']) ."',
+						 end_date = '" . $this->db->escape($data['custom_end_date']) ."',
+						 min_bid = '" . $this->db->escape((float)$data['min_bid']) . "',
+						 shipping_cost = '" . $this->db->escape((float)$data['shipping_cost']) . "',
+						 additional_shipping = '" . $this->db->escape((float)$data['additional_shipping']) . "',
+						 reserve_price = '" . $this->db->escape((float)$data['reserve_price']) . "',
+						 duration = '" . $this->db->escape($data['duration']) . "',
+						 increment = '" . $this->db->escape($data['increment']) . "',
+						 shipping = '" . $this->db->escape((int)$data['shipping']) . "',
+						 payment = '0',
+						 international_shipping = '" . $this->db->escape((int)$data['international_shipping']) . "',
+						 initial_quantity = '" . $this->db->escape($data['initial_quantity']) . "',
+						 buy_now_price = '" . $this->db->escape((float)$data['buy_now_price']) . "'
+						 ");
+		
+		// options
+		$this->db->query("INSERT INTO " . DB_PREFIX . "auction_options
+						 SET
+						 auction_id = '" . (int)$auction_id . "',
+						 bolded_item = '" . $this->db->escape($data['bolded_item']) . "',
+						 on_carousel = '" . $this->db->escape($data['on_carousel']) . "',
+						 buy_now_only = '" . $this->db->escape($data['buy_now_only']) . "',
+						 featured = '" . $this->db->escape($data['featured']) . "',
+						 highlighted = '" . $this->db->escape($data['highlighted']) . "',
+						 slideshow = '" . $this->db->escape($data['slideshow']) . "',
+						 social_media = '" . $this->db->escape($data['social_media']) . "',
+						 auto_relist = '" . $this->db->escape($data['auto_relist']) . "'
+						 ");
+		
+		
 		if (isset($data['auction_store'])) {
 			foreach ($data['auction_store'] as $store_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_store
@@ -264,22 +279,18 @@ class ModelCatalogAuction extends Model {
 		$this->cache->delete('auction');
 
 		return $auction_id;
+		
 	}
 
 	public function editAuction($auction_id, $data) {
-		debuglog($data);
 		
-		
-		/*
 		$this->db->query("UPDATE " . DB_PREFIX . "auctions
 						 SET
-						 store_id = '" . $this->db->escape($data['store_id']) . "',
-						 customer_id = '" . $this->db->escape($data['customer_id']) . "',
+						 customer_id = '" . $this->db->escape($data['seller_id']) . "',
 						 auction_type = '" . $this->db->escape($data['auction_type']) . "',
-						 status = '" . $this->db->escape($data['status']) . "',
-						 relisted = '" . $this->db->escape($data['relisted']) . "',
-						 num_bids = '" . $this->db->escape($data['num_bids']) . "',
-						 current_fee = '" . $this->db->escape($data['current_fee']) . "',
+						 status = '" . $this->db->escape($data['auction_status']) . "',
+						 num_relist = '" . $this->db->escape($data['num_relist']) . "',
+						 modified_by = '" . $this->session->data['user_id'] . "',
 						 date_modified = NOW()
 						 WHERE
 						 auction_id = '" . (int)$auction_id . "'");
@@ -292,49 +303,60 @@ class ModelCatalogAuction extends Model {
 							 auction_id = '" . (int)$auction_id . "'");
 		}
 
-		// details here
-		$this->db->query("UPDATE " . DB_PREFIX . "auction_details
-						 SET
-						 title = '" . $this->db->escape($data['title']) . "',
-						 subtitle = '" . $this->db->escape($data['subtitle']) . "',
-						 start_date = '" . $this->db->escape($data['start_date']) . "',
-						 end_date = '" . $this->db->escape($data['end_date']) . "',
-						 min_bid = '" . $this->db->escape((float)$data['min_bid']) . "',
-						 shipping_cost = '" . $this->db->escape((float)$data['shipping_cost']) . "',
-						 additional_shipping = '" . $this->db->escape((float)$data['additional_shipping']) . "',
-						 reserve_price = '" . $this->db->escape((float)$data['reserve_price']) . "',
-						 duration = '" . $this->db->escape((float)$data['duration']) . "',
-						 increment = '" . $this->db->escape((float)$data['increment']) . "',
-						 shipping = '" . $this->db->escape((int)$data['shipping']) . "',
-						 payment = '" . $this->db->escape((int)$data['payment']) . "',
-						 international_shipping = '" . $this->db->escape((int)$data['international_shipping']) . "',
-						 quantity = '" . $this->db->escape((int)$data['quantity']) . "',
-						 relist = '" . $this->db->escape((int)$data['relist']) . "',
-						 current_fee = '" . $this->db->escape((float)$data['current_fee']) . "',
-						 tax = '" . $this->db->escape((int)$data['tax']) . "',
-						 taxinc = '" . $this->db->escape((int)$data['taxinc']) . "',
-						 buy_now_price = '" . $this->db->escape((float)$data['buy_now_price']) . "'
-						 WHERE
-						 auction_id = '" . (int)$auction_id . "'
-						 ");
-		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_description
 						 WHERE
 						 auction_id = '" . (int)$auction_id . "'");
 
 		foreach ($data['auction_description'] as $language_id => $value) {
+			$title = $this->db->escape($value['name']);
+			$subtitle = $this->db->escape($value['subname']);
 			$this->db->query("INSERT INTO " . DB_PREFIX . "auction_description
 							 SET
 							 auction_id = '" . (int)$auction_id . "',
 							 language_id = '" . (int)$language_id . "',
 							 name = '" . $this->db->escape($value['name']) . "',
+							 subname = '" . $this->db->escape($value['subname']) . "',
 							 description = '" . $this->db->escape($value['description']) . "',
 							 tag = '" . $this->db->escape($value['tag']) . "',
 							 meta_title = '" . $this->db->escape($value['meta_title']) . "',
 							 meta_description = '" . $this->db->escape($value['meta_description']) . "',
 							 meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
 		}
+		
+		// details here
+		$this->db->query("UPDATE " . DB_PREFIX . "auction_details
+						 SET
+						 title = '" . $title . "',
+						 subtitle = '" . $subtitle . "',
+						 start_date = '" . $this->db->escape($data['custom_start_date']) . "',
+						 end_date = '" . $this->db->escape($data['custom_end_date']) . "',
+						 min_bid = '" . $this->db->escape((float)$data['min_bid']) . "',
+						 shipping_cost = '" . $this->db->escape((float)$data['shipping_cost']) . "',
+						 additional_shipping = '" . $this->db->escape((float)$data['additional_shipping']) . "',
+						 reserve_price = '" . $this->db->escape((float)$data['reserve_price']) . "',
+						 duration = '" . $this->db->escape((float)$data['duration']) . "',
+						 shipping = '" . $this->db->escape((int)$data['shipping']) . "',
+						 international_shipping = '" . $this->db->escape((int)$data['international_shipping']) . "',
+						 initial_quantity = '" . $this->db->escape((int)$data['initial_quantity']) . "',
+						 buy_now_price = '" . $this->db->escape((float)$data['buy_now_price']) . "'
+						 WHERE
+						 auction_id = '" . (int)$auction_id . "'
+						 ");
 
+						 
+		// options
+		$this->db->query("UPDATE " . DB_PREFIX . "auction_options
+						 SET
+						 bolded_item = '" . $this->db->escape($data['bolded_item']) . "',
+						 on_carousel = '" . $this->db->escape($data['on_carousel']) . "',
+						 buy_now_only = '" . $this->db->escape($data['buy_now_only']) . "',
+						 featured = '" . $this->db->escape($data['featured']) . "',
+						 highlighted = '" . $this->db->escape($data['highlighted']) . "',
+						 slideshow = '" . $this->db->escape($data['slideshow']) . "',
+						 social_media = '" . $this->db->escape($data['social_media']) . "',
+						 auto_relist = '" . $this->db->escape($data['auto_relist']) . "'
+						 ");
+		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_to_store
 						 WHERE
 						 auction_id = '" . (int)$auction_id . "'");
@@ -401,7 +423,7 @@ class ModelCatalogAuction extends Model {
 		}
 
 		$this->cache->delete('auction');
-		*/
+		
 	}
 
 	

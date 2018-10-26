@@ -4,6 +4,7 @@ $_['heading_title']          = 'OpenBid';
 
 // Text
 $_['text_auction']             = 'Auctions';
+$_['text_created_auction_status'] = 'Created';
 $_['text_open_auction_status'] = 'Open';
 $_['text_closed_auction_status']   = 'Closed';
 $_['text_customer']          = 'Customers';
@@ -12,6 +13,7 @@ $_['text_approval']          = 'Pending approval';
 $_['text_product']           = 'Items';
 $_['text_stock']             = 'Out of stock';
 $_['text_review']            = 'Reviews';
+$_['text_created_status']            = 'Created';
 $_['text_suspended_status']            = 'Suspended';
 $_['text_moderation_status']            = 'Moderated';
 $_['text_bidders_only']         = 'Bidders Only';

@@ -28,7 +28,7 @@ class ModelAuctionAuctionFees extends Model {
             case "highlighted":
                 return $data['highlighted'] ? $this->getHighlightedFees() : '0';
                 break;
-            case "relisted":
+            case "auto_relist":
                 return $data['relist'] ? $this->getRelistFees() : '0';
                 break;
             case "slideshow":
@@ -55,7 +55,7 @@ class ModelAuctionAuctionFees extends Model {
                 'fee_charge'        => $data['reserve_price'] ? $this->getReservePriceFees($data['store'], $data['reserve_price']) : '0'
             ),
             array(
-                'fee_name'  =>  'For setting the auction as Bid Now Only',
+                'fee_name'  =>  'For setting the auction as Buy Now Only',
                 'fee_charge'            => $data['buy_now_only'] ? $this->getBuyNowOnlyFees($data['store'], $data['buy_now_price']) : '0'
             ),
             array(
@@ -72,7 +72,7 @@ class ModelAuctionAuctionFees extends Model {
             ),
             array(
                 'fee_name'  =>  'For automatically relisting the auction',
-                'fee_charge'             => $data['relist'] ? $this->getRelistFees() : '0'
+                'fee_charge'             => $data['auto_relist'] ? $this->getRelistFees() : '0'
             ),
             array(
                 'fee_name'  =>  'For placing the auction in the slideshow',
@@ -85,6 +85,10 @@ class ModelAuctionAuctionFees extends Model {
             array(
                 'fee_name'  =>  'For setting a subtitle',
                 'fee_charge'           => $data['subtitle'] ? $this->getSubTitleFees() : '0'
+            ),
+            array(
+                'fee_name'  =>  'For uploading extra images',
+                'fee_charge'           => $data['extra_images'] ? $this->getImagesFees($data['extra_images']) : '0'
             ),
             array(
                 'fee_name'  =>  'For placing your auction on the carousel',
@@ -219,11 +223,14 @@ class ModelAuctionAuctionFees extends Model {
         return $fee;
     }
     
-    protected function getImagesFees($store) {
-        $sql = "SELECT * FROM " . DB_PREFIX . "setting
-        WHERE store_id = '" . $this->db->escape($store) . "' AND code = 'fees_image_upload'";
-        $query = $this->db->query($sql);
-        return $query->rows;
+    protected function getImagesFees($num_extra_images) {
+        $fee = '0';
+        $status = $this->config->get('fees_image_upload_status');
+        if ($status) {
+            $fee = $this->config->get('fees_image_upload_fee') * $num_extra_images;
+        }
+        
+        return $fee;
     }
     
     protected function getHighlightedFees() {

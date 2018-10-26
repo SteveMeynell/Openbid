@@ -89,6 +89,7 @@ $_['text_recurring']                 = 'Recurring Profiles';
 $_['text_order_recurring']           = 'Recurring Orders';
 $_['text_paypal']                    = 'PayPal';
 $_['text_paypal_search']             = 'Search';
+$_['text_created_auction_status']        = 'Created Auctions'; 
 $_['text_closed_auction_status']        = 'Closed Auctions'; 
 $_['text_open_auction_status']          = 'Open Auctions'; 
 $_['text_suspend_status']              = 'Suspended Auctions'; 

@@ -110,6 +110,9 @@ $_['entry_category']         = 'Categories';
 $_['entry_tag']          	 = 'Auction Tags';
 $_['entry_layout']           = 'Layout Override';
 
+// buttons
+$_['button_seller_file']    = 'View Seller Infomation';
+$_['button_fake_bid']    = 'Test Placing a Bid';
 
 // Help
 $_['help_keyword']           = 'Do not use spaces, instead replace spaces with - and make sure the SEO URL is globally unique.';
@@ -118,11 +121,14 @@ $_['help_reserve_price']               = 'Minimum Bid Required to win auction';
 $_['help_auto_relist']               = 'Automatically relist item if it does not meet the reserved bid before closing.';
 $_['help_auto_relist_times']               = 'Set the number of times you want to automatically relist this item for.  Certain charges may apply.';
 $_['help_duration']              = 'Enter the duration of the auction';
-$_['help_mpn']               = 'Manufacturer Part Number';
-$_['help_manufacturer']      = '(Autocomplete)';
-$_['help_minimum']           = 'Force a minimum ordered amount';
-$_['help_stock_status']      = 'Status shown when a product is out of stock';
-$_['help_points']            = 'Number of points needed to buy this item. If you don\'t want this product to be purchased with points leave as 0.';
+$_['help_buy_now_only']               = 'Set the Auction so that no bidding takes place, only a buy now option.  Similar to a normal sale in a store.';
+$_['help_buy_now_price']      = 'You may set a buy now price without the auction being buy now only, giving bidders a chance to snatch up the item without waiting for the end of the auction.';
+$_['help_bolded_item']           = 'Not sure what this is for just yet';
+$_['help_on_carousel']      = 'Place your auction on the front page in the rotating carousel for maximum exposure';
+$_['help_featured']            = 'Your auction will be featured, whatever that means just yet.';
+$_['help_highlighted']            = 'Your auction will be highlighted, whatever that means just yet.';
+$_['help_slideshow']            = 'Place your auction on the other pages in the rotating slideshow for maximum exposure';
+$_['help_social_media']            = 'Place your auction on our social media sites, like our Facebook page and Twitter';
 $_['help_category']          = '(Autocomplete)';
 $_['help_filter']            = '(Autocomplete)';
 $_['help_download']          = '(Autocomplete)';

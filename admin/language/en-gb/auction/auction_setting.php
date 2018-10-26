@@ -27,6 +27,7 @@ $_['entry_auction_extension_for']   =   'Time to extend Auction for';
 $_['entry_auction_countdown']           =   'Automatically start a countdown timer';
 $_['entry_auction_countdown_time']      =   'Time, in hours, to start a countdown timer';
 $_['entry_auction_open_status']         =   'Auction Open Status';
+$_['entry_auction_created_status']         =   'Auction Created Status';
 $_['entry_auction_closed_status']       =   'Auction Closed Status';
 $_['entry_auction_suspended_status']    =   'Auction Suspended Status';
 $_['entry_auction_moderation_status']   =   'Auction Under Moderation Status';
@@ -49,6 +50,7 @@ $_['help_auction_extension_for']    =   'How much time, in minutes, shall be add
 $_['help_auction_countdown']        =   'Automatically start a countdown timer before an auction ends.';
 $_['help_auction_countdown_time']   =   'How many hours before the auction ends to start the countdown.';
 $_['help_auction_open_status']      =   'Set this to Open Status';
+$_['help_auction_created_status']      =   'Set this to Created Status.  For Auctions created but not yet open.';
 $_['help_auction_closed_status']    =   'Set this to Closed Status';
 $_['help_auction_suspended_status'] =   'Set this to Suspended Status';
 $_['help_auction_moderation_status']=   'Set this to Under Moderation Status';
@@ -56,13 +58,13 @@ $_['help_auction_moderation_status']=   'Set this to Under Moderation Status';
 
 
 // Entry for Display Tab
-$_['entry_auction_picture_gallery'] = 'Sellers can upload pictures for their auctions';
-$_['entry_auction_max_gallery_pictures'] = 'Maximum # of pictures per auction';
+$_['entry_auction_picture_gallery'] = 'Sellers can upload extra pictures for their auctions';
+$_['entry_auction_max_gallery_pictures'] = 'Maximum # of extra pictures per auction';
 $_['entry_auction_max_picture_size'] = 'Maximum size of pictures';
 
 // Help for Display Tab
-$_['help_auction_picture_gallery'] = 'Allow sellers to upload pictures for their auctions';
-$_['help_auction_max_gallery_pictures'] = 'Enter the maximum number of pictures per auction the seller can upload';
+$_['help_auction_picture_gallery'] = 'Allow sellers to upload extra pictures for their auctions, they will always be able to upload one picture, this is extra pictures';
+$_['help_auction_max_gallery_pictures'] = 'Enter the maximum number of extra pictures per auction the seller can upload, besides the main picture';
 $_['help_auction_max_picture_size'] = 'Enter the maximum size, in kb, of each picture the seller can upload';
 
 

@@ -2,10 +2,10 @@
 // Locale
 $_['code']                          = 'en';
 $_['direction']                     = 'ltr';
-$_['date_format_short']             = 'd/m/Y';
+$_['date_format_short']             = 'Y/m/d';
 $_['date_format_long']              = 'l dS F Y';
 $_['time_format']                   = 'h:i:s A';
-$_['datetime_format']               = 'd/m/Y H:i:s';
+$_['datetime_format']               = 'Y/m/d H:i:s';
 $_['decimal_point']                 = '.';
 $_['thousand_point']                = ',';
 
@@ -116,10 +116,10 @@ $_['tab_ip']                        = 'IP Addresses';
 $_['tab_links']                     = 'Links';
 $_['tab_log']                       = 'Log';
 $_['tab_image']                     = 'Image';
-$_['tab_option']                    = 'Option';
+$_['tab_options']                    = 'Options';
 $_['tab_server']                    = 'Server';
 $_['tab_store']                     = 'Store';
-$_['tab_bidding']                   = 'Bid History';
+$_['tab_bid_history']                   = 'Bid History';
 $_['tab_session']                   = 'Session';
 $_['tab_local']                     = 'Local';
 $_['tab_mail']                      = 'Mail';

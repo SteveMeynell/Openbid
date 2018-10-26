@@ -22,6 +22,7 @@ class ControllerCommonHeader extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_auction'] = $this->language->get('text_auction');
+		$data['text_created_auction_status'] = $this->language->get('text_created_auction_status');
 		$data['text_open_auction_status'] = $this->language->get('text_open_auction_status');
 		$data['text_closed_auction_status'] = $this->language->get('text_closed_auction_status');
 		$data['text_moderation_status'] = $this->language->get('text_moderation_status');
@@ -63,11 +64,13 @@ class ControllerCommonHeader extends Controller {
 			
 			$data['moderation_status_total'] = $auction_totals['0'];
 			$data['moderation_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
-			$data['open_auction_status_total'] = $auction_totals['1'];
+			$data['created_auction_status_total'] = $auction_totals['1'];
+			$data['created_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['open_auction_status_total'] = $auction_totals['2'];
 			$data['open_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
-			$data['closed_auction_status_total'] = $auction_totals['2'];
+			$data['closed_auction_status_total'] = $auction_totals['3'];
 			$data['closed_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
-			$data['suspended_status_total'] = $auction_totals['3'];
+			$data['suspended_status_total'] = $auction_totals['4'];
 			$data['suspended_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
 			$data['auction'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
 			$data['auction_total'] = '0';

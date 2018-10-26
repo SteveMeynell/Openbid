@@ -171,7 +171,21 @@
               <fieldset>
                 <legend><?php echo $text_auction_status; ?></legend>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-open-status"><span data-toggle="tooltip" title="<?php echo $help_auction_open_status; ?>"><?php echo $entry_auction_open_status; ?></span></label>
+                  <label class="col-sm-3 control-label" for="input-created-status"><span data-toggle="tooltip" title="<?php echo $help_auction_created_status; ?>"><?php echo $entry_auction_created_status; ?></span></label>
+                  <div class="col-sm-3">
+                    <select name="config_auction_created_status" id="input-created-status" class="form-control">
+                      <?php foreach ($auction_statuses as $auction_status) { ?>
+                      <?php if ($auction_status['auction_status_id'] == $config_auction_created_status) { ?>
+                      <option value="<?php echo $auction_status['auction_status_id']; ?>" selected="selected"><?php echo $auction_status['name']; ?></option>
+                      <?php } else { ?>
+                      <option value="<?php echo $auction_status['auction_status_id']; ?>"><?php echo $auction_status['name']; ?></option>
+                      <?php } ?>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label" for="input-open-status"><span data-toggle="tooltip" title="<?php echo $help_auction_open_status; ?>"><?php echo $entry_auction_open_status; ?></span></label>
                   <div class="col-sm-3">
                     <select name="config_auction_open_status" id="input-open-status" class="form-control">
                       <?php foreach ($auction_statuses as $auction_status) { ?>
@@ -185,7 +199,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-closed-status"><span data-toggle="tooltip" title="<?php echo $help_auction_closed_status; ?>"><?php echo $entry_auction_closed_status; ?></span></label>
+                  <label class="col-sm-3 control-label" for="input-closed-status"><span data-toggle="tooltip" title="<?php echo $help_auction_closed_status; ?>"><?php echo $entry_auction_closed_status; ?></span></label>
                   <div class="col-sm-3">
                     <select name="config_auction_closed_status" id="input-closed-status" class="form-control">
                       <?php foreach ($auction_statuses as $auction_status) { ?>
@@ -199,7 +213,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-suspended-status"><span data-toggle="tooltip" title="<?php echo $help_auction_suspended_status; ?>"><?php echo $entry_auction_suspended_status; ?></span></label>
+                  <label class="col-sm-3 control-label" for="input-suspended-status"><span data-toggle="tooltip" title="<?php echo $help_auction_suspended_status; ?>"><?php echo $entry_auction_suspended_status; ?></span></label>
                   <div class="col-sm-3">
                     <select name="config_auction_suspended_status" id="input-suspended-status" class="form-control">
                       <?php foreach ($auction_statuses as $auction_status) { ?>
@@ -213,7 +227,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-moderation-status"><span data-toggle="tooltip" title="<?php echo $help_auction_moderation_status; ?>"><?php echo $entry_auction_moderation_status; ?></span></label>
+                  <label class="col-sm-3 control-label" for="input-moderation-status"><span data-toggle="tooltip" title="<?php echo $help_auction_moderation_status; ?>"><?php echo $entry_auction_moderation_status; ?></span></label>
                   <div class="col-sm-3">
                     <select name="config_auction_moderation_status" id="input-moderation-status" class="form-control">
                       <?php foreach ($auction_statuses as $auction_status) { ?>

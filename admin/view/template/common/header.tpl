@@ -43,6 +43,7 @@
     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><?php if($alerts > 0) { ?><span class="label label-danger pull-left"><?php echo $alerts; ?></span><?php } ?> <i class="fa fa-bell fa-lg"></i></a>
       <ul class="dropdown-menu dropdown-menu-right alerts-dropdown">
         <li class="dropdown-header"><?php echo $text_auction; ?></li>
+        <li><a href="<?php echo $created_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $created_auction_status_total; ?></span><?php echo $text_created_auction_status; ?></a></li>
         <li><a href="<?php echo $open_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $open_auction_status_total; ?></span><?php echo $text_open_auction_status; ?></a></li>
         <li><a href="<?php echo $closed_auction_status; ?>"><span class="label label-warning pull-right"><?php echo $closed_auction_status_total; ?></span><?php echo $text_closed_auction_status; ?></a></li>
         <li><a href="<?php echo $suspended_status; ?>"><span class="label label-danger pull-right"><?php echo $suspended_status_total; ?></span><?php echo $text_suspended_status; ?></a></li>
@@ -56,7 +57,7 @@
         <li><a href="<?php echo $bidders_sellers; ?>"><span class="label label-danger pull-right"><?php echo $bidders_sellers_total; ?></span><?php echo $text_bidders_sellers; ?></a></li>
         <li class="divider"></li>
         <li class="dropdown-header"><?php echo $text_auction; ?></li>
-        <li><a href="<?php echo $auction; ?>"><span class="label label-danger pull-right"><?php echo $auction_total; ?></span><?php echo $text_stock; ?></a></li>
+        <li><a href="<?php echo $auction; ?>"><span class="label label-danger pull-right"><?php echo $auction_total; ?></span><?php echo $text_auction; ?></a></li>
         <li><a href="<?php echo $review; ?>"><span class="label label-danger pull-right"><?php echo $review_total; ?></span><?php echo $text_review; ?></a></li>
         <li class="divider"></li>
         <li class="dropdown-header"><?php echo $text_affiliate; ?></li>
@@ -74,9 +75,9 @@
     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-life-ring fa-lg"></i></a>
       <ul class="dropdown-menu dropdown-menu-right">
         <li class="dropdown-header"><?php echo $text_help; ?></li>
-        <li><a href="http://www.opencart.com" target="_blank"><?php echo $text_homepage; ?></a></li>
-        <li><a href="http://docs.opencart.com" target="_blank"><?php echo $text_documentation; ?></a></li>
-        <li><a href="http://forum.opencart.com" target="_blank"><?php echo $text_support; ?></a></li>
+        <li><a href="http://www.openbid.com" target="_blank"><?php echo $text_homepage; ?></a></li>
+        <li><a href="http://docs.openbid.com" target="_blank"><?php echo $text_documentation; ?></a></li>
+        <li><a href="http://forum.openbid.com" target="_blank"><?php echo $text_support; ?></a></li>
       </ul>
     </li>
     <li><a href="<?php echo $logout; ?>"><span class="hidden-xs hidden-sm hidden-md"><?php echo $text_logout; ?></span> <i class="fa fa-sign-out fa-lg"></i></a></li>

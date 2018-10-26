@@ -12,6 +12,7 @@ class ControllerToolSimulateData extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->user->hasPermission('modify', 'tool/simulate_data')) {
 			
 			if (isset($this->request->post['newAuction'])) {
+				
 				$tempJson = file_get_contents(DIR_TEMPDATA . "Auction_Data.json");
 				$Auctions = json_decode($tempJson, true);
 				$this->load->model('customer/customer');
@@ -22,7 +23,7 @@ class ControllerToolSimulateData extends Controller {
 				$totalSellers = array_merge($totalSellersOnly, $totalBoth);
 				$this->load->model('catalog/category');
 				$categories = $this->model_catalog_category->getCategories();
-				$this->load->model('tool/auction');
+				$this->load->model('catalog/auction');
 				
 				
 				//debuglog($Auctions[0]);
@@ -39,23 +40,30 @@ class ControllerToolSimulateData extends Controller {
 						//Pick a customer
 						$SellerInfo = $totalSellers[rand(0,count($totalSellers)-1)];
 						$newData['store_id']	=	$SellerInfo['store_id'];
-						$newData['customer_id']	=	$SellerInfo['customer_id'];
+						$newData['seller_id']	=	$SellerInfo['customer_id'];
 						$newData['auction_type']	=	'0';
-						$newData['status']			=	'1';
+						$newData['auction_status']			=	'1';
+						$newData['num_relist']		=	'0';
+						$query = "SELECT NOW() as currenttime";
+						$current_datetime = $this->db->query($query)->row;
+						$newData['date_created']	=	$current_datetime['currenttime'];
 						$newData['title']			=	$newAuction['title'];
 						$newData['subtitle']		=	$newAuction['subtitle'];
-						$newData['auction_description']	=	array(
+						$newData['auction_description'][1]	=	array(
 																  'name' => $newAuction['title'],
+																  'subname' => $newAuction['subtitle'],
 																  'description' => $newAuction['description'],
 																  'tag' => 'put tag code in',
 																  'meta_title' => 'put meta title code in',
 																  'meta_description' => 'put meta description code in',
 																  'meta_keyword' => 'put meta keyword code in'
 																 );
-						$newData['start_date']		=	$newAuction['start_date'];
+						$newData['custom_start_date']		=	$newAuction['start_date'];
 						$end_date = date_create($newAuction['start_date']);
-						date_add($end_date,date_interval_create_from_date_string('10 days'));
-						$newData['end_date']		= $end_date->format('Y-m-d H:i:s');
+						
+						date_add($end_date,date_interval_create_from_date_string('1 days'));
+						$newData['custom_end_date']		= $end_date->format('Y-m-d H:i:s');
+						$newData['duration']		=	'1';
 						$newData['min_bid']	=	$newAuction['min_bid'];
 						$newData['shipping_cost']	= '0';
 						$newData['additional_shipping']	=	'0';
@@ -66,21 +74,21 @@ class ControllerToolSimulateData extends Controller {
 						$newData['international_shipping']	=	'0';
 						$newData['initial_quantity']	=	'1';
 						$newData['buy_now_price']	=	round((float)$newAuction['min_bid'] * 2.5);
-						$newData['proxy_bidding']	=	$newAuction['proxy_bidding'];
-						$newData['custom_start_date']	=	'0';
-						$newData['custom_end_date']	=	'0';
-						$newData['custom_bid_increments']	=	'0';
+						
+						
+						
 						$newData['bolded_item']		=	$newAuction['bolded_item'];
 						$newData['on_carousel']		=	$newAuction['on_carousel'];
-						$newData['buy_now']		=	$newAuction['buy_now'];
+						$newData['buy_now_only']		=	$newAuction['buy_now'];
 						$newData['featured']		=	$newAuction['featured'];
 						$newData['highlighted']		=	$newAuction['highlighted'];
 						$newData['slideshow']		=	$newAuction['slideshow'];
 						$newData['social_media']		=	$newAuction['social_media'];
+						$newData['auto_relist']		=	'0';
 						$newData['auction_category'][0]	=	'2';
 						//debuglog("new data:");
 						//debuglog($newData);
-						$this->model_tool_auction->addAuction($newData);
+						$this->model_catalog_auction->addAuction($newData);
 						//debuglog($id);
 						// $newAuction Info
 					/*} else {

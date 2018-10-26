@@ -153,7 +153,7 @@
                     <input type="checkbox" name="selected[]" value="<?php echo $auction['auction_id']; ?>" />
                     <?php } ?></td>
                   <td class="text-center"><?php if ($auction['image']) { ?>
-                    <img src="<?php echo $auction['image']; ?>" alt="<?php echo $auction['title']; ?>" class="img-thumbnail" />
+                    <img src="<?php echo $auction['image']; ?>" class="img-thumbnail" alt="<?php echo $auction['title']; ?>" title="" data-placeholder="<?php echo $auction['placeholder']; ?>" />
                     <?php } else { ?>
                     <span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span>
                     <?php } ?></td>

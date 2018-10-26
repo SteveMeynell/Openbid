@@ -46,6 +46,7 @@ class ControllerExtensionExtensionAccounting extends Controller {
 
 			// Call uninstall method if it exsits
 			$this->load->controller('extension/accounting/' . $this->request->get['extension'] . '/uninstall');
+			
 
 			$this->session->data['success'] = $this->language->get('text_success');
 		}
@@ -102,7 +103,7 @@ class ControllerExtensionExtensionAccounting extends Controller {
 
 				$this->load->language('extension/accounting/' . $extension);
 
-				$data['accounting'][] = array(
+				$data['extensions'][] = array(
 					'name'      => $this->language->get('heading_title'),
 					'status'    => $this->config->get('accounting_' . $extension . '_status') ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
 					'install'   => $this->url->link('extension/extension/accounting/install', 'token=' . $this->session->data['token'] . '&extension=' . $extension, true),
@@ -112,7 +113,7 @@ class ControllerExtensionExtensionAccounting extends Controller {
 				);
 			}
 		}
-
+		
 		$this->response->setOutput($this->load->view('extension/extension/accounting', $data));
 	}
 

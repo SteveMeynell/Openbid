@@ -58,27 +58,33 @@
   <div id="stats">
     <ul>
       <li>
-        <div><?php echo $text_closed_auction_status; ?> <span class="pull-right"><?php echo $closed_auction_status; ?>%</span></div>
+        <div><?php echo $text_created_auction_status; ?> <span class="pull-right"><?php echo round(($created_auction_status/$status_total)*100); ?>%</span></div>
         <div class="progress">
-          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $closed_auction_status; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $closed_auction_status; ?>%"> <span class="sr-only"><?php echo $closed_auction_status; ?>%</span></div>
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo round(($created_auction_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($created_auction_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $closed_auction_status; ?>%</span></div>
         </div>
       </li>
       <li>
-        <div><?php echo $text_open_auction_status; ?> <span class="pull-right"><?php echo $open_auction_status; ?>%</span></div>
+        <div><?php echo $text_closed_auction_status; ?> <span class="pull-right"><?php echo round(($closed_auction_status/$status_total)*100); ?>%</span></div>
         <div class="progress">
-          <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<?php echo $open_auction_status; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $open_auction_status; ?>%"> <span class="sr-only"><?php echo $open_auction_status; ?>%</span></div>
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo round(($closed_auction_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($closed_auction_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $closed_auction_status; ?>%</span></div>
         </div>
       </li>
       <li>
-        <div><?php echo $text_suspend_status; ?> <span class="pull-right"><?php echo $suspend_status; ?>%</span></div>
+        <div><?php echo $text_open_auction_status; ?> <span class="pull-right"><?php echo round(($open_auction_status/$status_total)*100); ?>%</span></div>
         <div class="progress">
-          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="<?php echo $suspend_status; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $suspend_status; ?>%"> <span class="sr-only"><?php echo $suspend_status; ?>%</span></div>
+          <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<?php echo round(($open_auction_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($open_auction_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $open_auction_status; ?>%</span></div>
         </div>
       </li>
       <li>
-        <div><?php echo $text_moderation_status; ?> <span class="pull-right"><?php echo $moderation_status; ?>%</span></div>
+        <div><?php echo $text_suspend_status; ?> <span class="pull-right"><?php echo round(($suspend_status/$status_total)*100); ?>%</span></div>
         <div class="progress">
-          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="<?php echo $moderation_status; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $moderation_status; ?>%"> <span class="sr-only"><?php echo $moderation_status; ?>%</span></div>
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="<?php echo round(($suspend_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($suspend_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $suspend_status; ?>%</span></div>
+        </div>
+      </li>
+      <li>
+        <div><?php echo $text_moderation_status; ?> <span class="pull-right"><?php echo round(($moderation_status/$status_total)*100); ?>%</span></div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="<?php echo round(($moderation_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($moderation_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $moderation_status; ?>%</span></div>
         </div>
       </li>
     </ul>

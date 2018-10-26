@@ -939,6 +939,7 @@ class ControllerCommonColumnLeft extends Controller {
 			}
 			*/
 			// Stats
+			$data['text_created_auction_status'] = $this->language->get('text_created_auction_status');
 			$data['text_closed_auction_status'] = $this->language->get('text_closed_auction_status');
 			$data['text_open_auction_status'] = $this->language->get('text_open_auction_status');
 			$data['text_suspend_status'] = $this->language->get('text_suspend_status');
@@ -949,9 +950,11 @@ class ControllerCommonColumnLeft extends Controller {
 			$auction_totals = $this->model_catalog_auction->getTotalAuctions($filter);
 
 			$data['moderation_status']		=	$auction_totals['0'];
-			$data['open_auction_status']	=	$auction_totals['1'];
-			$data['closed_auction_status']	=	$auction_totals['2'];
-			$data['suspend_status']			=	$auction_totals['3'];
+			$data['created_auction_status']	=	$auction_totals['1'];
+			$data['open_auction_status']	=	$auction_totals['2'];
+			$data['closed_auction_status']	=	$auction_totals['3'];
+			$data['suspend_status']			=	$auction_totals['4'];
+			$data['status_total']			=	array_sum($auction_totals);
 			/*
 	
 			//$complete_total = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_complete_status'))));
