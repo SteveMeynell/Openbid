@@ -22,6 +22,7 @@ class ControllerCommonHeader extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_auction'] = $this->language->get('text_auction');
+		$data['text_opening_soon'] = $this->language->get('text_opening_soon');
 		$data['text_created_auction_status'] = $this->language->get('text_created_auction_status');
 		$data['text_open_auction_status'] = $this->language->get('text_open_auction_status');
 		$data['text_closed_auction_status'] = $this->language->get('text_closed_auction_status');
@@ -74,7 +75,10 @@ class ControllerCommonHeader extends Controller {
 			$data['suspended_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
 			$data['auction'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
 			$data['auction_total'] = '0';
-//debuglog("Need to fix this... header controller");
+			
+			$opening_soon = $this->model_catalog_auction->getOpeningSoon();
+			$data['opening_one_day'] = $opening_soon['soon'];
+
 			// Customers
 			$this->load->model('report/customer');
 
@@ -127,7 +131,7 @@ class ControllerCommonHeader extends Controller {
 			$data['affiliate_total'] = $affiliate_total;
 			$data['affiliate_approval'] = $this->url->link('marketing/affiliate', 'token=' . $this->session->data['token'] . '&filter_approved=1', true);
 
-			$data['alerts'] = $customer_total + $auction_total + $review_total + $affiliate_total;
+			$data['alerts'] = $opening_soon['soon'];
 
 			// Online Stores
 			$data['stores'] = array();

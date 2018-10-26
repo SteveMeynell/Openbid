@@ -40,9 +40,10 @@
     <a href="<?php echo $home; ?>" class="navbar-brand"><img src="view/image/logo.png" alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" /></a></div>
   <?php if ($logged) { ?>
   <ul class="nav pull-right">
-    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><?php if($alerts > 0) { ?><span class="label label-danger pull-left"><?php echo $alerts; ?></span><?php } ?> <i class="fa fa-bell fa-lg"></i></a>
+    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><?php if($alerts > 0) { ?><span class="label label-success pull-left"><?php echo $alerts; ?></span><?php } ?> <i class="fa fa-bell fa-lg"></i></a>
       <ul class="dropdown-menu dropdown-menu-right alerts-dropdown">
         <li class="dropdown-header"><?php echo $text_auction; ?></li>
+        <li><a href="<?php echo $opening_one_day; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $opening_one_day; ?></span><?php echo $text_opening_soon; ?></a></li>
         <li><a href="<?php echo $created_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $created_auction_status_total; ?></span><?php echo $text_created_auction_status; ?></a></li>
         <li><a href="<?php echo $open_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $open_auction_status_total; ?></span><?php echo $text_open_auction_status; ?></a></li>
         <li><a href="<?php echo $closed_auction_status; ?>"><span class="label label-warning pull-right"><?php echo $closed_auction_status_total; ?></span><?php echo $text_closed_auction_status; ?></a></li>

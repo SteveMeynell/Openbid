@@ -4,6 +4,7 @@ $_['heading_title']          = 'OpenBid';
 
 // Text
 $_['text_auction']             = 'Auctions';
+$_['text_opening_soon'] = 'Auctions Opening Soon';
 $_['text_created_auction_status'] = 'Created';
 $_['text_open_auction_status'] = 'Open';
 $_['text_closed_auction_status']   = 'Closed';

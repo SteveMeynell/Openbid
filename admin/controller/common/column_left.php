@@ -944,10 +944,15 @@ class ControllerCommonColumnLeft extends Controller {
 			$data['text_open_auction_status'] = $this->language->get('text_open_auction_status');
 			$data['text_suspend_status'] = $this->language->get('text_suspend_status');
 			$data['text_moderation_status'] = $this->language->get('text_moderation_status');
+			$data['text_auctions_opening_soon'] = $this->language->get('text_auctions_opening_soon');
 	
 			$this->load->model('catalog/auction');
 			$filter = array('dashboard' => 'true');
 			$auction_totals = $this->model_catalog_auction->getTotalAuctions($filter);
+			
+			$opening_soon = $this->model_catalog_auction->getOpeningSoon();
+			
+			$data['opening_one_day'] = $opening_soon['soon'];
 
 			$data['moderation_status']		=	$auction_totals['0'];
 			$data['created_auction_status']	=	$auction_totals['1'];

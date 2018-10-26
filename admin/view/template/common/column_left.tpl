@@ -58,6 +58,12 @@
   <div id="stats">
     <ul>
       <li>
+        <div><?php echo $text_auctions_opening_soon; ?> <span class="pull-right"><?php echo round(($opening_one_day/$created_auction_status)*100); ?>%</span></div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo round(($opening_one_day/$created_auction_status)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($opening_one_day/$created_auction_status)*100); ?>%"> <span class="sr-only"><?php echo $opening_one_day; ?>%</span></div>
+        </div>
+      </li>
+      <li>
         <div><?php echo $text_created_auction_status; ?> <span class="pull-right"><?php echo round(($created_auction_status/$status_total)*100); ?>%</span></div>
         <div class="progress">
           <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo round(($created_auction_status/$status_total)*100); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo round(($created_auction_status/$status_total)*100); ?>%"> <span class="sr-only"><?php echo $closed_auction_status; ?>%</span></div>

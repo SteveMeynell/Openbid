@@ -71,6 +71,26 @@ class ModelCatalogAuction extends Model {
 		return $query->row['total'];
     }
 	
+	function getOpeningSoon($soon='24') {
+		// $soon is in hours
+		$when = $this->db->query("SELECT NOW() AS currenttime")->row;
+		$today = $when['currenttime'];
+		$soonWhen = date_add(date_create($today), date_interval_create_from_date_string($soon . " HOURS"));
+
+		$query = $this->db->query("SELECT COUNT(au.auction_id) AS soon FROM "  . DB_PREFIX . "auctions au
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (au.auction_id = ad.auction_id) 
+								  WHERE
+								  au.status = '" . $this->config->get('config_auction_created_status') . "'
+								  AND
+								  ad.start_date BETWEEN
+								  '" . $today . "'
+								  AND
+								  '" . $soonWhen->format('Y-m-d H:i:s') . "'
+								  ORDER BY ad.start_date
+								  ");
+		return $query->row;
+	}
 	
 	public function getAuctions($data = array()) {
 		$sql = "SELECT *, aus.name AS status_name, CONCAT(c.lastname, ' ', c.firstname) AS seller  FROM " . DB_PREFIX . "auctions a
