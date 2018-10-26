@@ -25,8 +25,7 @@ class ControllerToolSimulateData extends Controller {
 				$categories = $this->model_catalog_category->getCategories();
 				$this->load->model('catalog/auction');
 				
-				
-				//debuglog($Auctions[0]);
+				$whichCategory = rand(1, count($categories));
 				
 				
 				//$newAuction = $Auctions[0];
@@ -58,10 +57,12 @@ class ControllerToolSimulateData extends Controller {
 																  'meta_description' => 'put meta description code in',
 																  'meta_keyword' => 'put meta keyword code in'
 																 );
-						$newData['custom_start_date']		=	$newAuction['start_date'];
-						$end_date = date_create($newAuction['start_date']);
+						$NumHours = rand(12,48);
+						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
+						$newData['custom_start_date']		=	$newStartDates->format('Y-m-d H:i:s');
+						$end_date = date_add($newStartDates,date_interval_create_from_date_string('1 days'));
 						
-						date_add($end_date,date_interval_create_from_date_string('1 days'));
+						//date_add($end_date,date_interval_create_from_date_string('1 days'));
 						$newData['custom_end_date']		= $end_date->format('Y-m-d H:i:s');
 						$newData['duration']		=	'1';
 						$newData['min_bid']	=	$newAuction['min_bid'];
@@ -85,7 +86,7 @@ class ControllerToolSimulateData extends Controller {
 						$newData['slideshow']		=	$newAuction['slideshow'];
 						$newData['social_media']		=	$newAuction['social_media'];
 						$newData['auto_relist']		=	'0';
-						$newData['auction_category'][0]	=	'2';
+						$newData['auction_category'][0]	=	$whichCategory;
 						//debuglog("new data:");
 						//debuglog($newData);
 						$this->model_catalog_auction->addAuction($newData);

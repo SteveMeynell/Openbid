@@ -181,7 +181,6 @@ class ModelCatalogAuction extends Model {
 	
 	
 	public function addAuction($data) {
-		debuglog($data);
 		// add in the actual auction table
 		
 		$this->db->query("INSERT INTO " . DB_PREFIX . "auctions
