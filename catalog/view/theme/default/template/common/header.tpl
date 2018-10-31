@@ -42,10 +42,7 @@ body{
 <?php foreach ($analytics as $analytic) { ?>
 <?php echo $analytic; ?>
 <?php } ?>
-<<<<<<< HEAD
 
-=======
->>>>>>> eb0b72a6fe29e08ea673630d127de83c3d33e372
 </head>
 <body class="<?php echo $class; ?>">
 <nav id="top">
