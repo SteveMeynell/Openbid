@@ -36,7 +36,7 @@ class ControllerAuctionCategory extends Controller {
 		if (isset($this->request->get['limit'])) {
 			$limit = (int)$this->request->get['limit'];
 		} else {
-			$limit = $this->config->get($this->config->get('config_theme') . '_auction_limit');
+			$limit = $this->config->get($this->config->get('config_theme') . '_product_limit');
 		}
 
 		$data['breadcrumbs'] = array();
@@ -98,15 +98,12 @@ class ControllerAuctionCategory extends Controller {
 
 			$data['text_refine'] = $this->language->get('text_refine');
 			$data['text_empty'] = $this->language->get('text_empty');
-			$data['text_quantity'] = $this->language->get('text_quantity');
-			$data['text_manufacturer'] = $this->language->get('text_manufacturer');
-			$data['text_model'] = $this->language->get('text_model');
+			
 			$data['text_price'] = $this->language->get('text_price');
-			$data['text_tax'] = $this->language->get('text_tax');
-			$data['text_points'] = $this->language->get('text_points');
-			$data['text_compare'] = sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
+			
 			$data['text_sort'] = $this->language->get('text_sort');
 			$data['text_limit'] = $this->language->get('text_limit');
+			$data['text_please_login'] = $this->language->get('text_please_login');
 
 			$data['button_cart'] = $this->language->get('button_cart');
 			$data['button_wishlist'] = $this->language->get('button_wishlist');
@@ -180,29 +177,22 @@ class ControllerAuctionCategory extends Controller {
 			$results = $this->model_catalog_auction->getAuctions($filter_data);
 
 			foreach ($results as $result) {
+				$this->load->model('auction/bidding');
 				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $this->config->get($this->config->get('config_theme') . '_image_auction_width'), $this->config->get($this->config->get('config_theme') . '_image_auction_height'));
+					$image = $this->model_tool_image->resize($result['image'], $this->config->get($this->config->get('config_theme') . '_image_category_width'), $this->config->get($this->config->get('config_theme') . '_image_category_height'));
 				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get($this->config->get('config_theme') . '_image_auction_width'), $this->config->get($this->config->get('config_theme') . '_image_auction_height'));
+					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get($this->config->get('config_theme') . '_image_category_width'), $this->config->get($this->config->get('config_theme') . '_image_category_height'));
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+					$current_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
 				} else {
-					$price = false;
+					$current_bid = false;
+					$buy_now = false;
 				}
-
-				if ((float)$result['special']) {
-					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$special = false;
-				}
-
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
+				
+				$result['rating'] = '4';
 
 				if ($this->config->get('config_review_status')) {
 					$rating = (int)$result['rating'];
@@ -215,11 +205,11 @@ class ControllerAuctionCategory extends Controller {
 					'thumb'       => $image,
 					'name'        => $result['name'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_auction_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-					'rating'      => $result['rating'],
+					'current_bid'       => (isset($current_bid['bid_amount'])) ? $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']) : $this->currency->format('0',$this->session->data['currency']),
+					'buy_now_only'	=> $result['buy_now_only'],
+					'buy_now'     => $buy_now,
+					'rating'      => $rating,
+					'views'      => $result['viewed'],
 					'href'        => $this->url->link('auction/auction', 'path=' . $this->request->get['path'] . '&auction_id=' . $result['auction_id'] . $url)
 				);
 			}
@@ -308,7 +298,7 @@ class ControllerAuctionCategory extends Controller {
 
 			$data['limits'] = array();
 
-			$limits = array_unique(array($this->config->get($this->config->get('config_theme') . '_auction_limit'), 25, 50, 75, 100));
+			$limits = array_unique(array($this->config->get($this->config->get('config_theme') . '_product_limit'), 25, 50, 75, 100));
 
 			sort($limits);
 

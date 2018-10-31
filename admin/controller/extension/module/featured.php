@@ -28,13 +28,13 @@ class ControllerExtensionModuleFeatured extends Controller {
 		$data['text_disabled'] = $this->language->get('text_disabled');
 
 		$data['entry_name'] = $this->language->get('entry_name');
-		$data['entry_product'] = $this->language->get('entry_product');
+		$data['entry_auction'] = $this->language->get('entry_auction');
 		$data['entry_limit'] = $this->language->get('entry_limit');
 		$data['entry_width'] = $this->language->get('entry_width');
 		$data['entry_height'] = $this->language->get('entry_height');
 		$data['entry_status'] = $this->language->get('entry_status');
 
-		$data['help_product'] = $this->language->get('help_product');
+		$data['help_auction'] = $this->language->get('help_auction');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
@@ -109,25 +109,25 @@ class ControllerExtensionModuleFeatured extends Controller {
 			$data['name'] = '';
 		}
 
-		$this->load->model('catalog/product');
+		$this->load->model('catalog/auction');
 
-		$data['products'] = array();
+		$data['auctions'] = array();
 
-		if (!empty($this->request->post['product'])) {
-			$products = $this->request->post['product'];
-		} elseif (!empty($module_info['product'])) {
-			$products = $module_info['product'];
+		if (!empty($this->request->post['auction'])) {
+			$auctions = $this->request->post['auction'];
+		} elseif (!empty($module_info['auction'])) {
+			$auctions = $module_info['auction'];
 		} else {
-			$products = array();
+			$auctions = array();
 		}
 
-		foreach ($products as $product_id) {
-			$product_info = $this->model_catalog_product->getProduct($product_id);
+		foreach ($auctions as $auction_id) {
+			$auction_info = $this->model_catalog_auction->getAuction($auction_id);
 
-			if ($product_info) {
-				$data['products'][] = array(
-					'product_id' => $product_info['product_id'],
-					'name'       => $product_info['name']
+			if ($auction_info) {
+				$data['auctions'][] = array(
+					'auction_id' => $auction_info['auction_id'],
+					'title'       => $auction_info['title']
 				);
 			}
 		}

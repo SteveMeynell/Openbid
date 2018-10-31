@@ -3,31 +3,32 @@ class ControllerExtensionModuleLatest extends Controller {
 	public function index($setting) {
 		$this->load->language('extension/module/latest');
 
-		$data['heading_title'] = $this->language->get('heading_title');
+		$data['heading_title'] = $setting['name']; //$this->language->get('heading_title');
 
-		$data['text_tax'] = $this->language->get('text_tax');
+		$data['text_buy_now'] = $this->language->get('text_buy_now');
+		$data['text_buy_now_only'] = $this->language->get('text_buy_now_only');
+		$data['text_current_bid'] = $this->language->get('text_current_bid');
+		$data['text_viewed'] = $this->language->get('text_viewed');
+		$data['text_please_login']	= $this->language->get('text_please_login');
 
-		$data['button_cart'] = $this->language->get('button_cart');
+		$data['button_bid'] = $this->language->get('button_bid');
 		$data['button_wishlist'] = $this->language->get('button_wishlist');
 		$data['button_compare'] = $this->language->get('button_compare');
 
-		$this->load->model('catalog/product');
+		$this->load->model('catalog/auction');
 
 		$this->load->model('tool/image');
 
-		$data['products'] = array();
+		$data['auctions'] = array();
 
-		$filter_data = array(
-			'sort'  => 'p.date_added',
-			'order' => 'DESC',
-			'start' => 0,
-			'limit' => $setting['limit']
-		);
 
-		$results = $this->model_catalog_product->getProducts($filter_data);
+		$results = $this->model_catalog_auction->getLatestAuctions($setting['limit']);
 
 		if ($results) {
+			$this->load->model('auction/bidding');
+			
 			foreach ($results as $result) {
+				
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
 				} else {
@@ -35,39 +36,31 @@ class ControllerExtensionModuleLatest extends Controller {
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+					$tempcurrent_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$current_bid = $this->currency->format($tempcurrent_bid['bid_amount'],$this->session->data['currency']);
+					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
 				} else {
-					$price = false;
+					$current_bid = false;
+					$buy_now = false;
 				}
-
-				if ((float)$result['special']) {
-					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$special = false;
-				}
-
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
-
+				
 				if ($this->config->get('config_review_status')) {
 					$rating = $result['rating'];
-				} else {
+				} else { 
 					$rating = false;
 				}
 
-				$data['products'][] = array(
-					'product_id'  => $result['product_id'],
+				$data['auctions'][] = array(
+					'auction_id'  => $result['auction_id'],
 					'thumb'       => $image,
 					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'rating'      => $rating,
-					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
+					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_auction_description_length')) . '..',
+					'current_bid'       => $current_bid,
+					'buy_now_only'	=> $result['buy_now_only'],
+					'buy_now'     => $buy_now,
+					'rating'		=> $rating,
+					'views'      => $result['viewed'],
+					'href'        => $this->url->link('auction/auction', 'auction_id=' . $result['auction_id'])
 				);
 			}
 

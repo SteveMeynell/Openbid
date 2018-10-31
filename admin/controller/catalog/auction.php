@@ -149,8 +149,8 @@ class ControllerCatalogAuction extends Controller {
 				$testdata['auction_description'][$language]['meta_keyword'] = make_keywords($seader);
 			}
 			
-			
-			$this->model_catalog_auction->editAuction($this->request->get['auction_id'], $testdata);
+			$testdata['auction_id'] = $this->request->get['auction_id'];
+			$this->model_catalog_auction->editAuction($testdata);
 			//$this->model_catalog_auction->editAuction($this->request->get['auction_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -1511,13 +1511,13 @@ class ControllerCatalogAuction extends Controller {
 			}					
 		}
 
-		if (isset($this->request->get['filter_seller'])) {
+		if (isset($this->request->get['filter_name'])) {
 			$this->load->model('catalog/auction');
 
-			if (isset($this->request->get['filter_seller'])) {
-				$filter_seller = $this->request->get['filter_seller'];
+			if (isset($this->request->get['filter_name'])) {
+				$filter_name = $this->request->get['filter_name'];
 			} else {
-				$filter_seller = '';
+				$filter_name = '';
 			}
 
 			if (isset($this->request->get['limit'])) {
@@ -1527,7 +1527,7 @@ class ControllerCatalogAuction extends Controller {
 			}
 
 			$filter_data = array(
-				'filter_seller'  => $filter_seller,
+				'filter_name'  => $filter_name,
 				'start'        => 0,
 				'limit'        => $limit
 			);

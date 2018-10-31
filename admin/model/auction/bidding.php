@@ -27,7 +27,14 @@ class ModelAuctionBidding extends Model {
         }
         
         return $result;
-        
-        
     }
+    
+    public function getCurrentBid($data) {
+        $this->db->query("SELECT * FROM '" . DB_PREFIX . "bid_history'
+                         WHERE auction_id = '" . $data . "'
+                         OREDER BY bid_id DESC");
+        return $this->db->query->row;
+    }
+    
+    
 } // End of Model

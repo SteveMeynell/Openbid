@@ -301,7 +301,7 @@ class ModelCatalogAuction extends Model {
 		
 	}
 
-	public function editAuction($auction_id, $data) {
+	public function editAuction($data) {
 		
 		$this->db->query("UPDATE " . DB_PREFIX . "auctions
 						 SET
@@ -312,26 +312,26 @@ class ModelCatalogAuction extends Model {
 						 modified_by = '" . $this->session->data['user_id'] . "',
 						 date_modified = NOW()
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['image'])) {
 			$this->db->query("UPDATE " . DB_PREFIX . "auctions
 							 SET
 							 image = '" . $this->db->escape($data['image']) . "'
 							 WHERE
-							 auction_id = '" . (int)$auction_id . "'");
+							 auction_id = '" . (int)$data['auction_id'] . "'");
 		}
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_description
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		foreach ($data['auction_description'] as $language_id => $value) {
 			$title = $this->db->escape($value['name']);
 			$subtitle = $this->db->escape($value['subname']);
 			$this->db->query("INSERT INTO " . DB_PREFIX . "auction_description
 							 SET
-							 auction_id = '" . (int)$auction_id . "',
+							 auction_id = '" . (int)$data['auction_id'] . "',
 							 language_id = '" . (int)$language_id . "',
 							 name = '" . $this->db->escape($value['name']) . "',
 							 subname = '" . $this->db->escape($value['subname']) . "',
@@ -359,7 +359,7 @@ class ModelCatalogAuction extends Model {
 						 initial_quantity = '" . $this->db->escape((int)$data['initial_quantity']) . "',
 						 buy_now_price = '" . $this->db->escape((float)$data['buy_now_price']) . "'
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'
+						 auction_id = '" . (int)$data['auction_id'] . "'
 						 ");
 
 						 
@@ -374,30 +374,32 @@ class ModelCatalogAuction extends Model {
 						 slideshow = '" . $this->db->escape($data['slideshow']) . "',
 						 social_media = '" . $this->db->escape($data['social_media']) . "',
 						 auto_relist = '" . $this->db->escape($data['auto_relist']) . "'
+						 WHERE
+						 auction_id = '" . (int)$data['auction_id'] . "'
 						 ");
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_to_store
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['auction_store'])) {
 			foreach ($data['auction_store'] as $store_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_store
 								 SET
-								 auction_id = '" . (int)$auction_id . "',
+								 auction_id = '" . (int)$data['auction_id'] . "',
 								 store_id = '" . (int)$store_id . "'");
 			}
 		}
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_photos
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['auction_image'])) {
 			foreach ($data['auction_image'] as $auction_image) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "auction_photos
 								 SET
-								 auction_id = '" . (int)$auction_id . "',
+								 auction_id = '" . (int)$data['auction_id'] . "',
 								 image = '" . $this->db->escape($auction_image['image']) . "',
 								 sort_order = '" . (int)$auction_image['sort_order'] . "'");
 			}
@@ -405,26 +407,26 @@ class ModelCatalogAuction extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_to_category
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['auction_category'])) {
 			foreach ($data['auction_category'] as $category_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_category
 								 SET
-								 auction_id = '" . (int)$auction_id . "',
+								 auction_id = '" . (int)$data['auction_id'] . "',
 								 category_id = '" . (int)$category_id . "'");
 			}
 		}
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_to_layout
 						 WHERE
-						 auction_id = '" . (int)$auction_id . "'");
+						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['auction_layout'])) {
 			foreach ($data['auction_layout'] as $store_id => $layout_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_layout
 								 SET
-								 auction_id = '" . (int)$auction_id . "',
+								 auction_id = '" . (int)$data['auction_id'] . "',
 								 store_id = '" . (int)$store_id . "',
 								 layout_id = '" . (int)$layout_id . "'");
 			}
@@ -432,12 +434,12 @@ class ModelCatalogAuction extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias
 						 WHERE
-						 query = 'auction_id=" . (int)$auction_id . "'");
+						 query = 'auction_id=" . (int)$data['auction_id'] . "'");
 
 		if ($data['keyword']) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias
 							 SET
-							 query = 'auction_id=" . (int)$auction_id . "',
+							 query = 'auction_id=" . (int)$data['auction_id'] . "',
 							 keyword = '" . $this->db->escape($data['keyword']) . "'");
 		}
 

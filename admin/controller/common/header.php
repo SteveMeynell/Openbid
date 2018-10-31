@@ -58,7 +58,7 @@ class ControllerCommonHeader extends Controller {
 			$data['logout'] = $this->url->link('common/logout', 'token=' . $this->session->data['token'], true);
 
 			$currentdatetime = $this->db->query("SELECT NOW() AS current")->row;
-			debuglog($currentdatetime);
+
 			$data['current_date_time'] = $currentdatetime['current'];
 			// Auctions
 			$this->load->model('catalog/auction');

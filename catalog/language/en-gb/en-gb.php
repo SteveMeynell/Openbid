@@ -19,12 +19,13 @@ $_['text_all_zones']        = 'All Zones';
 $_['text_pagination']       = 'Showing %d to %d of %d (%d Pages)';
 $_['text_loading']          = 'Loading...';
 $_['text_no_results']       = 'No results!';
+$_['text_please_login']     = 'Login to Begin!';
 
 // Buttons
 $_['button_address_add']    = 'Add Address';
 $_['button_back']           = 'Back';
 $_['button_continue']       = 'Continue';
-$_['button_cart']           = 'Add to Cart';
+$_['button_bid']           = 'Place a Bid';
 $_['button_cancel']         = 'Cancel';
 $_['button_compare']        = 'Compare this Product';
 $_['button_wishlist']       = 'Add to Wish List';

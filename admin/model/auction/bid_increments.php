@@ -67,4 +67,12 @@ class ModelAuctionBidIncrements extends Model {
         WHERE increment_id = '" . $this->db->escape($id) . "'");
     }
     
+	public function getNextIncrement($data) {
+		$this->db->query("SELECT increment FROM " . DB_PREFIX . "bid_increments
+						 WHERE
+						 bid_low <= '" . $data . "'
+						 AND
+						 bid_high >= '" . $data . "'");
+		return $this->query->row;
+	}
 } // End of Model
