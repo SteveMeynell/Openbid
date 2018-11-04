@@ -199,6 +199,12 @@ class ModelCatalogAuction extends Model {
 							 SET
 							 image = '" . $this->db->escape($data['image']) . "'
 							 WHERE auction_id = '" . (int)$auction_id . "'");
+		} else {
+			$this->db->query("UPDATE " . DB_PREFIX . "auctions
+							 SET
+							 image = 'catalog/Folder.jpg'
+							 WHERE
+							 auction_id = '" . (int)$data['auction_id'] . "'");
 		}
 		
 
@@ -291,7 +297,7 @@ class ModelCatalogAuction extends Model {
 			}
 		}
 
-		if ($data['keyword']) {
+		if (isset($data['keyword'])) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'auction_id=" . (int)$auction_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
 		}
 
@@ -315,11 +321,21 @@ class ModelCatalogAuction extends Model {
 						 auction_id = '" . (int)$data['auction_id'] . "'");
 
 		if (isset($data['image'])) {
-			$this->db->query("UPDATE " . DB_PREFIX . "auctions
-							 SET
-							 image = '" . $this->db->escape($data['image']) . "'
-							 WHERE
-							 auction_id = '" . (int)$data['auction_id'] . "'");
+			if (!empty($data['image'])) {
+				$this->db->query("UPDATE " . DB_PREFIX . "auctions
+								 SET
+								 image = '" . $this->db->escape($data['image']) . "'
+								 WHERE
+								 auction_id = '" . (int)$data['auction_id'] . "'");
+			} else {
+				$imgnum = rand(1,25);
+				$testimage = 'catalog/auctions/IMG_' . $imgnum . '.JPG';
+				$this->db->query("UPDATE " . DB_PREFIX . "auctions
+								 SET
+								 image = '" . $testimage . "'
+								 WHERE
+								 auction_id = '" . (int)$data['auction_id'] . "'");
+			}
 		}
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_description

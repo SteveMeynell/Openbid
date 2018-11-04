@@ -30,7 +30,9 @@ class ModelToolSimulateData extends Model {
         $user['address'][0]['city']           =   $data['location']['city'];
         $user['address'][0]['postcode']    =   $data['location']['postcode'];
         $zone           =   strtolower($data['location']['state']);
-        $user['address'][0]['country_id']     =   '38';
+		$this->load->model('localisation/country');
+		$country_id = $this->model_localisation_country->getCountryByISO2($data['nat']);
+        $user['address'][0]['country_id']     =   ($country_id) ? $country_id : '38';
         $user['address'][0]['default']          =   true;
         $this->load->model('localisation/zone');
         $zones = $this->model_localisation_zone->getZonesByCountryId($user['address'][0]['country_id']);
@@ -39,8 +41,12 @@ class ModelToolSimulateData extends Model {
         foreach($zone_ids as $id => $zoneName){
             if(strtolower($zoneName) == $zone){
                 $user['address'][0]['zone_id'] = $id;
-            }
+            } 
         }
+		if (!isset($user['address'][0]['zone_id'])){
+			debuglog("couldn't find a zone");
+			debuglog($user['firstname'] . ' ' . $user['lastname']);
+		}
         $this->load->model('customer/customer');
         $this->model_customer_customer->addCustomer($user);
         

@@ -16,7 +16,7 @@ class ControllerExtensionModuleMostViewed extends Controller {
 				$this->model_extension_module->editModule($this->request->get['module_id'], $this->request->post);
 			}
 
-			$this->cache->delete('product');
+			$this->cache->delete('auction');
 
 			$this->session->data['success'] = $this->language->get('text_success');
 

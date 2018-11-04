@@ -67,16 +67,16 @@ class ControllerCommonHeader extends Controller {
 			$auction_totals = $this->model_catalog_auction->getTotalAuctions(array('dashboard' => 'true'));
 			
 			$data['moderation_status_total'] = $auction_totals['0'];
-			$data['moderation_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['moderation_status'] = $this->url->link('catalog/auction&filter_auction_status=0', 'token=' . $this->session->data['token'], true);
 			$data['created_auction_status_total'] = $auction_totals['1'];
-			$data['created_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['created_auction_status'] = $this->url->link('catalog/auction&filter_auction_status=1', 'token=' . $this->session->data['token'], true);
 			$data['open_auction_status_total'] = $auction_totals['2'];
-			$data['open_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['open_auction_status'] = $this->url->link('catalog/auction&filter_auction_status=2', 'token=' . $this->session->data['token'], true);
 			$data['closed_auction_status_total'] = $auction_totals['3'];
-			$data['closed_auction_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['closed_auction_status'] = $this->url->link('catalog/auction&filter_auction_status=3', 'token=' . $this->session->data['token'], true);
 			$data['suspended_status_total'] = $auction_totals['4'];
-			$data['suspended_status'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
-			$data['auction'] = $this->url->link('report/customer_online', 'token=' . $this->session->data['token'], true);
+			$data['suspended_status'] = $this->url->link('catalog/auction&filter_auction_status=4', 'token=' . $this->session->data['token'], true);
+			$data['auction'] = $this->url->link('catalog/auction', 'token=' . $this->session->data['token'], true);
 			$data['auction_total'] = '0';
 			
 			$opening_soon = $this->model_catalog_auction->getOpeningSoon();

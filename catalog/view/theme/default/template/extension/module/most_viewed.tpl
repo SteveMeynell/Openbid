@@ -1,13 +1,18 @@
 <h3><?php echo $heading_title; ?></h3>
 <div class="row">
   <?php foreach ($auctions as $auction) { ?>
-  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
+  <div class="product-layout col-lg-6 col-md-3 col-sm-6 col-xs-12">
     <div class="product-thumb transition">
       <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a></div>
       <div class="caption">
         <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a></h4>
         <p><?php echo $auction['description']; ?></p>
         <p><?php echo $text_viewed . ' ' . $auction['views']; ?></p>
+        <h3><?php echo $text_ending_in; ?></h3>
+            <h4>
+              <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $auction['end_date']; ?>"></div>
+              <div class="startingTime" id="time_remaining"></div>
+            </h4>
         <?php if ($auction['rating']) { ?>
         <div class="rating">
           <?php for ($i = 1; $i <= 5; $i++) { ?>

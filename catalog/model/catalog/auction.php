@@ -33,7 +33,6 @@ class ModelCatalogAuction extends Model {
 								  ON (a.auction_id = ao.auction_id) 
 								  WHERE a.auction_id = '" . (int)$auction_id . "'
 								  AND ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
-								  AND ad1.start_date <= NOW()
 								  AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
 
 		if ($query->num_rows) {
@@ -87,10 +86,17 @@ class ModelCatalogAuction extends Model {
 								  LEFT JOIN " . DB_PREFIX . "auction_details ad1
 								  ON (a.auction_id = ad1.auction_id)
 								  LEFT JOIN " . DB_PREFIX . "auction_options ao
-								  ON (a.auction_id = ao.auction_id) 
+								  ON (a.auction_id = ao.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_to_category a2c
+								  ON (a.auction_id = a2c.auction_id) 
 								  WHERE ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
-								  AND ad1.start_date <= NOW()
+								  AND ad1.start_date <= NOW() 
+								  AND a.status = '2' 
 								  AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+								  
+		if (!empty($data['filter_category_id'])) {
+			$sql .= " AND a2c.category_id = '" . $data['filter_category_id'] . "' ";
+		}
 
 
 		if (!empty($data['filter_name']) || !empty($data['filter_tag'])) {
@@ -183,9 +189,9 @@ class ModelCatalogAuction extends Model {
 
 
 	public function getLatestAuctions($limit) {
-		$auction_data = $this->cache->get('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
+		//$auction_data = $this->cache->get('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 
-		if (!$auction_data) {
+		$auction_data = array();
 			$query = $this->db->query("SELECT a.auction_id FROM " . DB_PREFIX . "auctions a
 									  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id)
 									  LEFT JOIN " . DB_PREFIX . "auction_details ad ON (a.auction_id = ad.auction_id) 
@@ -198,16 +204,16 @@ class ModelCatalogAuction extends Model {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
 			}
 
-			$this->cache->set('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
-		}
+			//$this->cache->set('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
+		
 
 		return $auction_data;
 	}
 
 	public function getTopSellers($limit){
-		$auction_data = $this->cache->get('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
+		//$auction_data = $this->cache->get('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 		
-		if (!$auction_data){
+
 			$auction_data = array();
 			
 			$query = $this->db->query("SELECT COUNT(a.auction_id) AS count, a.customer_id AS customer 
@@ -221,24 +227,25 @@ class ModelCatalogAuction extends Model {
 				$auction_data[$result['customer']] = $result['count'];
 			}
 			
-			$this->cache->set('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
-		}
+			//$this->cache->set('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
+		
 		
 		return $auction_data;
 	}
 	
 	
 	public function getMostViewedAuctions($limit) {
-		$auction_data = $this->cache->get('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
+		//$auction_data = $this->cache->get('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 
-		if (!$auction_data) {
+
 			$auction_data = array();
 
 			$query = $this->db->query("SELECT a.auction_id, a.viewed AS viewed
 									  FROM " . DB_PREFIX . "auctions a
 									  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id)
 									  WHERE a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'
-									  AND a.viewed > '0' 
+									  AND a.viewed > '0'
+									  AND a.status = '2' 
 									  GROUP BY a.auction_id
 									  ORDER BY viewed
 									  DESC
@@ -248,11 +255,115 @@ class ModelCatalogAuction extends Model {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
 			}
 
-			$this->cache->set('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
+			//$this->cache->set('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
 		
-		}
+		
 
 		return $auction_data;
+	}
+	
+	public function getStartingSoonAuctions($settings) {
+		$limit = $settings['limit'];
+		$starting_when = $settings['starting_when'];
+		$length = $settings['length'];
+		
+		//$auction_data = $this->cache->get('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit);
+		
+			$auction_data = array();
+			
+			$sql = "SELECT a.auction_id, ad1.start_date 
+									  FROM " . DB_PREFIX . "auctions a
+									  LEFT JOIN " . DB_PREFIX . "auction_details ad1 ON (a.auction_id = ad1.auction_id) 
+									  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id) ";
+									  
+			$others = "GROUP BY a.auction_id
+									  ORDER BY ad1.start_date
+									  ASC
+									  LIMIT " . (int)$limit;
+									  
+			$where = "WHERE a2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND a.status = '1' ";
+			
+			if(!$length) {
+				$timeframe = '';
+			} elseif ($starting_when) {
+				$currentdatetime = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $length . " DAY) AS current")->row;
+				$timeframe = "AND DATE(ad1.start_date) <= '" . $currentdatetime['current'] . "'";
+			} else {
+				$currentdatetime = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $length . " HOUR) AS current")->row;
+				$timeframe = "AND DATE(ad1.start_date) <= '" . $currentdatetime['current'] . "'";
+			}
+			
+			
+			$sql .= $where;
+			$sql .= $timeframe;
+			$sql .= $others;
+			
+
+			$query = $this->db->query($sql);
+
+			foreach ($query->rows as $result) {
+				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
+			}
+
+			//$this->cache->set('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit, $auction_data);
+		
+		
+//debuglog($auction_data);
+		return $auction_data;
+		
+	}
+	
+	public function getEndingSoonAuctions($settings) {
+		$limit = $settings['limit'];
+		$ending_when = $settings['ending_when'];
+		$length = $settings['length'];
+		
+		//$auction_data = $this->cache->get('auction.ending_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$ending_when . (int)$length . (int)$limit);
+		
+			$auction_data = array();
+			
+			$sql = "SELECT a.auction_id, ad1.end_date 
+									  FROM " . DB_PREFIX . "auctions a
+									  LEFT JOIN " . DB_PREFIX . "auction_details ad1 ON (a.auction_id = ad1.auction_id) 
+									  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id) ";
+									  
+			$others = "GROUP BY a.auction_id
+									  ORDER BY ad1.end_date
+									  ASC
+									  LIMIT " . (int)$limit;
+									  
+			$where = "WHERE a2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND a.status = '2' ";
+			
+			if(!$length) {
+				$timeframe = '';
+			} elseif ($ending_when) {
+				$currentdatetime = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $length . " DAY) AS current")->row;
+				$timeframe = "AND DATE(ad1.end_date) <= '" . $currentdatetime['current'] . "'";
+			} else {
+				$currentdatetime = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $length . " HOUR) AS current")->row;
+				$timeframe = "AND DATE(ad1.end_date) <= '" . $currentdatetime['current'] . "'";
+			}
+			
+			
+			$sql .= $where;
+			$sql .= $timeframe;
+			$sql .= $others;
+			
+//debuglog($sql);
+			$query = $this->db->query($sql);
+			
+			
+
+			foreach ($query->rows as $result) {
+				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
+			}
+
+			//$this->cache->set('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit, $auction_data);
+		
+		
+//debuglog($auction_data);
+		return $auction_data;
+		
 	}
 
 	public function getPopularAuctions($limit) {
@@ -373,7 +484,7 @@ class ModelCatalogAuction extends Model {
 			$sql .= ")";
 		}
 
-
+//debuglog($sql);
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];

@@ -101,7 +101,7 @@ class ControllerExtensionDashboardMap extends Controller {
 
 		$data['heading_title'] = $this->language->get('heading_title');
 
-		$data['text_order'] = $this->language->get('text_order');
+		$data['text_auction'] = $this->language->get('text_auction');
 		$data['text_sale'] = $this->language->get('text_sale');
 
 		$data['token'] = $this->session->data['token'];
@@ -112,9 +112,9 @@ class ControllerExtensionDashboardMap extends Controller {
 	public function map() {
 		$json = array();
 
-		$this->load->model('report/sale');
+		$this->load->model('report/auction');
 
-		$results = $this->model_report_sale->getTotalOrdersByCountry();
+		$results = $this->model_report_auction->getTotalAuctionsByCountry();
 
 		foreach ($results as $result) {
 			$json[strtolower($result['iso_code_2'])] = array(

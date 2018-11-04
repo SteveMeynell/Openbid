@@ -46,7 +46,21 @@ class ModelReportAuction extends Model {
 	}
 
 	public function getTotalAuctionsByCountry() {
-		$query = $this->db->query("SELECT COUNT(*) AS total, SUM(o.winning_bid) AS amount, c.iso_code_2 FROM `" . DB_PREFIX . "auctions` o LEFT JOIN `" . DB_PREFIX . "country` c ON (o.payment_country_id = c.country_id) WHERE o.order_status_id > '0' GROUP BY o.payment_country_id");
+		$sql = "SELECT COUNT(*) AS total, SUM(a.winning_bid) AS amount, c.iso_code_2
+								  FROM `" . DB_PREFIX . "auctions` a
+								  LEFT JOIN `" . DB_PREFIX . "customer` cu
+								  ON (a.customer_id = cu.customer_id)
+								  LEFT JOIN `" . DB_PREFIX . "address` ad
+								  ON (cu.address_id = ad.address_id)
+								  LEFT JOIN `" . DB_PREFIX . "country` c
+								  ON (ad.country_id = c.country_id)
+								  
+								  
+								  
+								  WHERE a.status > '0' AND a.status < '4'
+								  GROUP BY ad.country_id";
+		
+		$query = $this->db->query($sql);
 
 		return $query->rows;
 	}
@@ -64,8 +78,15 @@ class ModelReportAuction extends Model {
 				'total' => 0
 			);
 		}
-
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
+								  
+		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(ad.end_date) AS hour
+								  FROM " . DB_PREFIX . "auctions a 
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad 
+								  ON (a.auction_id = ad.auction_id)
+								  WHERE a.status ='" . $auction_status . "'
+								  AND DATE(ad.end_date) = DATE(NOW())
+								  GROUP BY HOUR(ad.end_date)
+								  ORDER BY ad.end_date ASC");
 
 		foreach ($query->rows as $result) {
 			$auction_data[$result['hour']] = array(
@@ -89,7 +110,14 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_created) AS hour FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) = DATE(NOW()) GROUP BY HOUR(date_created) ORDER BY date_created ASC");
+		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(ad.start_date) AS hour
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status ='" . $auction_status . "'
+								  AND DATE(ad.start_date) = DATE(NOW())
+								  GROUP BY HOUR(ad.start_date)
+								  ORDER BY ad.start_date ASC");
 
 		foreach ($query->rows as $result) {
 			$auction_data[$result['hour']] = array(
@@ -118,11 +146,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status ='" . $auction_status . "' AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.end_date AS end_date 
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status ='" . $auction_status . "'
+								  AND DATE(ad.end_date) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "')
+								  GROUP BY DAYNAME(ad.end_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('w', strtotime($result['date_created']))] = array(
-				'day'   => date('D', strtotime($result['date_created'])),
+			$auction_data[date('w', strtotime($result['end_date']))] = array(
+				'day'   => date('D', strtotime($result['end_date'])),
 				'total' => $result['total']
 			);
 		}
@@ -147,11 +181,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.start_date AS start_date
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status = '" . $auction_status . "'
+								  AND DATE(ad.start_date) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "')
+								  GROUP BY DAYNAME(ad.start_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('w', strtotime($result['date_created']))] = array(
-				'day'   => date('D', strtotime($result['date_created'])),
+			$auction_data[date('w', strtotime($result['start_date']))] = array(
+				'day'   => date('D', strtotime($result['start_date'])),
 				'total' => $result['total']
 			);
 		}
@@ -174,11 +214,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.end_date AS end_date
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status = '" . $auction_status . "'
+								  AND DATE(ad.end_date) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "'
+								  GROUP BY DATE(ad.end_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('j', strtotime($result['date_created']))] = array(
-				'day'   => date('d', strtotime($result['date_created'])),
+			$auction_data[date('j', strtotime($result['end_date']))] = array(
+				'day'   => date('d', strtotime($result['end_date'])),
 				'total' => $result['total']
 			);
 		}
@@ -201,11 +247,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND DATE(date_created) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.start_date AS start_date 
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status = '" . $auction_status . "'
+								  AND DATE(ad.start_date) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "'
+								  GROUP BY DATE(ad.start_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('j', strtotime($result['date_created']))] = array(
-				'day'   => date('d', strtotime($result['date_created'])),
+			$auction_data[date('j', strtotime($result['start_date']))] = array(
+				'day'   => date('d', strtotime($result['start_date'])),
 				'total' => $result['total']
 			);
 		}
@@ -226,11 +278,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.end_date AS end_date 
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status = '" . $auction_status . "'
+								  AND YEAR(ad.end_date) = YEAR(NOW())
+								  GROUP BY MONTH(ad.end_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('n', strtotime($result['date_created']))] = array(
-				'month' => date('M', strtotime($result['date_created'])),
+			$auction_data[date('n', strtotime($result['end_date']))] = array(
+				'month' => date('M', strtotime($result['end_date'])),
 				'total' => $result['total']
 			);
 		}
@@ -251,11 +309,17 @@ class ModelReportAuction extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_created FROM `" . DB_PREFIX . "auctions` WHERE status = '" . $auction_status . "' AND YEAR(date_created) = YEAR(NOW()) GROUP BY MONTH(date_created)");
+		$query = $this->db->query("SELECT COUNT(*) AS total, ad.start_date AS start_date 
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad
+								  ON (a.auction_id = ad.auction_id) 
+								  WHERE a.status = '" . $auction_status . "'
+								  AND YEAR(ad.start_date) = YEAR(NOW())
+								  GROUP BY MONTH(ad.start_date)");
 
 		foreach ($query->rows as $result) {
-			$auction_data[date('n', strtotime($result['date_created']))] = array(
-				'month' => date('M', strtotime($result['date_created'])),
+			$auction_data[date('n', strtotime($result['start_date']))] = array(
+				'month' => date('M', strtotime($result['start_date'])),
 				'total' => $result['total']
 			);
 		}

@@ -1,9 +1,9 @@
 <?php
-class ControllerExtensionModuleTopSellers extends Controller {
+class ControllerExtensionModuleStartingSoon extends Controller {
 	private $error = array();
 
 	public function index() {
-		$this->load->language('extension/module/top_sellers');
+		$this->load->language('extension/module/starting_soon');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -11,12 +11,12 @@ class ControllerExtensionModuleTopSellers extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			if (!isset($this->request->get['module_id'])) {
-				$this->model_extension_module->addModule('top_sellers', $this->request->post);
+				$this->model_extension_module->addModule('starting_soon', $this->request->post);
 			} else {
 				$this->model_extension_module->editModule($this->request->get['module_id'], $this->request->post);
 			}
 
-			$this->cache->delete('top_sellers');
+			$this->cache->delete('auction');
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -28,11 +28,15 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		$data['text_edit'] = $this->language->get('text_edit');
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
+		$data['text_days'] = $this->language->get('text_days');
+		$data['text_hours'] = $this->language->get('text_hours');
 
 		$data['entry_name'] = $this->language->get('entry_name');
 		$data['entry_limit'] = $this->language->get('entry_limit');
 		$data['entry_width'] = $this->language->get('entry_width');
 		$data['entry_height'] = $this->language->get('entry_height');
+		$data['entry_length'] = $this->language->get('entry_length');
+		$data['entry_starting_when'] = $this->language->get('entry_starting_when');
 		$data['entry_status'] = $this->language->get('entry_status');
 
 		$data['button_save'] = $this->language->get('button_save');
@@ -61,6 +65,12 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		} else {
 			$data['error_height'] = '';
 		}
+		
+		if (isset($this->error['length'])) {
+			$data['error_length'] = $this->error['length'];
+		} else {
+			$data['error_length'] = '';
+		}
 
 		$data['breadcrumbs'] = array();
 
@@ -77,19 +87,19 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		if (!isset($this->request->get['module_id'])) {
 			$data['breadcrumbs'][] = array(
 				'text' => $this->language->get('heading_title'),
-				'href' => $this->url->link('extension/module/top_sellers', 'token=' . $this->session->data['token'], true)
+				'href' => $this->url->link('extension/module/starting_soon', 'token=' . $this->session->data['token'], true)
 			);
 		} else {
 			$data['breadcrumbs'][] = array(
 				'text' => $this->language->get('heading_title'),
-				'href' => $this->url->link('extension/module/top_sellers', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true)
+				'href' => $this->url->link('extension/module/starting_soon', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true)
 			);
 		}
 
 		if (!isset($this->request->get['module_id'])) {
-			$data['action'] = $this->url->link('extension/module/top_sellers', 'token=' . $this->session->data['token'], true);
+			$data['action'] = $this->url->link('extension/module/starting_soon', 'token=' . $this->session->data['token'], true);
 		} else {
-			$data['action'] = $this->url->link('extension/module/top_sellers', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true);
+			$data['action'] = $this->url->link('extension/module/starting_soon', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true);
 		}
 
 		$data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
@@ -129,7 +139,23 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		} else {
 			$data['height'] = 200;
 		}
+		
+		if (isset($this->request->post['length'])) {
+			$data['length'] = $this->request->post['length'];
+		} elseif (!empty($module_info)) {
+			$data['length'] = $module_info['length'];
+		} else {
+			$data['length'] = 0;
+		}
 
+		if (isset($this->request->post['starting_when'])) {
+			$data['starting_when'] = $this->request->post['starting_when'];
+		} elseif (!empty($module_info)) {
+			$data['starting_when'] = $module_info['starting_when'];
+		} else {
+			$data['starting_when'] = '';
+		}
+		
 		if (isset($this->request->post['status'])) {
 			$data['status'] = $this->request->post['status'];
 		} elseif (!empty($module_info)) {
@@ -137,16 +163,18 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		} else {
 			$data['status'] = '';
 		}
+		
+		
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('extension/module/top_sellers', $data));
+		$this->response->setOutput($this->load->view('extension/module/starting_soon', $data));
 	}
 
 	protected function validate() {
-		if (!$this->user->hasPermission('modify', 'extension/module/top_sellers')) {
+		if (!$this->user->hasPermission('modify', 'extension/module/starting_soon')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
@@ -161,6 +189,10 @@ class ControllerExtensionModuleTopSellers extends Controller {
 		if (!$this->request->post['height']) {
 			$this->error['height'] = $this->language->get('error_height');
 		}
+		
+		/*if (!$this->request->post['length']) {
+			$this->error['length'] = $this->language->get('error_length');
+		}*/
 
 		return !$this->error;
 	}

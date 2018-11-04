@@ -1,4 +1,18 @@
 $(document).ready(function() {
+      function checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+
+    function startTime() {
+        var today = new Date(),
+            D = checkTime(today.toDateString()),
+            T = checkTime(today.toTimeString());
+        document.getElementById('TimeDate').innerHTML = ":  " + D + " - " + T;
+        t = setTimeout(function () {
+            startTime()
+        }, 500);
+    }
+    startTime();
 });
   
 var auction = {

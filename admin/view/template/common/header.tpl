@@ -26,6 +26,7 @@
 <link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
 <?php } ?>
 <script src="view/javascript/common.js" type="text/javascript"></script>
+<script src="view/javascript/auction/auction.js" type="text/javascript"></script>
 <?php foreach ($scripts as $script) { ?>
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
@@ -38,7 +39,7 @@
     <a type="button" id="button-menu" class="pull-left"><i class="fa fa-indent fa-lg"></i></a>
     <?php } ?>
     <a href="<?php echo $home; ?>" class="navbar-brand"><img src="view/image/logo.png" alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" /></a>
-    <label>Current Date and Time </label><label id="time"></label>
+    <label>Current Date and Time </label><label id="TimeDate"></label>
   </div>
   <?php if ($logged) { ?>
   <ul class="nav pull-right">
@@ -87,21 +88,3 @@
   </ul>
   <?php } ?>
 </header>
-<script>
-  (function () {
-    function checkTime(i) {
-        return (i < 10) ? "0" + i : i;
-    }
-
-    function startTime() {
-        var today = new Date(),
-            D = checkTime(today.toDateString()),
-            T = checkTime(today.toTimeString());
-        document.getElementById('time').innerHTML = ":  " + D + " - " + T;
-        t = setTimeout(function () {
-            startTime()
-        }, 500);
-    }
-    startTime();
-})();
-</script>

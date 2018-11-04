@@ -83,4 +83,12 @@ class ModelLocalisationCountry extends Model {
 
 		return $query->row['total'];
 	}
+	
+	
+	public function getCountryByISO2($iso_code) {
+		$query = $this->db->query("SELECT country_id AS country_id FROM " . DB_PREFIX . "country WHERE iso_code_2 = '" . $this->db->escape($iso_code) . "'");
+		
+		return $query->row['country_id'];
+	}
+	
 }

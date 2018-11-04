@@ -75,7 +75,7 @@ function simulate(){
 
 function getUser(){
   $.ajax({
-    url: 'https://randomuser.me/api/?nat=ca',
+    url: 'https://randomuser.me/api/',
     dataType: 'json',
     success: function(data){
       successHandler(data);

@@ -34,7 +34,7 @@ $(document).ready(function() {
 				normalizeFunction: 'polynomial',
 				onLabelShow: function(event, label, code) {
 					if (json[code]) {
-						label.html('<strong>' + label.text() + '</strong><br />' + '<?php echo $text_order; ?> ' + json[code]['total'] + '<br />' + '<?php echo $text_sale; ?> ' + json[code]['amount']);
+						label.html('<strong>' + label.text() + '</strong><br />' + '<?php echo $text_auction; ?> ' + json[code]['total'] + '<br />' + '<?php echo $text_sale; ?> ' + json[code]['amount']);
 					}
 				}
 			});			

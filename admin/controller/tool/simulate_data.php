@@ -48,20 +48,25 @@ class ControllerToolSimulateData extends Controller {
 						$newData['date_created']	=	$current_datetime['currenttime'];
 						$newData['title']			=	$newAuction['title'];
 						$newData['subtitle']		=	$newAuction['subtitle'];
+						$seader = $newAuction['title'] . ' ' . (null !== $newAuction['subtitle'] ? $newAuction['subtitle'] .' ': '') . $newAuction['description'];
 						$newData['auction_description'][1]	=	array(
 																  'name' => $newAuction['title'],
 																  'subname' => $newAuction['subtitle'],
 																  'description' => $newAuction['description'],
 																  'tag' => 'put tag code in',
-																  'meta_title' => 'put meta title code in',
-																  'meta_description' => 'put meta description code in',
-																  'meta_keyword' => 'put meta keyword code in'
+																  'meta_title' => 'Auctioning ' . $newAuction['title'],
+																  'meta_description' => strip_tags($newAuction['description']),
+																  'meta_keyword' => make_keywords($seader)
 																 );
 						$NumHours = rand(12,48);
 						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
 						$newData['custom_start_date']		=	$newStartDates->format('Y-m-d H:i:s');
 						$end_date = date_add($newStartDates,date_interval_create_from_date_string('1 days'));
 						
+						$imgnum = rand(1,25);
+						$testimage = 'catalog/auctions/IMG_' . $imgnum . '.JPG';
+						
+						$newData['image'] = $testimage;
 						//date_add($end_date,date_interval_create_from_date_string('1 days'));
 						$newData['custom_end_date']		= $end_date->format('Y-m-d H:i:s');
 						$newData['duration']		=	'1';
@@ -75,7 +80,7 @@ class ControllerToolSimulateData extends Controller {
 						$newData['international_shipping']	=	'0';
 						$newData['initial_quantity']	=	'1';
 						$newData['buy_now_price']	=	round((float)$newAuction['min_bid'] * 2.5);
-						
+						$newData['auction_store'][] = '0';
 						
 						
 						$newData['bolded_item']		=	$newAuction['bolded_item'];
@@ -103,6 +108,7 @@ class ControllerToolSimulateData extends Controller {
 			if (isset($this->request->post['newUser'])) {
 				$newUsers = $this->request->post['newUser']['results'];
 				foreach($newUsers as $newUser){
+					//debuglog($newUser);
 					$this->model_tool_simulate_data->simulateUser($newUser);
 				}
 				$json = array();
