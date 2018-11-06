@@ -221,6 +221,9 @@ class ControllerAuctionAuction extends Controller {
 			$data['text_current_bid'] = $this->language->get('text_current_bid');
 			$data['text_viewed'] = $this->language->get('text_viewed');
 			$data['text_please_login']	= $this->language->get('text_please_login');
+			$data['text_ending_in'] = $this->language->get('text_ending_in');
+			$data['text_reserved_bid'] = $this->language->get('text_reserved_bid');
+			$data['text_reserved_met'] = $this->language->get('text_reserved_met');
 
 			$data['entry_qty'] = $this->language->get('entry_qty');
 			$data['entry_name'] = $this->language->get('entry_name');
@@ -243,6 +246,8 @@ class ControllerAuctionAuction extends Controller {
 			$data['auction_id'] = (int)$this->request->get['auction_id'];
 			
 			$data['description'] = html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8');
+			
+			$data['end_date']	= $auction_info['end_date'];
 
 			$this->load->model('tool/image');
 
@@ -274,12 +279,14 @@ class ControllerAuctionAuction extends Controller {
 			
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$current_bid = $this->model_auction_bidding->getCurrentBid($this->request->get['auction_id']);
-				debuglog($current_bid);
+				$data['reserve_bid'] = $this->currency->format($auction_info['reserve_price'],$this->session->data['currency']);
+				//debuglog($current_bid);
 				$data['buy_now'] = $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
 				$data['current_bid'] = $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']);
 			} else {
 				$data['buy_now'] = false;
 				$data['current_bid'] = false;
+				$data['reserve_bid'] = false;
 			}
 
 

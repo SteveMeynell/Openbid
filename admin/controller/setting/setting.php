@@ -220,7 +220,7 @@ class ControllerSettingSetting extends Controller {
 		$data['tab_general'] = $this->language->get('tab_general');
 		$data['tab_store'] = $this->language->get('tab_store');
 		$data['tab_local'] = $this->language->get('tab_local');
-		$data['tab_option'] = $this->language->get('tab_option');
+		$data['tab_option'] = $this->language->get('tab_options');
 		$data['tab_image'] = $this->language->get('tab_image');
 		$data['tab_ftp'] = $this->language->get('tab_ftp');
 		$data['tab_mail'] = $this->language->get('tab_mail');

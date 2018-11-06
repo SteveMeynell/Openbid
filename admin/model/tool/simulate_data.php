@@ -12,7 +12,7 @@ class ModelToolSimulateData extends Model {
         $store                          =   0;
         $language                       =   1;
         $user['customer_group_id']      =   rand(1,3);
-        $user['email']                  =   $data['email'];
+        $user['email']                  =   'tester@localhost.com';
         $user['telephone']              =   $data['phone'];
         $user['newsletter']             =   rand(0,1);
         $user['status']                 =   '1';

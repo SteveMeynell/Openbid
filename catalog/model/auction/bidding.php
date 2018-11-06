@@ -5,7 +5,7 @@ class ModelAuctionBidding extends Model {
     
     public function placeBid($bid) {
         debuglog("got to the place");
-        $sql = "SELECT * FROM '" . DB_PREFIX . "bid_history'
+        $sql = "SELECT * FROM '" . DB_PREFIX . "current_bids'
         WHERE auction_id = '" . $this->db->excape($bid['auction_id']) . "'
         ORDER BY bid_date ASC";
         
@@ -13,7 +13,7 @@ class ModelAuctionBidding extends Model {
         $result = $query->row;
         
         if(!$result) {
-            $this->db->query("INSERT INTO '" . DB_PREFIX . "bid_history'
+            $this->db->query("INSERT INTO '" . DB_PREFIX . "current_bids'
             SET
             auction_id = '" . $this->db->escape($bid['auction_id']) . "',
             bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
@@ -30,7 +30,7 @@ class ModelAuctionBidding extends Model {
     }
     
     public function getCurrentBid($data) {
-        $sql = "SELECT * FROM " . DB_PREFIX . "bid_history
+        $sql = "SELECT * FROM " . DB_PREFIX . "current_bids 
                          WHERE auction_id = '" . $data . "'
                          ORDER BY bid_id DESC";
         $query = $this->db->query($sql);

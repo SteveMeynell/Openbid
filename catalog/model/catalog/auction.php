@@ -47,7 +47,7 @@ class ModelCatalogAuction extends Model {
 				'quantity'         => $query->row['quantity'],
 				'image'            => $query->row['image'],
 				'start_date'		=> $query->row['start_date'],
-				'min_bid'          => $query->row['min_bid'],
+				'reserve_price'          => $query->row['reserve_price'],
 				'end_date'       => $query->row['end_date'],
 				'buy_now_price'		=> $query->row['buy_now_price'],
 				'buy_now_only'		=> $query->row['buy_now_only'],
@@ -198,7 +198,7 @@ class ModelCatalogAuction extends Model {
 									  WHERE a.status = '2'
 									  AND ad.start_date <= NOW()
 									  AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'
-									  ORDER BY a.date_created DESC LIMIT " . (int)$limit);
+									  ORDER BY ad.start_date DESC LIMIT " . (int)$limit);
 
 			foreach ($query->rows as $result) {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);

@@ -189,7 +189,9 @@ class ControllerStartupStartup extends Controller {
 		
 		// Auction Updates
 		$this->load->model('auction/auction');
-		$this->model_auction_auction->closeOpenAuctions();
-		$this->model_auction_auction->openCreatedAuctions();
+		$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
+		$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
+		debuglog($closed_auctions);
+		debuglog($opened_auctions);
 	}
 }

@@ -101,13 +101,24 @@
           </div>
           <h1><?php echo $heading_title; ?></h1>
           <p><?php echo $text_viewed . ' ' . $views; ?></p>
+          <h3><?php echo $text_ending_in; ?></h3>
+            <h4>
+              <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $end_date; ?>"></div>
+              <div class="startingTime" id="time_remaining"></div>
+            </h4>
           <?php if (!$current_bid && !$buy_now) { ?>
           <p class="price">
             <h2><span class="price-new"><?php echo $text_please_login; ?></span></h2>
           <?php } else { ?>
             <?php if (!$buy_now_only) { ?>
               <h2><span class="price-new"><?php echo $text_buy_now; ?> <?php echo $buy_now; ?></span></h2>
-              <h2><span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $current_bid; ?></span></h2>
+              <?php if ($reserve_bid) {
+                if ($reserve_bid <= $current_bid) { ?>
+                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserve_bid_met; ?></span></h2>
+                <?php } else { ?>
+                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $reserve_bid; ?></span></h2>
+                <?php }} ?>
+                <h2><span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $current_bid; ?></span></h2>
             <?php } else { ?>
               <h2><span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $buy_now; ?></span></h2>
             <?php } ?>

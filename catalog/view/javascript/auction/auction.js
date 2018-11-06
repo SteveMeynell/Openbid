@@ -19,7 +19,7 @@ function displayTimeRemaining() {
         }
         if (daysDifference) {
             Times[nodecounter].textContent = daysDifference + " Days and " + hoursDifference + " Hours " + minutesRemainder + " Minutes!";
-        } else if (secondsDifference<=60){
+        } else if (secondsDifference<=120){
             Times[nodecounter].textContent = secondsDifference + " Seconds!";
         } else {
             Times[nodecounter].textContent = hoursDifference + " Hours " + minutesRemainder + " Minutes!";
