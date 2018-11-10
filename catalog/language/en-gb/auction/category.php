@@ -22,3 +22,12 @@ $_['text_rating_desc']  = 'Rating (Highest)';
 $_['text_model_asc']    = 'Model (A - Z)';
 $_['text_model_desc']   = 'Model (Z - A)';
 $_['text_limit']        = 'Show:';
+
+$_['text_buy_now']      = 'Buy Now For:';
+$_['text_buy_now_only']      = 'Only Buy Now For:';
+$_['text_current_bid']  = 'Current Bid:';
+$_['text_viewed']       = 'Viewed:';
+$_['text_ending_in']  = 'Auction Ending in:';
+$_['text_days']         = ' Days!';
+$_['text_hours']         = ' Hours!';
+$_['text_minutes']         = ' Minutes!';

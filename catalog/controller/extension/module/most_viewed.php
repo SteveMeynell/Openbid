@@ -60,6 +60,8 @@ class ControllerExtensionModuleMostViewed extends Controller {
 					'current_bid'	=> $current_bid,
 					'buy_now'     => $buy_now,
 					'buy_now_only'         => $result['buy_now_only'],
+					'bolded'         => $result['bolded'],
+					'highlighted'         => $result['highlighted'],
 					'rating'      => $rating,
 					'end_date'		=> $result['end_date'],
 					'views'      => $result['viewed'],

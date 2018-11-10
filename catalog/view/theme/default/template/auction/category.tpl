@@ -27,119 +27,170 @@
       <hr>
       <?php } ?>
       <?php if ($categories) { ?>
-      <h3><?php echo $text_refine; ?></h3>
-      <?php if (count($categories) <= 5) { ?>
-      <div class="row">
-        <div class="col-sm-3">
-          <ul>
-            <?php foreach ($categories as $category) { ?>
-            <li><a href="<?php echo $category['href']; ?>"><?php echo $category['name']; ?></a></li>
+        <h3><?php echo $text_refine; ?></h3>
+        <?php if (count($categories) <= 5) { ?>
+          <div class="row">
+            <div class="col-sm-3">
+              <ul>
+                <?php foreach ($categories as $category) { ?>
+                  <li><a href="<?php echo $category['href']; ?>"><?php echo $category['name']; ?></a></li>
+                <?php } ?>
+              </ul>
+            </div>
+          </div>
+        <?php } else { ?>
+          <div class="row">
+            <?php foreach (array_chunk($categories, ceil(count($categories) / 4)) as $categories) { ?>
+              <div class="col-sm-3">
+                <ul>
+                  <?php foreach ($categories as $category) { ?>
+                    <li><a href="<?php echo $category['href']; ?>"><?php echo $category['name']; ?></a></li>
+                  <?php } ?>
+                </ul>
+              </div>
             <?php } ?>
-          </ul>
-        </div>
-      </div>
-      <?php } else { ?>
-      <div class="row">
-        <?php foreach (array_chunk($categories, ceil(count($categories) / 4)) as $categories) { ?>
-        <div class="col-sm-3">
-          <ul>
-            <?php foreach ($categories as $category) { ?>
-            <li><a href="<?php echo $category['href']; ?>"><?php echo $category['name']; ?></a></li>
-            <?php } ?>
-          </ul>
-        </div>
+          </div>
         <?php } ?>
-      </div>
       <?php } ?>
-      <?php } ?>
-      <?php if ($auctions) { ?>
-      <div class="row">
-        <div class="col-md-2 col-sm-6 hidden-xs">
-          <div class="btn-group btn-group-sm">
-            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="<?php echo $button_list; ?>"><i class="fa fa-th-list"></i></button>
-            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="<?php echo $button_grid; ?>"><i class="fa fa-th"></i></button>
+      <hr>
+      <?php if ($auctions || $features) { ?>
+        <div class="row">
+          <div class="col-md-2 col-sm-6 hidden-xs">
+            <div class="btn-group btn-group-sm">
+              <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="<?php echo $button_list; ?>"><i class="fa fa-th-list"></i></button>
+              <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="<?php echo $button_grid; ?>"><i class="fa fa-th"></i></button>
+            </div>
           </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-        </div>
-        <div class="col-md-4 col-xs-6">
-          <div class="form-group input-group input-group-sm">
-            <label class="input-group-addon" for="input-sort"><?php echo $text_sort; ?></label>
-            <select id="input-sort" class="form-control" onchange="location = this.value;">
-              <?php foreach ($sorts as $sorts) { ?>
-              <?php if ($sorts['value'] == $sort . '-' . $order) { ?>
-              <option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
-              <?php } else { ?>
-              <option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
-              <?php } ?>
-              <?php } ?>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-          <div class="form-group input-group input-group-sm">
-            <label class="input-group-addon" for="input-limit"><?php echo $text_limit; ?></label>
-            <select id="input-limit" class="form-control" onchange="location = this.value;">
-              <?php foreach ($limits as $limits) { ?>
-              <?php if ($limits['value'] == $limit) { ?>
-              <option value="<?php echo $limits['href']; ?>" selected="selected"><?php echo $limits['text']; ?></option>
-              <?php } else { ?>
-              <option value="<?php echo $limits['href']; ?>"><?php echo $limits['text']; ?></option>
-              <?php } ?>
-              <?php } ?>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <?php foreach ($auctions as $auction) { ?>
-        <div class="product-layout product-list col-xs-12">
-          <div class="product-thumb">
-            <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a></div>
-            <div>
-              <div class="caption">
-                <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a></h4>
-                <p><?php echo $auction['description']; ?></p>
-                <?php if (!$auction['current_bid']) { ?>
-                  <p class="price">
-                    <?php if (!$auction['buy_now_only']) { ?>
-                      <span class="price-new"><?php echo $text_buy_now; ?> <?php echo $auction['buy_now']; ?></span>
-                      <span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $auction['current_bid']; ?></span>
-                    <?php } else { ?>
-                      <span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $auction['buy_now']; ?></span>
-                    <?php }
-                } else { ?>
-                    <span class="price-new"><?php echo $text_please_login; ?></span>
-                  </p>
+          
+          <div class="col-md-4 col-xs-6">
+            <div class="form-group input-group input-group-sm">
+              <label class="input-group-addon" for="input-sort"><?php echo $text_sort; ?></label>
+              <select id="input-sort" class="form-control" onchange="location = this.value;">
+                <?php foreach ($sorts as $sorts) { ?>
+                <?php if ($sorts['value'] == $sort . '-' . $order) { ?>
+                <option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
                 <?php } ?>
-                <?php if ($auction['rating']) { ?>
-                <div class="rating">
-                  <?php for ($i = 1; $i <= 5; $i++) { ?>
-                  <?php if ($auction['rating'] < $i) { ?>
-                  <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
-                  <?php } else { ?>
-                  <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
-                  <?php } ?>
-                  <?php } ?>
-                </div>
                 <?php } ?>
-              </div>
-              <div class="button-group">
-                <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>', '<?php echo $auction['minimum']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
-                <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
-                
-              </div>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3 col-xs-6">
+            <div class="form-group input-group input-group-sm">
+              <label class="input-group-addon" for="input-limit"><?php echo $text_limit; ?></label>
+              <select id="input-limit" class="form-control" onchange="location = this.value;">
+                <?php foreach ($limits as $limits) { ?>
+                <?php if ($limits['value'] == $limit) { ?>
+                <option value="<?php echo $limits['href']; ?>" selected="selected"><?php echo $limits['text']; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $limits['href']; ?>"><?php echo $limits['text']; ?></option>
+                <?php } ?>
+                <?php } ?>
+              </select>
             </div>
           </div>
         </div>
-        <?php } ?>
-      </div>
-      <div class="row">
-        <div class="col-sm-6 text-left"><?php echo $pagination; ?></div>
-        <div class="col-sm-6 text-right"><?php echo $results; ?></div>
-      </div>
+        <hr>
+        <div class="row">
+          <h2>Category Featured Auctions</h2>
+          <?php foreach ($features as $featured) { ?>
+          <div class="product-layout product-list col-xs-12">
+            <div class="featured-auction-thumb">
+              <div class="image"><a href="<?php echo $featured['href']; ?>"><img src="<?php echo $featured['thumb']; ?>" alt="<?php echo $featured['name']; ?>" title="<?php echo $featured['name']; ?>" class="img-responsive" /></a></div>
+              <div>
+                <div class="caption">
+                  <h4><a href="<?php echo $featured['href']; ?>"><?php echo $featured['name']; ?></a></h4>
+                  <p><?php echo $featured['description']; ?></p>
+                    <p class="price">
+                      <?php if (!$featured['current_bid'] && !$featured['buy_now']) { ?>
+                        <span class="price-new"><?php echo $text_please_login; ?></span>
+                      <?php } else { ?>
+                        <?php if (!$featured['buy_now_only']) { ?>
+                          <span class="price-new"><?php echo $text_buy_now; ?> <?php echo $featured['buy_now']; ?></span>
+                          <span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $featured['current_bid']; ?></span>
+                        <?php } else { ?>
+                          <span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $featured['buy_now']; ?></span>
+                        <?php } ?>
+                      <?php } ?>
+                    </p>
+                  <?php if ($featured['rating']) { ?>
+                  <div class="rating">
+                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                    <?php if ($featured['rating'] < $i) { ?>
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+                    <?php } else { ?>
+                    <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+                    <?php } ?>
+                    <?php } ?>
+                  </div>
+                  <?php } ?>
+                </div>
+                <div class="button-group">
+                  <button type="button" onclick="cart.add('<?php echo $featured['auction_id']; ?>', '<?php echo $featured['current_bid']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
+                  <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $featured['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <hr>
+        <div class="row">
+          <?php foreach ($auctions as $auction) { ?>
+            <div class="product-layout product-list col-xs-12">
+            <?php if ($auction['bolded']) { ?>
+              <div class="bolded-auction-thumb bolded-double-border">
+            <?php } else { ?>
+              <div class="product-thumb">
+            <?php } ?>
+                <div class="image">
+                  <a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a>
+                </div>
+                <div>
+                  <div class="caption">
+                    <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a></h4>
+                    <p><?php echo $auction['description']; ?></p>
+                    <p class="price">
+                      <?php if (!$auction['current_bid'] && !$auction['buy_now']) { ?>
+                        <span class="price-new"><?php echo $text_please_login; ?></span>
+                      <?php } else { ?>
+                        <?php if (!$auction['buy_now_only']) { ?>
+                          <span class="price-new"><?php echo $text_buy_now; ?> <?php echo $auction['buy_now']; ?></span>
+                          <span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $auction['current_bid']; ?></span>
+                        <?php } else { ?>
+                          <span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $auction['buy_now']; ?></span>
+                        <?php } ?>
+                      <?php } ?>
+                    </p>
+                    <?php if ($auction['rating']) { ?>
+                      <div class="rating">
+                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                          <?php if ($auction['rating'] < $i) { ?>
+                            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+                          <?php } else { ?>
+                            <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+                          <?php } ?>
+                        <?php } ?>
+                      </div>
+                    <?php } ?>
+                  </div>
+                  <div class="button-group">
+                    <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>', '<?php echo $auction['current_bid']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
+                    <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 text-left"><?php echo $pagination; ?></div>
+          <div class="col-sm-6 text-right"><?php echo $results; ?></div>
+        </div>
       <?php } ?>
-      <?php if (!$categories && !$auctions) { ?>
+      <?php if (!$categories && !$auctions && !$features) { ?>
       <p><?php echo $text_empty; ?></p>
       <div class="buttons">
         <div class="pull-right"><a href="<?php echo $continue; ?>" class="btn btn-primary"><?php echo $button_continue; ?></a></div>

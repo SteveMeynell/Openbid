@@ -7,7 +7,6 @@
  *  Owl Carousel - Core
  */
 .owl-carousel {
-  background-image: url("fire_background.jpg");
   display: none;
   width: 100%;
   -webkit-tap-highlight-color: transparent;
@@ -49,7 +48,7 @@
     -webkit-touch-callout: none; }
   .owl-carousel .owl-item img {
     display: block;
-    width: fit-content; }
+    width: 100%; }
   .owl-carousel .owl-nav.disabled,
   .owl-carousel .owl-dots.disabled {
     display: none; }

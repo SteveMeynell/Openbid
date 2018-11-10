@@ -28,13 +28,12 @@ class ControllerExtensionModuleFeatured extends Controller {
 		$data['text_disabled'] = $this->language->get('text_disabled');
 
 		$data['entry_name'] = $this->language->get('entry_name');
-		$data['entry_auction'] = $this->language->get('entry_auction');
 		$data['entry_limit'] = $this->language->get('entry_limit');
 		$data['entry_width'] = $this->language->get('entry_width');
 		$data['entry_height'] = $this->language->get('entry_height');
 		$data['entry_status'] = $this->language->get('entry_status');
 
-		$data['help_auction'] = $this->language->get('help_auction');
+		$data['help_limit'] = $this->language->get('help_limit');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
@@ -51,6 +50,12 @@ class ControllerExtensionModuleFeatured extends Controller {
 			$data['error_name'] = '';
 		}
 
+		if (isset($this->error['limit'])) {
+			$data['error_limit'] = $this->error['limit'];
+		} else {
+			$data['error_limit'] = '';
+		}
+		
 		if (isset($this->error['width'])) {
 			$data['error_width'] = $this->error['width'];
 		} else {
@@ -109,29 +114,6 @@ class ControllerExtensionModuleFeatured extends Controller {
 			$data['name'] = '';
 		}
 
-		$this->load->model('catalog/auction');
-
-		$data['auctions'] = array();
-
-		if (!empty($this->request->post['auction'])) {
-			$auctions = $this->request->post['auction'];
-		} elseif (!empty($module_info['auction'])) {
-			$auctions = $module_info['auction'];
-		} else {
-			$auctions = array();
-		}
-
-		foreach ($auctions as $auction_id) {
-			$auction_info = $this->model_catalog_auction->getAuction($auction_id);
-
-			if ($auction_info) {
-				$data['auctions'][] = array(
-					'auction_id' => $auction_info['auction_id'],
-					'title'       => $auction_info['title']
-				);
-			}
-		}
-
 		if (isset($this->request->post['limit'])) {
 			$data['limit'] = $this->request->post['limit'];
 		} elseif (!empty($module_info)) {
@@ -180,10 +162,14 @@ class ControllerExtensionModuleFeatured extends Controller {
 			$this->error['name'] = $this->language->get('error_name');
 		}
 
+		if (!$this->request->post['limit']) {
+			$this->error['limit'] = $this->language->get('error_limit');
+		}
+		
 		if (!$this->request->post['width']) {
 			$this->error['width'] = $this->language->get('error_width');
 		}
-
+		
 		if (!$this->request->post['height']) {
 			$this->error['height'] = $this->language->get('error_height');
 		}

@@ -191,7 +191,14 @@ class ControllerStartupStartup extends Controller {
 		$this->load->model('auction/auction');
 		$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
 		$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
-		debuglog($closed_auctions);
-		debuglog($opened_auctions);
+		if ($closed_auctions) {
+			debuglog("Closed Auctions");
+			debuglog($closed_auctions);
+		}
+		if ($opened_auctions) {
+			debuglog("Open Auctions");
+			debuglog($opened_auctions);
+		}
+		
 	}
 }

@@ -35,22 +35,12 @@
             </div>
           </div>          
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-auction"><span data-toggle="tooltip" title="<?php echo $help_auction; ?>"><?php echo $entry_auction; ?></span></label>
-            <div class="col-sm-10">
-              <input type="text" name="auction_name" value="" placeholder="<?php echo $entry_auction; ?>" id="input-auction" class="form-control" />
-              <div id="featured-auction" class="well well-sm" style="height: 150px; overflow: auto;">
-                <?php foreach ($auctions as $auction) { ?>
-                <div id="featured-auction<?php echo $auction['auction_id']; ?>"><i class="fa fa-minus-circle"></i> <?php echo $auction['title']; ?>
-                  <input type="hidden" name="auction[]" value="<?php echo $auction['auction_id']; ?>" />
-                </div>
-                <?php } ?>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-limit"><?php echo $entry_limit; ?></label>
+            <label class="col-sm-2 control-label" for="input-limit"><span data-toggle="tooltip" title="<?php echo $help_limit; ?>"><?php echo $entry_limit; ?></span></label>
             <div class="col-sm-10">
               <input type="text" name="limit" value="<?php echo $limit; ?>" placeholder="<?php echo $entry_limit; ?>" id="input-limit" class="form-control" />
+							<?php if ($error_limit) { ?>
+              <div class="text-danger"><?php echo $error_limit; ?></div>
+              <?php } ?>
             </div>
           </div>
           <div class="form-group">
@@ -89,33 +79,5 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript"><!--
-$('input[name=\'auction_name\']').autocomplete({
-	source: function(request, response) {
-		$.ajax({
-			url: 'index.php?route=catalog/auction/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
-			dataType: 'json',
-			success: function(json) {
-				response($.map(json, function(item) {
-					return {
-						label: item['title'],
-						value: item['auction_id']
-					}
-				}));
-			}
-		});
-	},
-	select: function(item) {
-		$('input[name=\'auction_name\']').val('');
-		
-		$('#featured-auction' + item['value']).remove();
-		
-		$('#featured-auction').append('<div id="featured-auction' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="auction[]" value="' + item['value'] + '" /></div>');	
-	}
-});
-	
-$('#featured-auction').delegate('.fa-minus-circle', 'click', function() {
-	$(this).parent().remove();
-});
-//--></script></div>
+</div>
 <?php echo $footer; ?>

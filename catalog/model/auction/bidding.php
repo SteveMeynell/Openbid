@@ -38,7 +38,7 @@ class ModelAuctionBidding extends Model {
         if (isset($results['bid_amount'])) {
             return $results;
         } else {
-            return array('bid_amount'=>'0');
+            return array('bid_amount'=>'0.00');
         }
     }
     

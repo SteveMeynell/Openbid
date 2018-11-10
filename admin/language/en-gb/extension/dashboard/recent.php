@@ -1,18 +1,18 @@
 <?php
 // Heading
-$_['heading_title']     = 'Latest Orders';
+$_['heading_title']     = 'Latest Auctions Created';
 
 // Text
 $_['text_extension']    = 'Extensions';
-$_['text_success']      = 'Success: You have modified dashboard recent orders!';
-$_['text_edit']         = 'Edit Dashboard Recent Orders';
+$_['text_success']      = 'Success: You have modified dashboard Latest Auctions!';
+$_['text_edit']         = 'Edit Dashboard Latest Auctions Created';
 
 // Column
-$_['column_order_id']   = 'Order ID';
-$_['column_customer']   = 'Customer';
-$_['column_status']     = 'Status';
-$_['column_total']      = 'Total';
-$_['column_date_added'] = 'Date Added';
+$_['column_auction_id']   = 'Auction ID';
+$_['column_seller']   = 'Seller';
+$_['column_reserve']     = 'Reserve Bid';
+$_['column_buy_now']      = 'Buy Now Price';
+$_['column_date_added'] = 'Date Created';
 $_['column_action']     = 'Action';
 
 
@@ -22,4 +22,4 @@ $_['entry_sort_order']  = 'Sort Order';
 $_['entry_width']       = 'Width';
 
 // Error
-$_['error_permission']  = 'Warning: You do not have permission to modify dashboard recent orders!';
+$_['error_permission']  = 'Warning: You do not have permission to modify dashboard latest auctions!';

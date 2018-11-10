@@ -2,7 +2,11 @@
 <div class="row">
   <?php foreach ($auctions as $auction) { ?>
   <div class="product-layout col-lg-6 col-md-3 col-sm-6 col-xs-12">
-    <div class="product-thumb transition">
+    <?php if ($auction['bolded']) { ?>
+      <div class="bolded-auction-thumb bolded-double-border">
+        <?php } else { ?>
+          <div class="product-thumb">
+        <?php } ?>
       <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a></div>
       <div class="caption">
         <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a></h4>

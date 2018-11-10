@@ -24,6 +24,7 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
       </div>
       <div class="panel-body">
+        <label class="panel-title">This will be a description of what the carousel module will do and how to set up each carousel.</label>
         <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-carousel" class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-name"><?php echo $entry_name; ?></label>
@@ -35,17 +36,56 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-banner"><?php echo $entry_banner; ?></label>
+            <label class="col-sm-2 control-label" for="input-heading-text"><?php echo $entry_heading_text; ?></label>
             <div class="col-sm-10">
-              <select name="banner_id" id="input-banner" class="form-control">
-                <?php foreach ($banners as $banner) { ?>
-                <?php if ($banner['banner_id'] == $banner_id) { ?>
-                <option value="<?php echo $banner['banner_id']; ?>" selected="selected"><?php echo $banner['name']; ?></option>
+              <input type="text" name="heading_text" value="<?php echo $heading_text; ?>" placeholder="<?php echo $entry_heading_text; ?>" id="input-heading-text" class="form-control" />
+              <?php if ($error_heading_text) { ?>
+              <div class="text-danger"><?php echo $error_heading_text; ?></div>
+              <?php } ?>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-footer-text"><?php echo $entry_footer_text; ?></label>
+            <div class="col-sm-10">
+              <input type="text" name="footer_text" value="<?php echo $footer_text; ?>" placeholder="<?php echo $entry_footer_text; ?>" id="input-footer-text" class="form-control" />
+              <?php if ($error_footer_text) { ?>
+              <div class="text-danger"><?php echo $error_footer_text; ?></div>
+              <?php } ?>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 pull-left"><h3 class="panel-title"><?php echo $text_options; ?></h3></div>
+            <label class="col-sm-2 control-label" for="input-type"><?php echo $entry_type; ?></label>
+            <div class="col-sm-10">
+              <select name="type" id="input-type" class="form-control">
+                <?php foreach ($type_options as $type_option => $type_name) { ?>
+                <?php if ($type_option == $type) { ?>
+                <option value="<?php echo $type_option; ?>" selected="selected"><?php echo $type_name; ?></option>
                 <?php } else { ?>
-                <option value="<?php echo $banner['banner_id']; ?>"><?php echo $banner['name']; ?></option>
+                <option value="<?php echo $type_option; ?>"><?php echo $type_name; ?></option>
                 <?php } ?>
                 <?php } ?>
               </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-transition"><?php echo $entry_transition; ?></label>
+            <div class="col-sm-10">
+              <select name="transition_id" id="input-transition" class="form-control">
+                <?php foreach ($transitions as $transition_type => $transition_name) { ?>
+                <?php if ($transition_type == $transition_id) { ?>
+                <option value="<?php echo $transition_type; ?>" selected="selected"><?php echo $transition_name; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $transition_type; ?>"><?php echo $transition_name; ?></option>
+                <?php } ?>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-num-auctions"><?php echo $entry_num_auctions; ?></label>
+            <div class="col-sm-10">
+              <input type="text" name="num_auctions" value="<?php echo $num_auctions; ?>" placeholder="<?php echo $entry_num_auctions; ?>" id="input-num-auctions" class="form-control" />
             </div>
           </div>
           <div class="form-group">

@@ -21,7 +21,9 @@ class ModelCatalogAuction extends Model {
 								  ad2.subname AS subname,
 								  ad2.description AS description,
 								  ad2.tag AS tag,
-								  ao.buy_now_only AS buy_now_only
+								  ao.buy_now_only AS buy_now_only,
+								  ao.bolded_item AS bolded_item,
+								  ao.highlighted AS highlighted
 								  FROM " . DB_PREFIX . "auctions a
 								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
 								  ON (a.auction_id = ad2.auction_id)
@@ -51,6 +53,8 @@ class ModelCatalogAuction extends Model {
 				'end_date'       => $query->row['end_date'],
 				'buy_now_price'		=> $query->row['buy_now_price'],
 				'buy_now_only'		=> $query->row['buy_now_only'],
+				'bolded'		=> $query->row['bolded_item'],
+				'highlighted'		=> $query->row['highlighted'],
 				'rating'			=> '4',
 				'reviews'			=> '',
 				'viewed'           => $query->row['viewed']
@@ -77,7 +81,9 @@ class ModelCatalogAuction extends Model {
 		ad2.subname AS subname,
 		ad2.description AS description,
 		ad2.tag AS tag,
-		ao.buy_now_only AS buy_now_only 
+		ao.buy_now_only AS buy_now_only, 
+		ao.bolded_item AS bolded, 
+		ao.highlighted AS highlighted 
 								FROM " . DB_PREFIX . "auctions a
 								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
 								  ON (a.auction_id = ad2.auction_id)
@@ -140,6 +146,28 @@ class ModelCatalogAuction extends Model {
 
 			$sql .= ")";
 		}
+		
+		if (isset($data['filter_featured'])) {
+			$sql .= " AND ao.featured = '1' ";
+		}
+		if (isset($data['filter_no_featured'])) {
+			$sql .= " AND ao.featured = '0' ";
+		}
+		
+		if (isset($data['filter_bolded'])) {
+			$sql .= " AND ao.bolded_item = '1' ";
+		}
+		if (isset($data['filter_no_bolded'])) {
+			$sql .= " AND ao.bolded_item = '0' ";
+		}
+		
+		if (isset($data['filter_highlighted'])) {
+			$sql .= " AND ao.highlighted = '1' ";
+		}
+		if (isset($data['filter_no_highlighted'])) {
+			$sql .= " AND ao.highlighted = '0' ";
+		}
+		
 
 		$sql .= " GROUP BY a.auction_id";
 
@@ -282,6 +310,11 @@ class ModelCatalogAuction extends Model {
 									  LIMIT " . (int)$limit;
 									  
 			$where = "WHERE a2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND a.status = '1' ";
+			
+			if(isset($settings['carousel'])) {
+				$sql .= "LEFT JOIN " . DB_PREFIX . "auction_options ao ON (a.auction_id = ao.auction_id) ";
+				$where .= " AND ao.on_carousel = '1' ";
+			}
 			
 			if(!$length) {
 				$timeframe = '';
@@ -478,19 +511,92 @@ class ModelCatalogAuction extends Model {
 					$sql .= " " . implode(" AND ", $implode) . "";
 				}
 			}
-
-		
-
+			
 			$sql .= ")";
 		}
-
-//debuglog($sql);
+		//debuglog($sql);
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];
 	}
 
+	
+	
+	public function getCarouselAuctions($data = array()) {
+		if (isset($data['num_auctions']) && $data['num_auctions']>0){
+			$limit = $data['num_auctions'];
+		} else {
+			$limit = 100;
+		}
+		switch ($data['type']) {
+			// Anywhere
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			default:
+				$sql = "SELECT a.auction_id AS auction_id, a.image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description
+				FROM " . DB_PREFIX . "auctions a
+				LEFT JOIN " . DB_PREFIX . "auction_details ad1
+				ON (a.auction_id = ad1.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_description ad2
+				ON (a.auction_id = ad2.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+				ON (a.auction_id = ad2.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_options ao
+				ON (a.auction_id = ao.auction_id) ";
+				
+				$where = " WHERE ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
+				AND a.status = '2'
+				AND ao.on_carousel = '1' 
+				AND ad1.start_date <= NOW()
+				AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+				
+				$other = "GROUP BY a.auction_id
+											  ORDER BY ad1.start_date
+											  ASC";
+		
+				$query = $sql . $where . $other;
+				$auctions = $this->db->query($query)->rows;
+				
+				shuffle($auctions);
+				return array_slice($auctions,0,min($limit,count($auctions)));
+				break;
+		
+		}
 
+	}
+
+		public function getFeaturedAuctions($settings){
+		$auctions = array();
+		
+		$sql = "SELECT a.auction_id AS auction_id, a.image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description, ad1.reserve_price AS reserve_price 
+				FROM " . DB_PREFIX . "auctions a
+				LEFT JOIN " . DB_PREFIX . "auction_details ad1
+				ON (a.auction_id = ad1.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_description ad2
+				ON (a.auction_id = ad2.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+				ON (a.auction_id = ad2.auction_id)
+				LEFT JOIN " . DB_PREFIX . "auction_options ao
+				ON (a.auction_id = ao.auction_id) ";
+				
+				$where = " WHERE ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
+				AND a.status = '2'
+				AND ao.featured = '1' 
+				AND ad1.start_date <= NOW()
+				AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+				
+				$other = "GROUP BY a.auction_id
+											  ORDER BY ad1.start_date
+											  ASC";
+		
+				$query = $sql . $where . $other;
+				$auctions = $this->db->query($query)->rows;
+				
+		return $auctions;
+	}
 	
 	// End of Model
 }

@@ -638,6 +638,7 @@ class ModelCatalogAuction extends Model {
 		return $query->row;
 	}
 	
+
 	
 	
 	

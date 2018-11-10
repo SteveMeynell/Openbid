@@ -61,7 +61,8 @@ class ControllerToolSimulateData extends Controller {
 						$NumHours = rand(12,48);
 						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
 						$newData['custom_start_date']		=	$newStartDates->format('Y-m-d H:i:s');
-						$end_date = date_add($newStartDates,date_interval_create_from_date_string('1 days'));
+						$numDays = rand(1,5);
+						$end_date = date_add($newStartDates,date_interval_create_from_date_string($numDays . ' days'));
 						
 						$imgnum = rand(1,25);
 						$testimage = 'catalog/auctions/IMG_' . $imgnum . '.JPG';

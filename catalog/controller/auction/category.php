@@ -100,6 +100,9 @@ class ControllerAuctionCategory extends Controller {
 			$data['text_empty'] = $this->language->get('text_empty');
 			
 			$data['text_price'] = $this->language->get('text_price');
+			$data['text_buy_now_only'] = $this->language->get('text_buy_now_only');
+			$data['text_buy_now'] = $this->language->get('text_buy_now');
+			$data['text_current_bid'] = $this->language->get('text_current_bid');
 			
 			$data['text_sort'] = $this->language->get('text_sort');
 			$data['text_limit'] = $this->language->get('text_limit');
@@ -162,20 +165,76 @@ class ControllerAuctionCategory extends Controller {
 			}
 
 			$data['auctions'] = array();
+			$data['features'] = array();
 
 			$filter_data = array(
 				'filter_category_id' => $category_id,
 				'filter_filter'      => $filter,
+				'filter_no_featured'	=> true,
 				'sort'               => $sort,
 				'order'              => $order,
 				'start'              => ($page - 1) * $limit,
 				'limit'              => $limit
 			);
-
+			$feature_filter_data = array(
+				'filter_category_id' => $category_id,
+				'filter_filter'      => $filter,
+				'filter_featured'	=> true,
+				'sort'               => $sort,
+				'order'              => $order,
+				'start'              => ($page - 1) * $limit,
+				'limit'              => $limit
+			);
+debuglog($filter_data);
 			$auction_total = $this->model_catalog_auction->getTotalAuctions($filter_data);
-
+debuglog($auction_total);
 			$results = $this->model_catalog_auction->getAuctions($filter_data);
+			$feature_results = $this->model_catalog_auction->getAuctions($feature_filter_data);
+			// Featured Auctions
+			
+			foreach ($feature_results as $result) {
+				$this->load->model('auction/bidding');
+				if ($result['image']) {
+					$image = $this->model_tool_image->resize($result['image'], $this->config->get($this->config->get('config_theme') . '_image_category_width'), $this->config->get($this->config->get('config_theme') . '_image_category_height'));
+				} else {
+					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get($this->config->get('config_theme') . '_image_category_width'), $this->config->get($this->config->get('config_theme') . '_image_category_height'));
+				}
 
+				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+					$tempcurrent_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$current_bid = $this->currency->format($tempcurrent_bid['bid_amount'],$this->session->data['currency']);
+					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
+				} else {
+					$current_bid = false;
+					$buy_now = false;
+				}
+				
+				$result['rating'] = '4';
+
+				if ($this->config->get('config_review_status')) {
+					$rating = (int)$result['rating'];
+				} else {
+					$rating = false;
+				}
+
+				$data['features'][] = array(
+					'auction_id'  => $result['auction_id'],
+					'thumb'       => $image,
+					'name'        => $result['name'],
+					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_auction_description_length')) . '..',
+					'current_bid'       => $current_bid,
+					'buy_now_only'	=> $result['buy_now_only'],
+					'buy_now'     => $buy_now,
+					'bolded'		=> $result['bolded'],
+					'highlighted'	=> $result['highlighted'],
+					'rating'      => $rating,
+					'views'      => $result['viewed'],
+					'href'        => $this->url->link('auction/auction', 'path=' . $this->request->get['path'] . '&auction_id=' . $result['auction_id'] . $url)
+				);
+			}
+			
+			// Regular Auctions
+			
 			foreach ($results as $result) {
 				$this->load->model('auction/bidding');
 				if ($result['image']) {
@@ -185,7 +244,8 @@ class ControllerAuctionCategory extends Controller {
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$current_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$tempcurrent_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$current_bid = $this->currency->format($tempcurrent_bid['bid_amount'],$this->session->data['currency']);
 					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
 				} else {
 					$current_bid = false;
@@ -204,10 +264,12 @@ class ControllerAuctionCategory extends Controller {
 					'auction_id'  => $result['auction_id'],
 					'thumb'       => $image,
 					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_auction_description_length')) . '..',
-					'current_bid'       => (isset($current_bid['bid_amount'])) ? $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']) : $this->currency->format('0',$this->session->data['currency']),
+					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
+					'current_bid'       => $current_bid,
 					'buy_now_only'	=> $result['buy_now_only'],
 					'buy_now'     => $buy_now,
+					'bolded'		=> $result['bolded'],
+					'highlighted'	=> $result['highlighted'],
 					'rating'      => $rating,
 					'views'      => $result['viewed'],
 					'href'        => $this->url->link('auction/auction', 'path=' . $this->request->get['path'] . '&auction_id=' . $result['auction_id'] . $url)

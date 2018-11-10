@@ -24,11 +24,16 @@ class ControllerExtensionModuleCarousel extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_edit'] = $this->language->get('text_edit');
+		$data['text_options'] = $this->language->get('text_options');
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 
 		$data['entry_name'] = $this->language->get('entry_name');
-		$data['entry_banner'] = $this->language->get('entry_banner');
+		$data['entry_heading_text'] = $this->language->get('entry_heading_text');
+		$data['entry_footer_text'] = $this->language->get('entry_footer_text');
+		$data['entry_type'] = $this->language->get('entry_type');
+		$data['entry_transition'] = $this->language->get('entry_transition');
+		$data['entry_num_auctions'] = $this->language->get('entry_num_auctions');
 		$data['entry_width'] = $this->language->get('entry_width');
 		$data['entry_height'] = $this->language->get('entry_height');
 		$data['entry_status'] = $this->language->get('entry_status');
@@ -46,6 +51,18 @@ class ControllerExtensionModuleCarousel extends Controller {
 			$data['error_name'] = $this->error['name'];
 		} else {
 			$data['error_name'] = '';
+		}
+		
+		if (isset($this->error['heading'])) {
+			$data['error_heading_text'] = $this->error['heading'];
+		} else {
+			$data['error_heading_text'] = '';
+		}
+		
+		if (isset($this->error['footer'])) {
+			$data['error_footer_text'] = $this->error['footer'];
+		} else {
+			$data['error_footer_text'] = '';
 		}
 
 		if (isset($this->error['width'])) {
@@ -103,25 +120,60 @@ class ControllerExtensionModuleCarousel extends Controller {
 		} else {
 			$data['name'] = '';
 		}
-
-		if (isset($this->request->post['banner_id'])) {
-			$data['banner_id'] = $this->request->post['banner_id'];
+		
+		if (isset($this->request->post['heading_text'])) {
+			$data['heading_text'] = $this->request->post['heading_text'];
 		} elseif (!empty($module_info)) {
-			$data['banner_id'] = $module_info['banner_id'];
+			$data['heading_text'] = $module_info['heading_text'];
 		} else {
-			$data['banner_id'] = '';
+			$data['heading_text'] = '';
+		}
+		
+		if (isset($this->request->post['footer_text'])) {
+			$data['footer_text'] = $this->request->post['footer_text'];
+		} elseif (!empty($module_info)) {
+			$data['footer_text'] = $module_info['footer_text'];
+		} else {
+			$data['footer_text'] = '';
 		}
 
-		$this->load->model('design/banner');
+		if (isset($this->request->post['num_auctions'])) {
+			$data['num_auctions'] = $this->request->post['num_auctions'];
+		} elseif (!empty($module_info)) {
+			$data['num_auctions'] = $module_info['num_auctions'];
+		} else {
+			$data['num_auctions'] = '0';
+		}
+		
+		if (isset($this->request->post['type'])) {
+			$data['type'] = $this->request->post['type'];
+		} elseif (!empty($module_info)) {
+			$data['type'] = $module_info['type'];
+		} else {
+			$data['type'] = '0';
+		}
+		
+		if (isset($this->request->post['transition_id'])) {
+			$data['transition_id'] = $this->request->post['transition_id'];
+		} elseif (!empty($module_info)) {
+			$data['transition_id'] = $module_info['transition_id'];
+		} else {
+			$data['transition_id'] = '0';
+		}
 
-		$data['banners'] = $this->model_design_banner->getBanners();
+		$data['transitions'] = array();
+		array_push($data['transitions'], 'Slide In/Slide Out', 'Fade In/Fade Out');
+
+		$data['type_options'] = array();
+		array_push($data['type_options'], 'Anywhere', 'Starting Soon', 'Ending Soon', 'Category Relevant', 'Auction Page');
+		
 
 		if (isset($this->request->post['width'])) {
 			$data['width'] = $this->request->post['width'];
 		} elseif (!empty($module_info)) {
 			$data['width'] = $module_info['width'];
 		} else {
-			$data['width'] = 130;
+			$data['width'] = 150;
 		}
 
 		if (isset($this->request->post['height'])) {
@@ -140,10 +192,6 @@ class ControllerExtensionModuleCarousel extends Controller {
 			$data['status'] = '';
 		}
 
-		$this->load->model('design/banner');
-
-		$data['banners'] = $this->model_design_banner->getBanners();
-
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -158,6 +206,14 @@ class ControllerExtensionModuleCarousel extends Controller {
 
 		if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 64)) {
 			$this->error['name'] = $this->language->get('error_name');
+		}
+		
+		if ((utf8_strlen($this->request->post['heading_text']) < 3) || (utf8_strlen($this->request->post['heading_text']) > 64)) {
+			$this->error['heading'] = $this->language->get('error_heading_text');
+		}
+		
+		if ((utf8_strlen($this->request->post['footer_text']) < 3) || (utf8_strlen($this->request->post['footer_text']) > 64)) {
+			$this->error['footer'] = $this->language->get('error_footer_text');
 		}
 
 		if (!$this->request->post['width']) {

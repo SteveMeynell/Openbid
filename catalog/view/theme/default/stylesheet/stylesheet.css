@@ -520,6 +520,269 @@ footer h5 {
 	content: '\f054';
 	font-family: FontAwesome;
 }
+
+/* featured product list */
+.featured-auction-thumb {
+	border: 5px dotted #ff0000;
+	margin-bottom: 20px;
+	overflow: auto;
+}
+
+.featured-auction-thumb .image {
+	text-align: center;
+}
+
+.featured-auction-thumb .image a {
+	display: block;
+}
+.featured-auction-thumb .image a:hover {
+	opacity: 0.8;
+}
+.featured-auction-thumb .image img {
+	margin-left: auto;
+	margin-right: auto;
+}
+.product-grid .featured-auction-thumb .image {
+	float: none;
+}
+@media (min-width: 767px) {
+.product-list .featured-auction-thumb .image {
+	float: left;
+	padding: 0 15px;
+}
+}
+.featured-auction-thumb h4 {
+	font-weight: bold;
+}
+.featured-auction-thumb .caption {
+	padding: 0 20px;
+	min-height: 180px;
+}
+.product-list .featured-auction-thumb .caption {
+	margin-left: 230px;
+}
+@media (max-width: 1200px) {
+.product-grid .featured-auction-thumb .caption {
+	min-height: 210px;
+	padding: 0 10px;
+}
+}
+@media (max-width: 767px) {
+.product-list .featured-auction-thumb .caption {
+	min-height: 0;
+	margin-left: 0;
+	padding: 0 10px;
+}
+.product-grid .featured-auction-thumb .caption {
+	min-height: 0;
+}
+}
+.featured-auction-thumb .rating {
+	padding-bottom: 10px;
+}
+.featured-auction-thumb .price {
+	color: #444;
+}
+.featured-auction-thumb .price-new {
+	font-weight: 600;
+}
+.featured-auction-thumb .price-old {
+	color: #999;
+	text-decoration: line-through;
+	margin-left: 10px;
+}
+.featured-auction-thumb .price-tax {
+	color: #999;
+	font-size: 12px;
+	display: block;
+}
+.featured-auction-thumb .button-group {
+	border-top: 1px solid #ddd;
+	background-color: #eee;
+	overflow: auto;
+}
+.product-list .featured-auction-thumb .button-group {
+	border-left: 1px solid #ddd;
+}
+@media (max-width: 768px) {
+	.product-list .featured-auction-thumb .button-group {
+		border-left: none;
+	}
+}
+.featured-auction-thumb .button-group button {
+	width: 60%;
+	border: none;
+	display: inline-block;
+	float: left;
+	background-color: #eee;
+	color: #888;
+	line-height: 38px;
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
+}
+.featured-auction-thumb .button-group button + button {
+	width: 20%;
+	border-left: 1px solid #ddd;
+}
+.featured-auction-thumb .button-group button:hover {
+	color: #444;
+	background-color: #ddd;
+	text-decoration: none;
+	cursor: pointer;
+}
+@media (max-width: 1200px) {
+	.featured-auction-thumb .button-group button, .featured-auction-thumb .button-group button + button {
+		width: 33.33%;
+	}
+}
+@media (max-width: 767px) {
+	.featured-auction-thumb .button-group button, .featured-auction-thumb .button-group button + button {
+		width: 33.33%;
+	}
+}
+/* End of Featured Products */
+
+/* Bolded Auction List */
+.bolded-auction-thumb {
+	border: 5px dotted #FFFF00;
+	margin-bottom: 20px;
+	overflow: auto;
+}
+.bolded-double-border {
+  background-color: #FFDF00;
+  border: 4px solid #fff;
+  box-shadow:
+    inset 0 0 0 4px #eee,
+    inset 0 0 0 8px #ddd,
+    inset 0 0 0 12px #ccc,
+    inset 0 0 0 16px #bbb,
+    inset 0 0 0 20px #aaa,
+    inset 0 0 0 20px #999,
+    inset 0 0 0 20px #888;
+  /* And so on and so forth, if you want border-ception */
+  margin: 0 auto;
+  padding: 3em;
+  /*width: 16em;
+  /*height: 16em;
+  /*position: relative;*/
+}
+
+.bolded-auction-thumb .image {
+	text-align: center;
+}
+
+.bolded-auction-thumb .image a {
+	display: block;
+}
+.bolded-auction-thumb .image a:hover {
+	opacity: 0.8;
+}
+.bolded-auction-thumb .image img {
+	margin-left: auto;
+	margin-right: auto;
+}
+.product-grid .bolded-auction-thumb .image {
+	float: none;
+}
+@media (min-width: 767px) {
+.product-list .bolded-auction-thumb .image {
+	float: left;
+	padding: 0 15px;
+}
+}
+.bolded-auction-thumb h4 {
+	font-weight: bold;
+}
+.bolded-auction-thumb .caption {
+	padding: 0 20px;
+	min-height: 180px;
+}
+.product-list .bolded-auction-thumb .caption {
+	margin-left: 230px;
+}
+@media (max-width: 1200px) {
+.product-grid .bolded-auction-thumb .caption {
+	min-height: 210px;
+	padding: 0 10px;
+}
+}
+@media (max-width: 767px) {
+.product-list .bolded-auction-thumb .caption {
+	min-height: 0;
+	margin-left: 0;
+	padding: 0 10px;
+}
+.product-grid .bolded-auction-thumb .caption {
+	min-height: 0;
+}
+}
+.bolded-auction-thumb .rating {
+	padding-bottom: 10px;
+}
+.bolded-auction-thumb .price {
+	color: #444;
+}
+.bolded-auction-thumb .price-new {
+	font-weight: 600;
+}
+.bolded-auction-thumb .price-old {
+	color: #999;
+	text-decoration: line-through;
+	margin-left: 10px;
+}
+.bolded-auction-thumb .price-tax {
+	color: #999;
+	font-size: 12px;
+	display: block;
+}
+.bolded-auction-thumb .button-group {
+	border-top: 1px solid #ddd;
+	background-color: #eee;
+	overflow: auto;
+}
+.product-list .bolded-auction-thumb .button-group {
+	border-left: 1px solid #ddd;
+}
+@media (max-width: 768px) {
+	.product-list .bolded-auction-thumb .button-group {
+		border-left: none;
+	}
+}
+.bolded-auction-thumb .button-group button {
+	width: 60%;
+	border: none;
+	display: inline-block;
+	float: left;
+	background-color: #eee;
+	color: #888;
+	line-height: 38px;
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
+}
+.bolded-auction-thumb .button-group button + button {
+	width: 20%;
+	border-left: 1px solid #ddd;
+}
+.bolded-auction-thumb .button-group button:hover {
+	color: #444;
+	background-color: #ddd;
+	text-decoration: none;
+	cursor: pointer;
+}
+@media (max-width: 1200px) {
+	.bolded-auction-thumb .button-group button, .bolded-auction-thumb .button-group button + button {
+		width: 33.33%;
+	}
+}
+@media (max-width: 767px) {
+	.bolded-auction-thumb .button-group button, .bolded-auction-thumb .button-group button + button {
+		width: 33.33%;
+	}
+}
+/* End of Bolded Auctions */
+
 /* product list */
 .product-thumb {
 	border: 1px solid #ddd;

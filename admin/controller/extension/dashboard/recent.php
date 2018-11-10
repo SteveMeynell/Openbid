@@ -103,11 +103,11 @@ class ControllerExtensionDashboardRecent extends Controller {
 
 		$data['text_no_results'] = $this->language->get('text_no_results');
 
-		$data['column_order_id'] = $this->language->get('column_order_id');
-		$data['column_customer'] = $this->language->get('column_customer');
-		$data['column_status'] = $this->language->get('column_status');
+		$data['column_auction_id'] = $this->language->get('column_auction_id');
+		$data['column_seller'] = $this->language->get('column_seller');
+		$data['column_reserve'] = $this->language->get('column_reserve');
 		$data['column_date_added'] = $this->language->get('column_date_added');
-		$data['column_total'] = $this->language->get('column_total');
+		$data['column_buy_now'] = $this->language->get('column_buy_now');
 		$data['column_action'] = $this->language->get('column_action');
 
 		$data['button_view'] = $this->language->get('button_view');
@@ -115,27 +115,27 @@ class ControllerExtensionDashboardRecent extends Controller {
 		$data['token'] = $this->session->data['token'];
 
 		// Last 5 Orders
-		$data['orders'] = array();
+		$data['auctions'] = array();
 
 		$filter_data = array(
-			'sort'  => 'o.date_added',
+			'sort'  => 'a.date_created',
 			'order' => 'DESC',
 			'start' => 0,
 			'limit' => 5
 		);
 
-		$this->load->model('sale/order');
+		$this->load->model('catalog/auction');
 		
-		$results = $this->model_sale_order->getOrders($filter_data);
+		$results = $this->model_catalog_auction->getAuctions($filter_data);
 
 		foreach ($results as $result) {
-			$data['orders'][] = array(
-				'order_id'   => $result['order_id'],
-				'customer'   => $result['customer'],
-				'status'     => $result['order_status'],
-				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-				'view'       => $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'], true),
+			$data['auctions'][] = array(
+				'auction_id'   => $result['auction_id'],
+				'seller'   => $result['seller'],
+				'reserve_bid'     => $this->currency->format($result['reserve_price'],$this->config->get('config_currency')),
+				'date_created' => date($this->language->get('datetime_format'), strtotime($result['date_created'])),
+				'buy_now'      => $this->currency->format($result['buy_now_price'], $this->config->get('config_currency')),
+				'view'       => $this->url->link('catalog/auction/edit', 'token=' . $this->session->data['token'] . '&auction_id=' . $result['auction_id'], true),
 			);
 		}
 
