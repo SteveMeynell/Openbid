@@ -8,6 +8,7 @@ class ControllerStartupCompatibility extends Controller {
 				'extension/captcha',
 				'extension/feed',
 				'extension/fees',
+				'extension/jumbotron',
 				'extension/fraud',
 				'extension/module',
 				'extension/payment',

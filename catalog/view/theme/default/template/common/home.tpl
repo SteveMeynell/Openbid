@@ -1,4 +1,7 @@
 <?php echo $header; ?>
+<?php if (isset($jumbotron)) {
+  echo $jumbotron;
+} ?>
 <div class="container">
   <div class="row"><?php echo $column_left; ?>
     <?php if ($column_left && $column_right) { ?>

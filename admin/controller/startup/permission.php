@@ -22,6 +22,7 @@ class ControllerStartupPermission extends Controller {
 				'extension/extension',
 				'extension/feed',
 				'extension/fees',
+				'extension/jumbotron',
 				'extension/accounting',
 				'extension/fraud',
 				'extension/module',
