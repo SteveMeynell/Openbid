@@ -106,11 +106,11 @@ class ControllerExtensionDashboardOrder extends Controller {
 		$data['token'] = $this->session->data['token'];
 
 		// Total Orders
-		$this->load->model('sale/order');
+		$this->load->model('catalog/auction');
 
-		$today = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-1 day'))));
+		$today = $this->model_catalog_auction->getTotalAuctions(array('filter_date_created' => date('Y-m-d', strtotime('-1 day'))));
 
-		$yesterday = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-2 day'))));
+		$yesterday = $this->model_catalog_auction->getTotalAuctions(array('filter_date_created' => date('Y-m-d', strtotime('-2 day'))));
 
 		$difference = $today - $yesterday;
 
@@ -120,7 +120,7 @@ class ControllerExtensionDashboardOrder extends Controller {
 			$data['percentage'] = 0;
 		}
 
-		$order_total = $this->model_sale_order->getTotalOrders();
+		$order_total = $this->model_catalog_auction->getTotalAuctions();
 
 		if ($order_total > 1000000000000) {
 			$data['total'] = round($order_total / 1000000000000, 1) . 'T';
@@ -134,7 +134,7 @@ class ControllerExtensionDashboardOrder extends Controller {
 			$data['total'] = $order_total;
 		}
 
-		$data['order'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'], true);
+		$data['order'] = $this->url->link('catalog/auction', 'token=' . $this->session->data['token'], true);
 
 		return $this->load->view('extension/dashboard/order_info', $data);
 	}

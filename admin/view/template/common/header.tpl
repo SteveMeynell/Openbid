@@ -43,10 +43,10 @@
   </div>
   <?php if ($logged) { ?>
   <ul class="nav pull-right">
-    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><?php if($alerts > 0) { ?><span class="label label-success pull-left"><?php echo $alerts; ?></span><?php } ?> <i class="fa fa-bell fa-lg"></i></a>
+    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><?php if($alerts > 0) { ?><span class="label label-info pull-left"><?php echo $alerts; ?></span><?php } ?> <i class="fa fa-bell fa-lg"></i></a>
       <ul class="dropdown-menu dropdown-menu-right alerts-dropdown">
         <li class="dropdown-header"><?php echo $text_auction; ?></li>
-        <li><a href="<?php echo $opening_one_day; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $opening_one_day; ?></span><?php echo $text_opening_soon; ?></a></li>
+        <li><a href="<?php echo $opening_one_day; ?>" style="display: block; overflow: auto;"><span class="label label-info pull-right"><?php echo $opening_one_day; ?></span><?php echo $text_opening_soon; ?></a></li>
         <li><a href="<?php echo $created_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $created_auction_status_total; ?></span><?php echo $text_created_auction_status; ?></a></li>
         <li><a href="<?php echo $open_auction_status; ?>" style="display: block; overflow: auto;"><span class="label label-success pull-right"><?php echo $open_auction_status_total; ?></span><?php echo $text_open_auction_status; ?></a></li>
         <li><a href="<?php echo $closed_auction_status; ?>"><span class="label label-warning pull-right"><?php echo $closed_auction_status_total; ?></span><?php echo $text_closed_auction_status; ?></a></li>
@@ -55,14 +55,14 @@
         <li class="divider"></li>
         <li class="dropdown-header"><?php echo $text_customer; ?></li>
         <li><a href="<?php echo $online; ?>"><span class="label label-success pull-right"><?php echo $online_total; ?></span><?php echo $text_online; ?></a></li>
-        <li><a href="<?php echo $customer_approval; ?>"><span class="label label-danger pull-right"><?php echo $customer_total; ?></span><?php echo $text_approval; ?></a></li>
-        <li><a href="<?php echo $bidders_only; ?>"><span class="label label-danger pull-right"><?php echo $bidders_only_total; ?></span><?php echo $text_bidders_only; ?></a></li>
-        <li><a href="<?php echo $sellers_only; ?>"><span class="label label-danger pull-right"><?php echo $sellers_only_total; ?></span><?php echo $text_sellers_only; ?></a></li>
-        <li><a href="<?php echo $bidders_sellers; ?>"><span class="label label-danger pull-right"><?php echo $bidders_sellers_total; ?></span><?php echo $text_bidders_sellers; ?></a></li>
+        <li><a href="<?php echo $customer_approval_link; ?>"><span class="label label-danger pull-right"><?php echo $customer_approval; ?></span><?php echo $text_approval; ?></a></li>
+        <li><a href="<?php echo $bidders_only; ?>"><span class="label label-info pull-right"><?php echo $bidders_only_total; ?></span><?php echo $text_bidders_only; ?></a></li>
+        <li><a href="<?php echo $sellers_only; ?>"><span class="label label-info pull-right"><?php echo $sellers_only_total; ?></span><?php echo $text_sellers_only; ?></a></li>
+        <li><a href="<?php echo $bidders_sellers; ?>"><span class="label label-info pull-right"><?php echo $bidders_sellers_total; ?></span><?php echo $text_bidders_sellers; ?></a></li>
         <li class="divider"></li>
-        <li class="dropdown-header"><?php echo $text_auction; ?></li>
-        <li><a href="<?php echo $auction; ?>"><span class="label label-danger pull-right"><?php echo $auction_total; ?></span><?php echo $text_auction; ?></a></li>
-        <li><a href="<?php echo $review; ?>"><span class="label label-danger pull-right"><?php echo $review_total; ?></span><?php echo $text_review; ?></a></li>
+        <li class="dropdown-header"><?php echo $text_totals; ?></li>
+        <li><a href="<?php echo $auction; ?>"><span class="label label-info pull-right"><?php echo $auction_total; ?></span><?php echo $text_auction; ?></a></li>
+        <li><a href="<?php echo $customer_total_link; ?>"><span class="label label-info pull-right"><?php echo $customer_total; ?></span><?php echo $text_customer; ?></a></li>
         <li class="divider"></li>
         <li class="dropdown-header"><?php echo $text_affiliate; ?></li>
         <li><a href="<?php echo $affiliate_approval; ?>"><span class="label label-danger pull-right"><?php echo $affiliate_total; ?></span><?php echo $text_approval; ?></a></li>

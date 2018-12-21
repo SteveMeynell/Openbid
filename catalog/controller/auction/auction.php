@@ -3,6 +3,16 @@ class ControllerAuctionAuction extends Controller {
 	private $error = array();
 
 	public function index() {
+		$customerGroupId = $this->customer->getGroupId();
+		$customerOnline = $this->customer->isLogged();
+		$seePrices = $this->config->get('config_customer_price');
+		$guestsBid = $this->config->get('config_checkout_guest');
+		/*debuglog("Current Settings: ");
+		debuglog("See prices: " . $seePrices);
+		debuglog("Guests Bid: " . $guestsBid);
+		debuglog("Customer Group: " . $customerGroupId);
+		debuglog("Customer Online: " . $customerOnline);
+		*/
 		$this->load->language('auction/auction');
 
 		$data['breadcrumbs'] = array();
@@ -203,6 +213,7 @@ class ControllerAuctionAuction extends Controller {
 			$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
 			$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment.js');
+			$this->document->addScript('catalog/view/javascript/auction/bidding.js');
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
 			$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
@@ -210,7 +221,6 @@ class ControllerAuctionAuction extends Controller {
 
 			$data['text_select'] = $this->language->get('text_select');
 			$data['text_option'] = $this->language->get('text_option');
-			//$data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
 			$data['text_write'] = $this->language->get('text_write');
 			$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
 			$data['text_note'] = $this->language->get('text_note');
@@ -223,7 +233,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['text_please_login']	= $this->language->get('text_please_login');
 			$data['text_ending_in'] = $this->language->get('text_ending_in');
 			$data['text_reserved_bid'] = $this->language->get('text_reserved_bid');
-			$data['text_reserved_met'] = $this->language->get('text_reserved_met');
+			$data['text_reserved_bid_met'] = $this->language->get('text_reserved_bid_met');
 
 			$data['entry_qty'] = $this->language->get('entry_qty');
 			$data['entry_name'] = $this->language->get('entry_name');
@@ -233,6 +243,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['entry_bad'] = $this->language->get('entry_bad');
 
 			$data['button_bid'] = $this->language->get('button_bid');
+			$data['button_buynow'] = $this->language->get('button_buynow');
 			$data['button_wishlist'] = $this->language->get('button_wishlist');
 			
 			$data['button_continue'] = $this->language->get('button_continue');
@@ -277,11 +288,23 @@ class ControllerAuctionAuction extends Controller {
 			$data['buy_now_only'] = $auction_info['buy_now_only'];
 			$this->load->model('auction/bidding');
 			
+			if ($this->customer->isLogged() && $this->customer->getGroupId()!='2') {
+				$data['can_bid'] = 'yes';
+			} else {
+				$data['can_bid'] = 'no';
+			}
+
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$current_bid = $this->model_auction_bidding->getCurrentBid($this->request->get['auction_id']);
+				$theNextBid = $this->currency->format($this->model_auction_bidding->getNextBid($current_bid['bid_amount']),$this->session->data['currency']);
+				$minimumBid = $this->currency->format($this->model_auction_bidding->getNextBid($auction_info['min_bid']),$this->session->data['currency']);
+				$data['min_bid'] = $auction_info['min_bid'];
 				$data['reserve_bid'] = $this->currency->format($auction_info['reserve_price'],$this->session->data['currency']);
-				//debuglog($current_bid);
+				$data['next_bid_text'] = ($current_bid['bid_amount']>0)? $theNextBid : $minimumBid;
+				$data['next_bid'] = ($current_bid['bid_amount']>0)? $this->model_auction_bidding->getNextBid($current_bid['bid_amount']) : $this->model_auction_bidding->getNextBid($auction_info['min_bid']);
+				//$data['button_bid'] .= $this->currency->format($data['next_bid'],$this->session->data['currency']);
 				$data['buy_now'] = $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
+				$data['button_buynow'] .= ' For Only ' . $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
 				$data['current_bid'] = $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']);
 			} else {
 				$data['buy_now'] = false;
@@ -557,4 +580,99 @@ class ControllerAuctionAuction extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function getBidHistory(){
+		$this->load->model('auction/bidding');
+		$auction_id = $this->request->get['auction_id'];
+		$min_bid = $this->request->get['min_bid'];
+		$bidList = $this->model_auction_bidding->getAllBids($auction_id);
+		$json = array();
+		$json['bids'] = array();
+		$json['isUsersBid'] = array();
+
+		//debuglog("bidList:");
+		//debuglog($bidList);
+		foreach($bidList as $bidAmount){
+			array_push($json['bids'],$bidAmount['bid_amount']);
+			if($this->customer->isLogged() && $bidAmount['bidder_id'] === $this->customer->getId()){
+				array_push($json['isUsersBid'],'1');
+			} else {
+				array_push($json['isUsersBid'],'0');
+			}
+		}
+		$json['currentBid'] = array_pop($json['bids']);
+		array_push($json['bids'], $json['currentBid']);
+		if($json['currentBid']){
+			$nextBid = $this->model_auction_bidding->getNextBid($json['currentBid']);
+		} else {
+			$nextBid = $this->model_auction_bidding->getNextBid($min_bid);
+		}
+		
+		$json['nextBid'] = $nextBid;
+		//debuglog("Json:");
+		//debuglog($json);
+		
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function BuyRightNow(){
+		$auction_id = $this->request->post['auction_id'];
+		$json = array();
+	
+		// things to do here
+		// mark auction as closed
+		$this->load->model('auction/auction');
+		$this->model_auction_auction->closeWonAuction($auction_id);
+
+		// place final winning bid of the Buy Now Price
+		$this->load->model('auction/bidding');
+		$buyNowPrice = $this->model_auction_auction->getBuyNowPrice($auction_id);
+		$thisWinningBid = array(
+			'auction_id'	=> $this->db->escape($auction_id),
+			'bidder_id'	=>	$this->customer->getId(),
+			'bid_amount'	=>	$buyNowPrice['buy_now_price'],
+			'proxy_bid_amount'	=> $buyNowPrice['buy_now_price'],
+			'winner'			=> '1'
+		);
+		$result = $this->model_auction_bidding->placeBid($thisWinningBid);
+
+		// move all bids to history
+		$this->model_auction_bidding->moveBids2History($auction_id);
+		// email seller
+		// email winning bidder
+
+
+		
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function PlaceBid(){
+		$auction_id = $this->request->post['auction_id'];
+		$bidAmount = $this->request->post['bid_amount'];
+		$min_bid = $this->request->post['min_bid'];
+		$last_bid = $this->model_auction_bidding->getLastBid($auction_id);
+		$next_bid = (empty($last_bid))?$this->model_auction_bidding->getNextBid($min_bid):$this->model_auction_bidding->getNextBid($last_bid['bid_amount']);
+		if(!$bidAmount){
+			$bidAmount=$next_bid;
+		}
+		$json = array();
+
+		$thisBid = array(
+			'auction_id'	=> $this->db->escape($auction_id),
+			'bidder_id'	=>	$this->customer->getId(),
+			'bid_amount'	=>	$next_bid,
+			'proxy_bid_amount'	=> $bidAmount
+		);
+		
+		$result = $this->model_auction_bidding->placeBid($thisBid);
+		
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	// end of controller
 }

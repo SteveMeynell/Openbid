@@ -48,11 +48,16 @@ class ModelAuctionBidIncrements extends Model {
     
     
 	public function getNextIncrement($data) {
-		$this->db->query("SELECT increment FROM " . DB_PREFIX . "bid_increments
+		//debuglog("bid increments data:");
+		//debuglog($data);
+		$sql = "SELECT increment FROM " . DB_PREFIX . "bid_increments
 						 WHERE
 						 bid_low <= '" . $data . "'
 						 AND
-						 bid_high >= '" . $data . "'");
-		return $this->query->row;
+						 bid_high >= '" . $data . "'";
+						 
+						 
+		$results = $this->db->query($sql);
+		return $results->row;
 	}
 } // End of Model

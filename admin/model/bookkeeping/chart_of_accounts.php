@@ -10,7 +10,7 @@ class ModelBookkeepingChartOfAccounts extends Model {
         return $result; 
     }
     
-    private add($data) {
+    private function addAccount($data) {
         // Data should include desired glcode, description, parent glcode
     }
     

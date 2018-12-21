@@ -35,7 +35,7 @@ class ControllerCommonHeader extends Controller {
 		$data['text_sellers_only'] = $this->language->get('text_sellers_only');
 		$data['text_bidders_sellers'] = $this->language->get('text_bidders_sellers');
 		$data['text_product'] = $this->language->get('text_product');
-		$data['text_stock'] = $this->language->get('text_stock');
+		$data['text_totals'] = $this->language->get('text_totals');
 		$data['text_review'] = $this->language->get('text_review');
 		$data['text_affiliate'] = $this->language->get('text_affiliate');
 		$data['text_store'] = $this->language->get('text_store');
@@ -103,10 +103,13 @@ class ControllerCommonHeader extends Controller {
 
 			$this->load->model('customer/customer');
 
-			$customer_total = $this->model_customer_customer->getTotalCustomers(array('filter_approved' => false));
+			$customer_total = $this->model_customer_customer->getTotalCustomers(array('filter_approved' => true));
+			$customer_approval = $this->model_customer_customer->getTotalCustomers(array('filter_approved' => false));
 
 			$data['customer_total'] = $customer_total;
-			$data['customer_approval'] = $this->url->link('customer/customer', 'token=' . $this->session->data['token'] . '&filter_approved=0', true);
+			$data['customer_total_link'] = $this->url->link('customer/customer', 'token=' . $this->session->data['token'] . '&filter_approved=1', true);
+			$data['customer_approval'] = $customer_approval;
+			$data['customer_approval_link'] = $this->url->link('customer/customer', 'token=' . $this->session->data['token'] . '&filter_approved=0', true);
 
 			// Auctions
 			$this->load->model('catalog/auction');

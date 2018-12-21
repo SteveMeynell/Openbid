@@ -189,16 +189,21 @@ class ControllerStartupStartup extends Controller {
 		
 		// Auction Updates
 		$this->load->model('auction/auction');
+		$relisted_auctions = $this->model_auction_auction->relistClosingAuctions();
 		$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
 		$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
-		if ($closed_auctions) {
+		/*if ($effected_auctions['closed']) {
 			debuglog("Closed Auctions");
-			debuglog($closed_auctions);
+			debuglog($effected_auctions['closed']);
+		}
+		if ($effected_auctions['relist']) {
+			debuglog("relisted");
+			debuglog($effected_auctions['relist']);
 		}
 		if ($opened_auctions) {
 			debuglog("Open Auctions");
 			debuglog($opened_auctions);
-		}
+		}*/
 		
 	}
 }

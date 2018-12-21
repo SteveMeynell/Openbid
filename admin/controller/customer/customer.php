@@ -1144,7 +1144,6 @@ class ControllerCustomerCustomer extends Controller {
 		$this->load->model('customer/customer');
 
 		$customer_info = $this->model_customer_customer->getCustomer($customer_id);
-
 		if ($customer_info) {
 			// Create token to login with
 			$token = token(64);
@@ -1160,7 +1159,6 @@ class ControllerCustomerCustomer extends Controller {
 			$this->load->model('setting/store');
 
 			$store_info = $this->model_setting_store->getStore($store_id);
-
 			if ($store_info) {
 				$this->response->redirect($store_info['url'] . 'index.php?route=account/login&token=' . $token);
 			} else {

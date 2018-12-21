@@ -143,6 +143,14 @@ div.required .control-label:before {
 	padding: 10px 35px;
 	text-shadow: 0 1px 0 #FFF;
 }
+/* Auction Stuff */
+#bidHistory .thead-dark {
+	background-color: #09c231;
+	color: #000000;
+}
+#bidHistory .bidRow {
+	color: #000000;
+}
 /* cart */
 #cart {
 	margin-bottom: 10px;
@@ -612,8 +620,8 @@ footer h5 {
 .featured-auction-thumb .button-group button {
 	width: 60%;
 	border: none;
-	display: inline-block;
 	float: left;
+	display: inline-block;
 	background-color: #eee;
 	color: #888;
 	line-height: 38px;
@@ -753,8 +761,8 @@ footer h5 {
 	width: 60%;
 	border: none;
 	display: inline-block;
-	float: left;
 	background-color: #eee;
+	float: left;
 	color: #888;
 	line-height: 38px;
 	font-weight: bold;
@@ -889,8 +897,8 @@ h2.price {
 .product-thumb .button-group button {
 	width: 60%;
 	border: none;
-	display: inline-block;
 	float: left;
+	display: inline-block;
 	background-color: #eee;
 	color: #888;
 	line-height: 38px;

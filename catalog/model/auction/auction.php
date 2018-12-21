@@ -1,7 +1,8 @@
 <?php
 class ModelAuctionAuction extends Model {
     
-    public function closeOpenAuctions() {
+	public function relistClosingAuctions(){
+    
         /* First for auctions that have winners:
          *      Winners:    Have placed a bid that is higher than the reserved bid or if that is zero,
          *                  than higher that the min_bid. And of course is the highest bid.
@@ -25,7 +26,7 @@ class ModelAuctionAuction extends Model {
          * Email sent to the seller with options and/or tips
          */
 
-        
+        $effected_customers = array();
         
         $query = $this->db->query("SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS fullname, c.email as email_address FROM " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad
@@ -56,10 +57,69 @@ class ModelAuctionAuction extends Model {
         //debuglog($sql);
         
         if ($query->num_rows) {
-            $effected_customers = $query->rows;
+            $effected_auctions = $query->rows;
+			$effected_customers['relist'] = $effected_auctions;
         } else {
-            $effected_customers = false;
+            $effected_auctions = false;
+			$effected_customers['relist'] = false;
         }
+		
+		$grace_period = '1';  // grace period before reopening auctions relisted.  This will be a setting later.
+		
+		$this->load->model('auction/bidding');
+		if($effected_auctions) {
+			foreach($effected_auctions as $auction) {
+				$current_bid = $this->model_auction_bidding->getCurrentBid($auction['auction_id']);
+				if($auction['reserve_price'] > $current_bid['bid_amount'] && $auction['num_relist'] > 0){
+					$sql = "UPDATE " . DB_PREFIX . "auctions
+					SET num_relist = (num_relist - 1),
+					date_modified = NOW(),
+					status = '1',
+					modified_by = '1'
+					WHERE auction_id = '" . $auction['auction_id'] . "'";
+					//debuglog($sql);
+					$this->db->query($sql);
+					$new_start = (int)$auction['duration']*24 + $grace_period;
+					$sql = "UPDATE " . DB_PREFIX . "auction_details
+					SET start_date = DATE_ADD(NOW(), INTERVAL " . $grace_period . " HOUR),
+					end_date = DATE_ADD(NOW(), INTERVAL " . $new_start . " HOUR),
+					min_bid = " . max($auction['min_bid'], $current_bid['bid_amount']) . "
+					WHERE auction_id = '" . $auction['auction_id'] . "'";
+					
+					$this->db->query($sql);
+					
+					$this->model_auction_bidding->moveBids2History($auction['auction_id']);
+					debuglog("relisting: " . $auction['auction_id']);
+					$message = html_entity_decode('Auction: ' . $auction['auction_id'] . ' Relisted.', ENT_QUOTES, 'UTF-8');
+					$mail = new Mail();
+					$mail->setTo($this->config->get('config_email'));
+					$mail->setFrom($this->config->get('config_email'));
+					$mail->setSender("Closing Day");
+					$mail->setSubject(html_entity_decode("Auction Relisted", ENT_QUOTES, 'UTF-8'));
+					$mail->setText($message, ENT_QUOTES, 'UTF-8');
+					$mail->send();
+				} elseif($auction['reserve_price'] <= $current_bid['bid_amount']) {
+                    debuglog("We have a winner");
+                    /* What has to happen now is: 
+                    The auction has to close.
+                    The winning bid has to be flagged as the winner.
+                    The bids moved to history.
+                    The seller has to be notified with the details.
+                    The winning bidder has to be notified with the details.
+                    */
+                    $this->db->query("UPDATE " . DB_PREFIX . "auctions 
+                    SET status = '3' 
+                    WHERE auction_id = '" . $auction['auction_id'] . "'");
+                    $this->db->query("UPDATE " . DB_PREFIX . "current_bids SET winner = '1' WHERE bid_id = '" . $current_bid['bid_id'] . "'");
+                    $this->model_auction_bidding->moveBids2History($auction['auction_id']);
+                }
+			}
+		}
+		
+		return $effected_customers;
+	}
+		
+	public function closeOpenAuctions() {
         //must check if latest bid exceeds the reserved bid if set and if not then if it is relisted
         // need a cool off period before relist maybe - setting - then reset the start time, end time,
         // decrease the relist count send email informing the seller that it didn't sell and give them the cool
@@ -83,7 +143,11 @@ class ModelAuctionAuction extends Model {
         WHERE a.status = '2' AND ad1.end_date <= NOW()");
         
         $results = $this->db->countAffected();
-        
+		if($results){
+			$effected_customers['closed'] = $results;
+		} else {
+			$effected_customers['closed'] = false;
+		}
        /* $message  = '<html dir="ltr" lang="en">' . "\n";
 					$message .= '  <head>' . "\n";
 					$message .= '    <title>Closing Auction</title>' . "\n";
@@ -159,6 +223,19 @@ class ModelAuctionAuction extends Model {
         //$this->log->write($results . ' Auctions Opened.');
     }
     
-    
+    public function getBuyNowPrice($auction_id){
+        $sql = "SELECT buy_now_price FROM " . DB_PREFIX . "auction_details 
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        $result = $this->db->query($sql);
+        return $result->row;
+    }
+
+    public function closeWonAuction($auction_id){
+        $sql = "UPDATE " . DB_PREFIX . "auctions 
+        SET status = '3'  
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        debuglog($sql);
+
+    }
     // End of Model
 }

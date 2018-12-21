@@ -95,10 +95,6 @@
         <?php $class = 'col-sm-4'; ?>
         <?php } ?>
         <div class="<?php echo $class; ?>">
-          <div class="btn-group">
-            <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
-            <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_bid; ?>" onclick="compare.add('<?php echo $auction_id; ?>');"><i class="fa fa-exchange"></i></button>
-          </div>
           <h1><?php echo $heading_title; ?></h1>
           <p><?php echo $text_viewed . ' ' . $views; ?></p>
           <h3><?php echo $text_ending_in; ?></h3>
@@ -114,15 +110,45 @@
               <h2><span class="price-new"><?php echo $text_buy_now; ?> <?php echo $buy_now; ?></span></h2>
               <?php if ($reserve_bid) {
                 if ($reserve_bid <= $current_bid) { ?>
-                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserve_bid_met; ?></span></h2>
+                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserved_bid_met; ?></span></h2>
                 <?php } else { ?>
                   <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $reserve_bid; ?></span></h2>
                 <?php }} ?>
-                <h2><span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $current_bid; ?></span></h2>
-            <?php } else { ?>
+                <h2><span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new" id="current_bid"><?php echo $current_bid; ?></span></h2>
+                <h2><span class="price-new" id="winningBidder"></span></h2>
+                <?php if ($can_bid == 'yes'){ ?>
+                  <div class="btn-group">
+                    <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
+                    <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>" ><i class="fa fa-gavel"></i></button>
+                    <button type="button" id="PlaceBidButton" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-gavel"></i></button>
+                    <label>Next Minimum Bid</label>
+                    <input type="text"class="auction price-new" id="proxy_amount" name="proxy_amount" placeholder="<?php echo $next_bid_text; ?>" data-toggle="tooltip" title="Anything higher than the minimum bid will be placed in proxy."></>
+                  </div>
+                <?php } 
+             } else { ?>
               <h2><span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $buy_now; ?></span></h2>
-            <?php } ?>
+              <?php if ($can_bid == 'yes'){ ?>
+                <div class="btn-group">
+                  <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
+                  <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>"><i class="fa fa-gavel"></i></button>
+                </div>
+            <?php }} ?>
           </p>
+          <div id="serverData">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover" id="bidHistory">
+              <thead class="thead-dark">
+                <tr>
+                  <td class="text-center" colspan="2">Latest Bids</td>
+                </tr>
+                <tr>
+                  <td class="text-center">Bid#</td>
+                  <td class="text-center">Bid Amount</td>
+                </tr>
+              </thead>
+            </table>
+            </div>
+          </div>
         <?php } ?>
           <?php if ($review_status) { ?>
           <div class="rating">
@@ -158,60 +184,6 @@
       <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>
 </div>
-<script type="text/javascript"><!--
-$('#button-cart').on('click', function() {
-	$.ajax({
-		url: 'index.php?route=checkout/cart/add',
-		type: 'post',
-		data: $('#auction input[type=\'text\'], #auction input[type=\'hidden\'], #auction input[type=\'radio\']:checked, #auction input[type=\'checkbox\']:checked, #auction select, #auction textarea'),
-		dataType: 'json',
-		beforeSend: function() {
-			$('#button-cart').button('loading');
-		},
-		complete: function() {
-			$('#button-cart').button('reset');
-		},
-		success: function(json) {
-			$('.alert, .text-danger').remove();
-			$('.form-group').removeClass('has-error');
-
-			if (json['error']) {
-				if (json['error']['option']) {
-					for (i in json['error']['option']) {
-						var element = $('#input-option' + i.replace('_', '-'));
-
-						if (element.parent().hasClass('input-group')) {
-							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
-						} else {
-							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
-						}
-					}
-				}
-
-				if (json['error']['recurring']) {
-					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
-				}
-
-				// Highlight any found errors
-				$('.text-danger').parent().addClass('has-error');
-			}
-
-			if (json['success']) {
-				$('.breadcrumb').after('<div class="alert alert-success">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
-
-				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
-
-				$('html, body').animate({ scrollTop: 0 }, 'slow');
-
-				$('#cart > ul').load('index.php?route=common/cart/info ul li');
-			}
-		},
-        error: function(xhr, ajaxOptions, thrownError) {
-            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-        }
-	});
-});
-//--></script>
 <script type="text/javascript"><!--
 $('.date').datetimepicker({
 	pickTime: false
@@ -271,6 +243,7 @@ $('#button-review').on('click', function() {
 	});
 });
 
+
 $(document).ready(function() {
 	$('.thumbnails').magnificPopup({
 		type:'image',
@@ -279,6 +252,74 @@ $(document).ready(function() {
 			enabled:true
 		}
 	});
+  getHistory();
+  });
+  function getHistory(){
+  $.ajax({
+    url: 'index.php?route=auction/auction/getBidHistory',
+		type: 'get',
+		dataType: 'json',
+    data: {auction_id: '<?php echo $auction_id; ?>', min_bid: '<?php echo $min_bid; ?>'},
+    success: function(json){
+      if(json['bids'].length){
+        $("#proxy_amount").val("");
+        for(i=json['bids'].length-1;i>=0;i--) {
+          $("#bidHistory").append('<tr id="bidRow" class="bidRow"><td class="text-center" id="bidInfo">' + (i+1) +'</td><td class="text-center" id="bidAmount">' + json['bids'][i] + '</td></tr>');  
+        }
+        if(json['isUsersBid'][json['isUsersBid'].length-1] === '1'){
+          $("#winningBidder").text("You have the highest bid.");
+        }
+      } else {
+        $("#bidHistory").append('<tr class="bidRow"><td class="text-center" id="bidInfo" colspan="2">No Bids Yet!</td></tr>');
+      }
+      $("#PlaceBidButton").attr("title","Next Minimum Bid: " + json['nextBid']);
+      $("#proxy_amount").attr("placeholder",json['nextBid']);
+      if(json['currentBid']){
+        $("#current_bid").text(json['currentBid']);
+      } else {
+        $("#current_bid").text("nothing");
+      }
+      },
+    error: function(textStatus){
+      console.log("error");
+      console.log(textStatus)
+    }
+  });
+  }
+$("#BuyNowButton").click(function(){
+  $.ajax({
+    url: 'index.php?route=auction/auction/BuyRightNow',
+    type: 'post',
+    dataType: 'json',
+    data: {auction_id: '<?php echo $auction_id; ?>'},
+    success: function(json){
+      console.log("success");
+    },
+    error: function(statusText){
+      console.log("error");
+      console.log(statusText);
+    }
+  });
 });
+$("#PlaceBidButton").click(function(){
+  var proxyBid = $("#proxy_amount").val();
+  
+  $.ajax({
+    url: 'index.php?route=auction/auction/PlaceBid',
+    type: 'post',
+    dataType: 'json',
+    data: {auction_id: '<?php echo $auction_id; ?>', bid_amount: proxyBid, min_bid: '<?php echo $min_bid; ?>'},
+    success: function(json){
+      console.log("success");
+      $(".bidRow").empty();
+      getHistory();
+    },
+    error: function(statusText){
+      console.log("error");
+      console.log(statusText);
+    }
+  });
+});
+
 //--></script>
 <?php echo $footer; ?>

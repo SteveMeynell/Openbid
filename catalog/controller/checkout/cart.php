@@ -282,6 +282,18 @@ class ControllerCheckoutCart extends Controller {
 	}
 
 	public function add() {
+		
+		
+		debuglog("got here");
+		if($this->customer->isLogged()) {
+			debuglog("yes");
+			debuglog($this->customer->getId());
+		} else {
+			debuglog("nope");
+		}
+		debuglog($this->request->post['proxy_amount']);
+		
+		
 		$this->load->language('checkout/cart');
 
 		$json = array();

@@ -7,27 +7,25 @@ function displayTimeRemaining() {
     var l = testtime.length;
     for(nodecounter=0;nodecounter<l;nodecounter++){
         var myDateTime = checkTime(testtime[nodecounter].attributes.hidden.value);
-        var daysDifference = DateDiff("d",myTime,myDateTime,1);
-        var secondsDifference = DateDiff("s",myTime,myDateTime,1);
+        var daysRemaining = DateDiff("d",myTime,myDateTime,1);
+        var hoursRemaining = DateDiff("h",myTime,myDateTime,1) - (daysRemaining*24);
+        var minutesRemaining = DateDiff("n",myTime,myDateTime,1) - ((daysRemaining*1440) + (hoursRemaining*60));
+        var secondsRemaining = DateDiff("s",myTime,myDateTime,1) - ((daysRemaining*86400) + (hoursRemaining*3600) + (minutesRemaining*60));
         
-        var timeDifference = DateDiff("n",myTime,myDateTime,1);
-        var hoursDifference = DateDiff("h",myTime,myDateTime,1);
-        var timeRemainder = timeDifference - daysDifference * 24;
-        var minutesRemainder = timeRemainder - hoursDifference*60;
-        if(secondsDifference<=0){
+        if (secondsRemaining < 0){
             document.location.reload();
         }
-        if (daysDifference) {
-            Times[nodecounter].textContent = daysDifference + " Days and " + hoursDifference + " Hours " + minutesRemainder + " Minutes!";
-        } else if (secondsDifference<=120){
-            Times[nodecounter].textContent = secondsDifference + " Seconds!";
-        } else {
-            Times[nodecounter].textContent = hoursDifference + " Hours " + minutesRemainder + " Minutes!";
-        }
         
-
-
-
+        if (daysRemaining) {
+            Times[nodecounter].textContent = daysRemaining + " Days and " + hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
+        } else if (hoursRemaining){
+            Times[nodecounter].textContent = hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
+        } else if (minutesRemaining){
+            Times[nodecounter].textContent = minutesRemaining + " Minutes " + secondsRemaining + " Seconds!";
+        } else if (secondsRemaining){
+            Times[nodecounter].textContent = secondsRemaining + " Seconds!";
+        } 
+        
     }
     t = setTimeout(function() {
         displayTimeRemaining()

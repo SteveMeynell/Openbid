@@ -42,7 +42,7 @@ class ControllerToolSimulateData extends Controller {
 						$newData['seller_id']	=	$SellerInfo['customer_id'];
 						$newData['auction_type']	=	'0';
 						$newData['auction_status']			=	'1';
-						$newData['num_relist']		=	'0';
+						$newData['num_relist']		=	'5';
 						$query = "SELECT NOW() as currenttime";
 						$current_datetime = $this->db->query($query)->row;
 						$newData['date_created']	=	$current_datetime['currenttime'];
@@ -70,7 +70,7 @@ class ControllerToolSimulateData extends Controller {
 						$newData['image'] = $testimage;
 						//date_add($end_date,date_interval_create_from_date_string('1 days'));
 						$newData['custom_end_date']		= $end_date->format('Y-m-d H:i:s');
-						$newData['duration']		=	'1';
+						$newData['duration']		=	$numDays;
 						$newData['min_bid']	=	$newAuction['min_bid'];
 						$newData['shipping_cost']	= '0';
 						$newData['additional_shipping']	=	'0';
@@ -91,7 +91,7 @@ class ControllerToolSimulateData extends Controller {
 						$newData['highlighted']		=	$newAuction['highlighted'];
 						$newData['slideshow']		=	$newAuction['slideshow'];
 						$newData['social_media']		=	$newAuction['social_media'];
-						$newData['auto_relist']		=	'0';
+						$newData['auto_relist']		=	'1';
 						$newData['auction_category'][0]	=	$whichCategory;
 						//debuglog("new data:");
 						//debuglog($newData);

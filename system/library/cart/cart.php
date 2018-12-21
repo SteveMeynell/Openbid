@@ -8,8 +8,8 @@ class Cart {
 		$this->customer = $registry->get('customer');
 		$this->session = $registry->get('session');
 		$this->db = $registry->get('db');
-		$this->tax = $registry->get('tax');
-		$this->weight = $registry->get('weight');
+		//$this->tax = $registry->get('tax');
+		//$this->weight = $registry->get('weight');
 
 		// Remove all the expired carts with no customer ID
 		$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE (api_id > '0' OR customer_id = '0') AND date_added < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
@@ -291,7 +291,7 @@ class Cart {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
 	}
 
-	public function getRecurringProducts() {
+	/*public function getRecurringProducts() {
 		$product_data = array();
 
 		foreach ($this->getProducts() as $value) {
@@ -313,7 +313,7 @@ class Cart {
 		}
 
 		return $weight;
-	}
+	}*/
 
 	public function getSubTotal() {
 		$total = 0;
@@ -325,7 +325,7 @@ class Cart {
 		return $total;
 	}
 
-	public function getTaxes() {
+/*	public function getTaxes() {
 		$tax_data = array();
 
 		foreach ($this->getProducts() as $product) {
@@ -344,6 +344,7 @@ class Cart {
 
 		return $tax_data;
 	}
+	*/
 
 	public function getTotal() {
 		$total = 0;
