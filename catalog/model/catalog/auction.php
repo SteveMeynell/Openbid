@@ -217,6 +217,70 @@ class ModelCatalogAuction extends Model {
 		return $auction_data;
 	}
 
+	public function getClosedAuction($auction_id){
+		$sql = "SELECT 
+		a.auction_id as auction_id, 
+		c.firstname as seller, 
+		a.num_bids as num_bids, 
+		a.winning_bid as winning_bid, 
+		a.image as main_image, 
+		a.viewed as views,
+		ad.language_id as language_id, 
+		ad.name as title, 
+		ad.subname as subtitle, 
+		ad.description as description, 
+		ad.meta_title as meta_title, 
+		ad.meta_description as meta_description, 
+		ad.meta_keyword as meta_keyword, 
+		ad.tag as tag 
+		FROM " . DB_PREFIX . "auctions a 
+		LEFT JOIN " . DB_PREFIX . "auction_description ad ON (a.auction_id = ad.auction_id) 
+		LEFT JOIN " . DB_PREFIX . "customer c ON (a.customer_id = c.customer_id) 
+		LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id) ";
+		$where = " WHERE a.auction_id = '" . $auction_id . "'";
+		$sql .= $where;
+		$query = $this->db->query($sql);
+
+		return $query->row;
+	}
+
+	public function getClosedAuctions($filter) {
+		$sql = "SELECT 
+		a.auction_id as auction_id, 
+		c.firstname as seller, 
+		a.num_bids as num_bids, 
+		a.winning_bid as winning_bid, 
+		a.image as main_image, 
+		a.viewed as views,
+		ad.language_id as language_id, 
+		ad.name as title, 
+		ad.subname as subtitle, 
+		ad.description as description, 
+		ad.meta_title as meta_title, 
+		ad.meta_description as meta_description, 
+		ad.meta_keyword as meta_keyword, 
+		ad.tag as tag 
+		FROM " . DB_PREFIX . "auctions a 
+		LEFT JOIN " . DB_PREFIX . "auction_description ad ON (a.auction_id = ad.auction_id) 
+		LEFT JOIN " . DB_PREFIX . "customer c ON (a.customer_id = c.customer_id) 
+		LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id) ";
+		$where = "WHERE a.status = '3' 
+		AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
+		$orderBy = "ORDER BY a.date_modified DESC LIMIT " . (int)$filter['limit'];
+
+		if(isset($filter['winners'])) {
+			$where .= " AND a.winning_bid > 0 ";
+		}
+
+		$sql .= $where . $orderBy;
+		$query = $this->db->query($sql);
+		debuglog($query);
+
+
+		return $query->rows;
+
+	}
+
 
 	public function getLatestAuctions($limit) {
 		//$auction_data = $this->cache->get('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);

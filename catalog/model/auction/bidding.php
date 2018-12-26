@@ -1,7 +1,9 @@
 <?php
 class ModelAuctionBidding extends Model {
     
-    
+    public function updateBidCount($auction_id, $howmany = '1'){
+        $this->db->query("UPDATE " . DB_PREFIX . "auctions SET num_bids = (num_bids + '" . (int)$howmany . "') WHERE auction_id = '" . (int)$auction_id . "'");
+    }
     
     public function placeBid($bid) {
 
@@ -9,18 +11,26 @@ class ModelAuctionBidding extends Model {
         
         $bidNewAmount = $this->db->escape($bid['bid_amount']);
         $bidNewProxyAmount = $this->db->escape($bid['proxy_bid_amount']);
+        $auction_id = $this->db->escape($bid['auction_id']);
 
         if($leadingBid['bid_amount'] == 0) {
             // First Bid or Buy Now Bid
+            if(isset($bid['winner'])){
+                $sql = "UPDATE " . DB_PREFIX . "auctions SET winning_bid = '" . $bidNewProxyAmount . "' 
+                WHERE auction_id = '" . $auction_id . "'";
+                $this->db->query($sql);
+                debuglog("winner:");
+            }
             $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
             SET
-            auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+            auction_id = '" . $auction_id . "',
             bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
             bid_date =  NOW(),
             bid_amount = '" . $bidNewProxyAmount . "',
             quantity = '1',
             proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
             proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+            $howmany +=1;
         } else {
             // Proxy bids are equal.  Place first bid then rebid with the same bid amount but from the current leader.
             if($bidNewProxyAmount == $leadingBid['proxy_bid_amount']) {
@@ -28,7 +38,7 @@ class ModelAuctionBidding extends Model {
                 // Place New Bid 
                 $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
-                auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                auction_id = '" . $auction_id . "',
                 bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                 bid_date =  NOW(),
                 bid_amount = '" . $bidNewProxyAmount . "',
@@ -38,13 +48,14 @@ class ModelAuctionBidding extends Model {
                 // Place Proxy Bid
                 $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
-                auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                auction_id = '" . $auction_id . "',
                 bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 bid_date =  NOW(),
                 bid_amount = '" . $bidNewProxyAmount . "',
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                $howmany +=2;
             }
 
             // New Proxy bid does not meet the current leading Proxy bid
@@ -53,7 +64,7 @@ class ModelAuctionBidding extends Model {
                 // Place New Bid 
                 $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
-                auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                auction_id = '" . $auction_id . "',
                 bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                 bid_date =  NOW(),
                 bid_amount = '" . $bidNewProxyAmount . "',
@@ -64,13 +75,14 @@ class ModelAuctionBidding extends Model {
                 $newBid = $this->model_auction_bidding->getNextBid($bidNewProxyAmount);
                 $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
-                auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                auction_id = '" . $auction_id . "',
                 bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 bid_date =  NOW(),
                 bid_amount = '" . min($newBid, $leadingBid['proxy_bid_amount']) . "',
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $leadingBid['proxy_bid_amount'] . "'");
+                $howmany +=2;
             }
 
             // New proxy bid is greater than the current leading proxy bid
@@ -81,18 +93,19 @@ class ModelAuctionBidding extends Model {
                     //Place new bid
                     $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
-                    auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                    auction_id = '" . $auction_id . "',
                     bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     bid_date =  NOW(),
                     bid_amount = '" . $bidNewAmount . "',
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $howmany +=1;
                 } else {
                     //Place new bid
                     $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
-                    auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                    auction_id = '" . $auction_id . "',
                     bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     bid_date =  NOW(),
                     bid_amount = '" . $bidNewAmount . "',
@@ -102,7 +115,7 @@ class ModelAuctionBidding extends Model {
                     // Place proxy bid
                     $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
-                    auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                    auction_id = '" . $auction_id . "',
                     bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                     bid_date =  NOW(),
                     bid_amount = '" . $leadingBid['proxy_bid_amount'] . "',
@@ -113,13 +126,14 @@ class ModelAuctionBidding extends Model {
                     $newBid = $this->model_auction_bidding->getNextBid($leadingBid['proxy_bid_amount']);
                     $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
-                    auction_id = '" . $this->db->escape($bid['auction_id']) . "',
+                    auction_id = '" . $auction_id . "',
                     bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     bid_date =  NOW(),
                     bid_amount = '" . $newBid . "',
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $howmany+=3;
                 }
             }
         }
@@ -131,7 +145,13 @@ class ModelAuctionBidding extends Model {
         if(isset($bid['winner'])){
             $sql = "UPDATE " . DB_PREFIX . "current_bids SET winner = '1' WHERE bid_id = '" . $result . "'";
             $winner = $this->db->query($sql);
+            //$sql = "UPDATE " . DB_PREFIX . "auctions SET winning_bid = '" . $bidNewProxyAmount . "'";
+            //$this->db->query($sql);
+            //debuglog("winner:");
+            //debuglog($winner);
         }
+        $this->updateBidCount($auction_id, $howmany);
+        $howmany = 0;
         
         return $result;
     }
@@ -189,5 +209,13 @@ class ModelAuctionBidding extends Model {
         
         $lastBid = $this->db->query($sql);
         return $lastBid->row;
+    }
+
+    public function getWinningBid($auction_id){
+        $sql = "SELECT * FROM " . DB_PREFIX . "bid_history 
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "' 
+        AND winner = '1'";
+        $winningBid = $this->db->query($sql);
+        return $winningBid->row;
     }
 } // End of Model

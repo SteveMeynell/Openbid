@@ -58,7 +58,7 @@ class ControllerToolSimulateData extends Controller {
 																  'meta_description' => strip_tags($newAuction['description']),
 																  'meta_keyword' => make_keywords($seader)
 																 );
-						$NumHours = rand(12,48);
+						$NumHours = rand(2,24);
 						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
 						$newData['custom_start_date']		=	$newStartDates->format('Y-m-d H:i:s');
 						$numDays = rand(1,5);

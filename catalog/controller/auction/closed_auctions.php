@@ -1,13 +1,14 @@
 <?php
-class ControllerAuctionAuction extends Controller {
+class ControllerAuctionClosedAuctions extends Controller {
 	private $error = array();
 
 	public function index() {
+		/*
 		$customerGroupId = $this->customer->getGroupId();
 		$customerOnline = $this->customer->isLogged();
 		$seePrices = $this->config->get('config_customer_price');
 		$guestsBid = $this->config->get('config_checkout_guest');
-		/*debuglog("Current Settings: ");
+		debuglog("Current Settings: ");
 		debuglog("See prices: " . $seePrices);
 		debuglog("Guests Bid: " . $guestsBid);
 		debuglog("Customer Group: " . $customerGroupId);
@@ -21,7 +22,7 @@ class ControllerAuctionAuction extends Controller {
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/home')
 		);
-
+/*
 		$this->load->model('catalog/category');
 
 		if (isset($this->request->get['path'])) {
@@ -79,7 +80,7 @@ class ControllerAuctionAuction extends Controller {
 
 		
 			$url = '';
-
+/*
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -141,7 +142,7 @@ class ControllerAuctionAuction extends Controller {
 				'href' => $this->url->link('auction/search', $url)
 			);
 		}
-
+*/
 		if (isset($this->request->get['auction_id'])) {
 			$auction_id = (int)$this->request->get['auction_id'];
 		} else {
@@ -149,13 +150,15 @@ class ControllerAuctionAuction extends Controller {
 		}
 
 		$this->load->model('catalog/auction');
+		$this->load->model('auction/bidding');
 
-		$auction_info = $this->model_catalog_auction->getAuction($auction_id);
+		$auction_info = $this->model_catalog_auction->getClosedAuction($auction_id);
+		$winning_bid = $this->model_auction_bidding->getWinningBid($auction_id);
 
 		if ($auction_info) {
 			$url = '';
 			
-
+/*
 			if (isset($this->request->get['path'])) {
 				$url .= '&path=' . $this->request->get['path'];
 			}
@@ -200,10 +203,10 @@ class ControllerAuctionAuction extends Controller {
 			if (isset($this->request->get['limit'])) {
 				$url .= '&limit=' . $this->request->get['limit'];
 			}
-
+*/
 			$data['breadcrumbs'][] = array(
-				'text' => $auction_info['name'],
-				'href' => $this->url->link('auction/auction', $url . '&auction_id=' . $this->request->get['auction_id'])
+				'text' => $auction_info['title'],
+				'href' => $this->url->link('auction/closed_auctions', $url . '&auction_id=' . $this->request->get['auction_id'])
 			);
 
 			$this->document->setTitle($auction_info['meta_title']);
@@ -212,12 +215,8 @@ class ControllerAuctionAuction extends Controller {
 			$this->document->addLink($this->url->link('auction/auction', 'auction_id=' . $this->request->get['auction_id']), 'canonical');
 			$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
 			$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
-			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment.js');
-			$this->document->addScript('catalog/view/javascript/auction/bidding.js');
-			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-			$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
-
-			$data['heading_title'] = $auction_info['name'];
+			
+			$data['heading_title'] = $auction_info['title'];
 
 			$data['text_select'] = $this->language->get('text_select');
 			$data['text_option'] = $this->language->get('text_option');
@@ -226,14 +225,10 @@ class ControllerAuctionAuction extends Controller {
 			$data['text_note'] = $this->language->get('text_note');
 			$data['text_tags'] = $this->language->get('text_tags');
 			$data['text_loading'] = $this->language->get('text_loading');
-			$data['text_buy_now'] = $this->language->get('text_buy_now');
-			$data['text_buy_now_only'] = $this->language->get('text_buy_now_only');
-			$data['text_current_bid'] = $this->language->get('text_current_bid');
 			$data['text_viewed'] = $this->language->get('text_viewed');
-			$data['text_please_login']	= $this->language->get('text_please_login');
-			$data['text_ending_in'] = $this->language->get('text_ending_in');
-			$data['text_reserved_bid'] = $this->language->get('text_reserved_bid');
-			$data['text_reserved_bid_met'] = $this->language->get('text_reserved_bid_met');
+			$data['text_seller'] = $this->language->get('text_seller');
+			$data['text_num_bids'] = $this->language->get('text_num_bids');
+			$data['text_sold_for'] = $this->language->get('text_sold_for');
 
 			$data['entry_qty'] = $this->language->get('entry_qty');
 			$data['entry_name'] = $this->language->get('entry_name');
@@ -242,9 +237,6 @@ class ControllerAuctionAuction extends Controller {
 			$data['entry_good'] = $this->language->get('entry_good');
 			$data['entry_bad'] = $this->language->get('entry_bad');
 
-			$data['button_bid'] = $this->language->get('button_bid');
-			$data['button_buynow'] = $this->language->get('button_buynow');
-			$data['button_wishlist'] = $this->language->get('button_wishlist');
 			
 			$data['button_continue'] = $this->language->get('button_continue');
 
@@ -252,24 +244,32 @@ class ControllerAuctionAuction extends Controller {
 
 			$data['tab_description'] = $this->language->get('tab_description');
 
+			if(!isset($auction_info['reviews'])) {
+				$auction_info['reviews'] = '';
+			}
+
 			$data['tab_review'] = sprintf($this->language->get('tab_review'), $auction_info['reviews']);
 
 			$data['auction_id'] = (int)$this->request->get['auction_id'];
 			
 			$data['description'] = html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8');
 			
-			$data['end_date']	= $auction_info['end_date'];
+			$data['seller'] = $auction_info['seller'];
+			$data['num_bids'] = $auction_info['num_bids'];
+			$data['sold_for'] = $winning_bid['bid_amount'];
+			
+
 
 			$this->load->model('tool/image');
 
-			if ($auction_info['image']) {
-				$data['popup'] = $this->model_tool_image->resize($auction_info['image'], $this->config->get($this->config->get('config_theme') . '_image_popup_width'), $this->config->get($this->config->get('config_theme') . '_image_popup_height'));
+			if ($auction_info['main_image']) {
+				$data['popup'] = $this->model_tool_image->resize($auction_info['main_image'], $this->config->get($this->config->get('config_theme') . '_image_popup_width'), $this->config->get($this->config->get('config_theme') . '_image_popup_height'));
 			} else {
 				$data['popup'] = '';
 			}
 
-			if ($auction_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($auction_info['image'], $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+			if ($auction_info['main_image']) {
+				$data['thumb'] = $this->model_tool_image->resize($auction_info['main_image'], $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
 			} else {
 				$data['thumb'] = '';
 			}
@@ -285,37 +285,14 @@ class ControllerAuctionAuction extends Controller {
 				);
 			}
 
-			$data['buy_now_only'] = $auction_info['buy_now_only'];
-			$this->load->model('auction/bidding');
 			
-			if ($this->customer->isLogged() && $this->customer->getGroupId()!='2') {
-				$data['can_bid'] = 'yes';
-			} else {
-				$data['can_bid'] = 'no';
-			}
-
-			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-				$current_bid = $this->model_auction_bidding->getCurrentBid($this->request->get['auction_id']);
-				$theNextBid = $this->currency->format($this->model_auction_bidding->getNextBid($current_bid['bid_amount']),$this->session->data['currency']);
-				$minimumBid = $this->currency->format($this->model_auction_bidding->getNextBid($auction_info['min_bid']),$this->session->data['currency']);
-				$data['min_bid'] = $auction_info['min_bid'];
-				$data['current_bid_amount'] = $current_bid['bid_amount'];
-				$data['reserve_bid_amount'] = $auction_info['reserve_price'];
-				$data['reserve_bid'] = $this->currency->format($auction_info['reserve_price'],$this->session->data['currency']);
-				$data['next_bid_text'] = ($current_bid['bid_amount']>0)? $theNextBid : $minimumBid;
-				$data['next_bid'] = ($current_bid['bid_amount']>0)? $this->model_auction_bidding->getNextBid($current_bid['bid_amount']) : $this->model_auction_bidding->getNextBid($auction_info['min_bid']);
-				//$data['button_bid'] .= $this->currency->format($data['next_bid'],$this->session->data['currency']);
-				$data['buy_now'] = $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
-				$data['button_buynow'] .= ' For Only ' . $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
-				$data['current_bid'] = $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']);
-			} else {
-				$data['buy_now'] = false;
-				$data['current_bid'] = false;
-				$data['reserve_bid'] = false;
-			}
-
-
 			$data['review_status'] = $this->config->get('config_review_status');
+
+			if($this->customer->isLogged() && $this->customer->getId() == $winning_bid['bidder_id']) {
+				$data['winning_bidder'] = true;
+			} else {
+				$data['winning_bidder'] = false;
+			}
 
 			if ($this->config->get('config_review_guest') || $this->customer->isLogged()) {
 				$data['review_guest'] = true;
@@ -330,9 +307,12 @@ class ControllerAuctionAuction extends Controller {
 			}
 
 			$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$auction_info['reviews']);
+			if(!isset($auction_info['rating'])) {
+				$auction_info['rating'] = 4;
+			}
 			
 			$data['rating'] = (int)$auction_info['rating'];
-			$data['views'] = $auction_info['viewed'];
+			$data['views'] = $auction_info['views'];
 
 			// Captcha
 			if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
@@ -356,7 +336,7 @@ class ControllerAuctionAuction extends Controller {
 				}
 			}
 
-			$this->model_catalog_auction->updateViewed($this->request->get['auction_id']);
+			//$this->model_catalog_auction->updateViewed($this->request->get['auction_id']);
 
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
@@ -365,7 +345,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 
-			$this->response->setOutput($this->load->view('auction/auction', $data));
+			$this->response->setOutput($this->load->view('extension/module/closed_auctions', $data));
 		} else {
 			$url = '';
 

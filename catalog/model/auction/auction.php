@@ -108,7 +108,8 @@ class ModelAuctionAuction extends Model {
                     The winning bidder has to be notified with the details.
                     */
                     $this->db->query("UPDATE " . DB_PREFIX . "auctions 
-                    SET status = '3' 
+                    SET status = '3', 
+                    winning_bid = '" . $current_bid['bid_amount'] . "' 
                     WHERE auction_id = '" . $auction['auction_id'] . "'");
                     $this->db->query("UPDATE " . DB_PREFIX . "current_bids SET winner = '1' WHERE bid_id = '" . $current_bid['bid_id'] . "'");
                     $this->model_auction_bidding->moveBids2History($auction['auction_id']);
@@ -234,7 +235,22 @@ class ModelAuctionAuction extends Model {
         $sql = "UPDATE " . DB_PREFIX . "auctions 
         SET status = '3'  
         WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        $this->db->query($sql);
         debuglog($sql);
+
+    }
+
+    public function declareWinners(){
+        /* To declare winners follow these steps:
+        1. Get list of closing auctions
+            Already got list during the relist closing auctions section, maybe pass it in here instead
+        2. Get current Bid for each of these auctions
+        3. Check the closing bid compared to the reserve amount and if the closing bid
+            is greater than or equal to the reserve bid then it has a winner.
+        4. Close auction and set the winning bid to winner
+        5. Move bids to history
+        6. Send notifications out.
+        */
 
     }
     // End of Model

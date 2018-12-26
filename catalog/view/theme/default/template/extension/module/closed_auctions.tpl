@@ -41,7 +41,7 @@
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab-description"><?php echo $description; ?></div>
-            <?php if ($review_status) { ?>
+            <?php if ($review_status && $winning_bidder) { ?>
             <div class="tab-pane" id="tab-review">
               <form class="form-horizontal" id="form-review">
                 <div id="review"></div>
@@ -97,59 +97,14 @@
         <div class="<?php echo $class; ?>">
           <h1><?php echo $heading_title; ?></h1>
           <p><?php echo $text_viewed . ' ' . $views; ?></p>
-          <h3><?php echo $text_ending_in; ?></h3>
-            <h4>
-              <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $end_date; ?>"></div>
-              <div class="startingTime" id="time_remaining"></div>
-            </h4>
-          <?php if (!$current_bid && !$buy_now) { ?>
-          <p class="price">
-            <h2><span class="price-new"><?php echo $text_please_login; ?></span></h2>
-          <?php } else { ?>
-            <?php if (!$buy_now_only) { ?>
-              <h2><span class="price-new"><?php echo $text_buy_now; ?> <?php echo $buy_now; ?></span></h2>
-              <?php if ($reserve_bid) {
-                if ($reserve_bid_amount <= $current_bid_amount) { ?>
-                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserved_bid_met; ?></span></h2>
-                <?php } else { ?>
-                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $reserve_bid; ?></span></h2>
-                <?php }} ?>
-                <h2><span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new" id="current_bid"><?php echo $current_bid; ?></span></h2>
-                <h2><span class="price-new" id="winningBidder"></span></h2>
-                <?php if ($can_bid == 'yes'){ ?>
-                  <div class="btn-group">
-                    <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
-                    <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>" ><i class="fa fa-gavel"></i></button>
-                    <button type="button" id="PlaceBidButton" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-gavel"></i></button>
-                    <label>Next Minimum Bid</label>
-                    <input type="text"class="auction price-new" id="proxy_amount" name="proxy_amount" placeholder="<?php echo $next_bid_text; ?>" data-toggle="tooltip" title="Anything higher than the minimum bid will be placed in proxy."></>
-                  </div>
-                <?php } 
-             } else { ?>
-              <h2><span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $buy_now; ?></span></h2>
-              <?php if ($can_bid == 'yes'){ ?>
-                <div class="btn-group">
-                  <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
-                  <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>"><i class="fa fa-gavel"></i></button>
-                </div>
-            <?php }} ?>
-          </p>
-          <div id="serverData">
-            <div class="table-responsive">
-              <table class="table table-bordered table-hover" id="bidHistory">
-              <thead class="thead-dark">
-                <tr>
-                  <td class="text-center" colspan="2">Latest Bids</td>
-                </tr>
-                <tr>
-                  <td class="text-center">Bid#</td>
-                  <td class="text-center">Bid Amount</td>
-                </tr>
-              </thead>
-            </table>
-            </div>
-          </div>
-        <?php } ?>
+          <p><?php echo $text_num_bids . ' ' . $num_bids; ?></p>
+          <p><?php echo $text_seller . ' ' . $seller; ?></p>
+          <?php if($winning_bidder) { ?>
+            <h3><span class="price-new"> Congratulations!  You are the winning bidder. </span></h3>
+          <?php } else {?>
+            <h3><span class="price-new"> You missed out on this one.  Better Luck Next Time. </span></h3>
+          <?php } ?>
+              <h2><span class="price-new"><?php echo $text_sold_for; ?></span> <span class="price-new"><?php echo $sold_for; ?></span></h2>
           <?php if ($review_status) { ?>
           <div class="rating">
             <p>
@@ -252,74 +207,8 @@ $(document).ready(function() {
 			enabled:true
 		}
 	});
-  getHistory();
-  });
-  function getHistory(){
-  $.ajax({
-    url: 'index.php?route=auction/auction/getBidHistory',
-		type: 'get',
-		dataType: 'json',
-    data: {auction_id: '<?php echo $auction_id; ?>', min_bid: '<?php echo $min_bid; ?>'},
-    success: function(json){
-      if(json['bids'].length){
-        $("#proxy_amount").val("");
-        for(i=json['bids'].length-1;i>=0;i--) {
-          $("#bidHistory").append('<tr id="bidRow" class="bidRow"><td class="text-center" id="bidInfo">' + (i+1) +'</td><td class="text-center" id="bidAmount">' + json['bids'][i] + '</td></tr>');  
-        }
-        if(json['isUsersBid'][json['isUsersBid'].length-1] === '1'){
-          $("#winningBidder").text("You have the highest bid.");
-        }
-      } else {
-        $("#bidHistory").append('<tr class="bidRow"><td class="text-center" id="bidInfo" colspan="2">No Bids Yet!</td></tr>');
-      }
-      $("#PlaceBidButton").attr("title","Next Minimum Bid: " + json['nextBid']);
-      $("#proxy_amount").attr("placeholder",json['nextBid']);
-      if(json['currentBid']){
-        $("#current_bid").text(json['currentBid']);
-      } else {
-        $("#current_bid").text("nothing");
-      }
-      },
-    error: function(textStatus){
-      console.log("error");
-      console.log(textStatus)
-    }
-  });
-  }
-$("#BuyNowButton").click(function(){
-  $.ajax({
-    url: 'index.php?route=auction/auction/BuyRightNow',
-    type: 'post',
-    dataType: 'json',
-    data: {auction_id: '<?php echo $auction_id; ?>'},
-    success: function(json){
-      console.log("success");
-    },
-    error: function(statusText){
-      console.log("error");
-      console.log(statusText);
-    }
-  });
-});
-$("#PlaceBidButton").click(function(){
-  var proxyBid = $("#proxy_amount").val();
   
-  $.ajax({
-    url: 'index.php?route=auction/auction/PlaceBid',
-    type: 'post',
-    dataType: 'json',
-    data: {auction_id: '<?php echo $auction_id; ?>', bid_amount: proxyBid, min_bid: '<?php echo $min_bid; ?>'},
-    success: function(json){
-      console.log("success");
-      $(".bidRow").empty();
-      getHistory();
-    },
-    error: function(statusText){
-      console.log("error");
-      console.log(statusText);
-    }
   });
-});
 
 //--></script>
 <?php echo $footer; ?>

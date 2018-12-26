@@ -24,6 +24,9 @@ $_['text_viewed']       = 'Viewed:';
 $_['text_ending_in']  = 'Auction Ending in:';
 $_['text_reserved_bid']  = 'Reserved Bid:';
 $_['text_reserved_bid_met']  = 'Reserved Bid Achieved!  Highest Bidder Wins!';
+$_['text_seller']               = 'Sold By:';
+$_['text_num_bids']             = 'Number of bids recieved:';
+$_['text_sold_for']             = 'Final Winning Bid:';
 
 // Entry
 $_['entry_name']               = 'Your Name';
