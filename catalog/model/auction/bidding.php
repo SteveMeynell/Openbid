@@ -12,6 +12,7 @@ class ModelAuctionBidding extends Model {
         $bidNewAmount = $this->db->escape($bid['bid_amount']);
         $bidNewProxyAmount = $this->db->escape($bid['proxy_bid_amount']);
         $auction_id = $this->db->escape($bid['auction_id']);
+        $howmany = 0;
 
         if($leadingBid['bid_amount'] == 0) {
             // First Bid or Buy Now Bid
@@ -194,6 +195,13 @@ class ModelAuctionBidding extends Model {
         $this->db->query($sql);
     }
 
+    public function getNumBids($auction_id) {
+        $sql = "SELECT count(auction_id) as num_bids FROM " . DB_PREFIX . "current_bids 
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        $bids = $this->db->query($sql);
+
+        return $bids->row;
+    }
     public function getAllBids($auction_id) {
         $sql = "SELECT * FROM " . DB_PREFIX . "current_bids 
         WHERE auction_id = '" . $this->db->escape($auction_id) . "'";

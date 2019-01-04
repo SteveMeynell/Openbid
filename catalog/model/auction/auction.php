@@ -136,19 +136,37 @@ class ModelAuctionAuction extends Model {
         
         // We take no responsibility for the payment and delivery of items.  We only give the seller the platform
         // to offer the item for sale.
-        
+        $this->load->model('auction/bidding');
+        $closing_sql = "SELECT a.auction_id FROM " . DB_PREFIX . "auctions a 
+        LEFT JOIN " . DB_PREFIX . "auction_details ad1
+        ON (a.auction_id = ad1.auction_id) 
+        WHERE a.status = '2' AND ad1.end_date <= NOW()";
+        $closing_auctions = $this->db->query($closing_sql)->rows;
+        foreach($closing_auctions as $closing_auction){
+            $this->model_auction_bidding->moveBids2History($closing_auction['auction_id']);
+            $this->db->query("UPDATE " . DB_PREFIX . "auctions 
+            SET status = '3' 
+            WHERE auction_id = '" . $closing_auction['auction_id'] . "'");
+        }
+        /*
         $this->db->query("UPDATE " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad1
         ON (a.auction_id = ad1.auction_id)
         SET a.status = '3' 
         WHERE a.status = '2' AND ad1.end_date <= NOW()");
-        
-        $results = $this->db->countAffected();
+        */
+        //debuglog($closing_auctions);
+        $results = count($closing_auctions);
+        //debuglog($results);
 		if($results){
 			$effected_customers['closed'] = $results;
 		} else {
 			$effected_customers['closed'] = false;
-		}
+        }
+        
+        //$this->load->model('auction/bidding');
+        //$this->model_auction_bidding->moveBids2History($auction['auction_id']);
+
        /* $message  = '<html dir="ltr" lang="en">' . "\n";
 					$message .= '  <head>' . "\n";
 					$message .= '    <title>Closing Auction</title>' . "\n";

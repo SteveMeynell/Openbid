@@ -294,6 +294,9 @@ $("#BuyNowButton").click(function(){
     data: {auction_id: '<?php echo $auction_id; ?>'},
     success: function(json){
       console.log("success");
+      window.location.replace(json['url']);
+      $(".bidRow").empty();
+      getHistory();
     },
     error: function(statusText){
       console.log("error");

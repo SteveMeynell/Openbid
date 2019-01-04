@@ -149,6 +149,8 @@ class ControllerAuctionClosedAuctions extends Controller {
 			$auction_id = 0;
 		}
 
+		
+
 		$this->load->model('catalog/auction');
 		$this->load->model('auction/bidding');
 
@@ -158,52 +160,6 @@ class ControllerAuctionClosedAuctions extends Controller {
 		if ($auction_info) {
 			$url = '';
 			
-/*
-			if (isset($this->request->get['path'])) {
-				$url .= '&path=' . $this->request->get['path'];
-			}
-
-			if (isset($this->request->get['filter'])) {
-				$url .= '&filter=' . $this->request->get['filter'];
-			}
-
-
-			if (isset($this->request->get['search'])) {
-				$url .= '&search=' . $this->request->get['search'];
-			}
-
-			if (isset($this->request->get['tag'])) {
-				$url .= '&tag=' . $this->request->get['tag'];
-			}
-
-			if (isset($this->request->get['description'])) {
-				$url .= '&description=' . $this->request->get['description'];
-			}
-
-			if (isset($this->request->get['category_id'])) {
-				$url .= '&category_id=' . $this->request->get['category_id'];
-			}
-
-			if (isset($this->request->get['sub_category'])) {
-				$url .= '&sub_category=' . $this->request->get['sub_category'];
-			}
-
-			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
-			}
-
-			if (isset($this->request->get['limit'])) {
-				$url .= '&limit=' . $this->request->get['limit'];
-			}
-*/
 			$data['breadcrumbs'][] = array(
 				'text' => $auction_info['title'],
 				'href' => $this->url->link('auction/closed_auctions', $url . '&auction_id=' . $this->request->get['auction_id'])
@@ -256,7 +212,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 			
 			$data['seller'] = $auction_info['seller'];
 			$data['num_bids'] = $auction_info['num_bids'];
-			$data['sold_for'] = $winning_bid['bid_amount'];
+			$data['sold_for'] = (isset($winning_bid['bid_amount']) && $winning_bid['winner'])?$winning_bid['bid_amount']:'Did Not Sell!';
 			
 
 
@@ -288,7 +244,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 			
 			$data['review_status'] = $this->config->get('config_review_status');
 
-			if($this->customer->isLogged() && $this->customer->getId() == $winning_bid['bidder_id']) {
+			if($this->customer->isLogged() && isset($winning_bid['bidder_id']) && $this->customer->getId() == $winning_bid['bidder_id']) {
 				$data['winning_bidder'] = true;
 			} else {
 				$data['winning_bidder'] = false;
@@ -596,7 +552,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
-
+/*
 	public function BuyRightNow(){
 		$auction_id = $this->request->post['auction_id'];
 		$json = array();
@@ -654,6 +610,6 @@ class ControllerAuctionClosedAuctions extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
-
+*/
 	// end of controller
 }

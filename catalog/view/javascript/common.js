@@ -50,9 +50,15 @@ $(document).ready(function() {
 		$('#form-language').submit();
 	});
 
+	/* Sell something */
+	$('#sell_something').on('click', function(){
+		var url = $('base').attr('href') + 'index.php?route=auction/selling';
+		location = url;
+	});
+	
 	/* Search */
 	$('#search input[name=\'search\']').parent().find('button').on('click', function() {
-		var url = $('base').attr('href') + 'index.php?route=product/search';
+		var url = $('base').attr('href') + 'index.php?route=auction/search';
 
 		var value = $('header #search input[name=\'search\']').val();
 

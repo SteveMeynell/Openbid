@@ -126,6 +126,7 @@ class ControllerCommonHeader extends Controller {
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
 		$data['search'] = $this->load->controller('common/search');
+		$data['sell_something'] = $this->load->controller('common/sell_something');
 		$data['cart'] = $this->load->controller('common/cart');
 
 		// For page specific css

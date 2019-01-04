@@ -643,8 +643,9 @@ class ControllerAuctionAuction extends Controller {
 		// email seller
 		// email winning bidder
 
+		$json['url'] = "index.php?route=auction/closed_auctions&auction_id=" . $auction_id;
 
-		
+		//$this->redirect($url);
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

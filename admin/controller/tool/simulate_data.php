@@ -49,14 +49,19 @@ class ControllerToolSimulateData extends Controller {
 						$newData['title']			=	$newAuction['title'];
 						$newData['subtitle']		=	$newAuction['subtitle'];
 						$seader = $newAuction['title'] . ' ' . (null !== $newAuction['subtitle'] ? $newAuction['subtitle'] .' ': '') . $newAuction['description'];
+						$keywords = make_keywords($seader);
+						
+						$addon_keywords = 'For sale ' . $newAuction['title'] . ', Auctioning ' . $newAuction['title'] .', ';
+						$tag_limit = array('limit_keywords_to' => 5);
+						
 						$newData['auction_description'][1]	=	array(
 																  'name' => $newAuction['title'],
 																  'subname' => $newAuction['subtitle'],
 																  'description' => $newAuction['description'],
-																  'tag' => 'put tag code in',
+																  'tag' => make_keywords($seader,$tag_limit),
 																  'meta_title' => 'Auctioning ' . $newAuction['title'],
 																  'meta_description' => strip_tags($newAuction['description']),
-																  'meta_keyword' => make_keywords($seader)
+																  'meta_keyword' => $addon_keywords . $keywords
 																 );
 						$NumHours = rand(2,24);
 						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));

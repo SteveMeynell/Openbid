@@ -274,7 +274,7 @@ class ModelCatalogAuction extends Model {
 
 		$sql .= $where . $orderBy;
 		$query = $this->db->query($sql);
-		debuglog($query);
+		//debuglog($query);
 
 
 		return $query->rows;
