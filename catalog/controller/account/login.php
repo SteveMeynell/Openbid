@@ -193,7 +193,9 @@ class ControllerAccountLogin extends Controller {
 		// Check if customer has been approved.
 		$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
 
-		if ($customer_info && !$customer_info['approved']) {
+		if ($customer_info && !$customer_info['confirmed']) {
+			$this->error['warning'] = $this->language->get('error_confirmation') . ' <a HREF="' . $this->url->link('account/confirmation', 'resend', true) . '">Click to Resend</a>';
+		} elseif ($customer_info && !$customer_info['approved']) {
 			$this->error['warning'] = $this->language->get('error_approved');
 		}
 
@@ -209,4 +211,5 @@ class ControllerAccountLogin extends Controller {
 
 		return !$this->error;
 	}
+
 }

@@ -116,14 +116,14 @@ class ControllerExtensionDashboardActivity extends Controller {
 
 			$find = array(
 				'customer_id=',
-				'order_id=',
+				'auction_id=',
 				'affiliate_id=',
 				'return_id='
 			);
 
 			$replace = array(
 				$this->url->link('customer/customer/edit', 'token=' . $this->session->data['token'] . '&customer_id=', true),
-				$this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=', true),
+				$this->url->link('catalog/auction/edit', 'token=' . $this->session->data['token'] . '&auction_id=', true),
 				$this->url->link('marketing/affiliate/edit', 'token=' . $this->session->data['token'] . '&affiliate_id=', true),
 				$this->url->link('sale/return/edit', 'token=' . $this->session->data['token'] . '&return_id=', true)
 			);

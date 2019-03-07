@@ -17,10 +17,12 @@ $_['column_action']     = 'Action';
 $_['entry_name']        = 'Customer Group Name';
 $_['entry_description'] = 'Description';
 $_['entry_approval']    = 'Approve New Customers';
+$_['entry_confirmation']  = 'Require New Customers to Confirm Email';
 $_['entry_sort_order']  = 'Sort Order';
 
 // Help
 $_['help_approval']     = 'Customers must be approved by an administrator before they can login.';
+$_['help_confirmation'] = 'Customers must be confirm their email addresses before they can be approved.';
 
 // Error
 $_['error_permission']  = 'Warning: You do not have permission to modify customer groups!';

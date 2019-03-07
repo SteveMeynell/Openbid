@@ -13,4 +13,8 @@ class ModelToolUpload extends Model {
 
 		return $query->row;
 	}
+
+	public function deleteUploadById($uploadId) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "upload` WHERE upload_id = '" . $this->db->escape($uploadId) . "'");
+	}
 }

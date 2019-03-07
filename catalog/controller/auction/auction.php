@@ -7,12 +7,7 @@ class ControllerAuctionAuction extends Controller {
 		$customerOnline = $this->customer->isLogged();
 		$seePrices = $this->config->get('config_customer_price');
 		$guestsBid = $this->config->get('config_checkout_guest');
-		/*debuglog("Current Settings: ");
-		debuglog("See prices: " . $seePrices);
-		debuglog("Guests Bid: " . $guestsBid);
-		debuglog("Customer Group: " . $customerGroupId);
-		debuglog("Customer Online: " . $customerOnline);
-		*/
+	
 		$this->load->language('auction/auction');
 
 		$data['breadcrumbs'] = array();
@@ -234,6 +229,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['text_ending_in'] = $this->language->get('text_ending_in');
 			$data['text_reserved_bid'] = $this->language->get('text_reserved_bid');
 			$data['text_reserved_bid_met'] = $this->language->get('text_reserved_bid_met');
+			$data['text_no_reserved_bid'] = $this->language->get('text_no_reserved_bid');
 
 			$data['entry_qty'] = $this->language->get('entry_qty');
 			$data['entry_name'] = $this->language->get('entry_name');
@@ -262,14 +258,14 @@ class ControllerAuctionAuction extends Controller {
 
 			$this->load->model('tool/image');
 
-			if ($auction_info['image']) {
-				$data['popup'] = $this->model_tool_image->resize($auction_info['image'], $this->config->get($this->config->get('config_theme') . '_image_popup_width'), $this->config->get($this->config->get('config_theme') . '_image_popup_height'));
+			if ($auction_info['main_image']) {
+				$data['popup'] = $this->model_tool_image->resize($auction_info['main_image'], $this->config->get($this->config->get('config_theme') . '_image_popup_width'), $this->config->get($this->config->get('config_theme') . '_image_popup_height'));
 			} else {
 				$data['popup'] = '';
 			}
 
-			if ($auction_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($auction_info['image'], $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+			if ($auction_info['main_image']) {
+				$data['thumb'] = $this->model_tool_image->resize($auction_info['main_image'], $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
 			} else {
 				$data['thumb'] = '';
 			}
@@ -297,19 +293,22 @@ class ControllerAuctionAuction extends Controller {
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$current_bid = $this->model_auction_bidding->getCurrentBid($this->request->get['auction_id']);
 				$theNextBid = $this->currency->format($this->model_auction_bidding->getNextBid($current_bid['bid_amount']),$this->session->data['currency']);
-				$minimumBid = $this->currency->format($this->model_auction_bidding->getNextBid($auction_info['min_bid']),$this->session->data['currency']);
+				$minimumBid = $this->currency->format($auction_info['min_bid'],$this->session->data['currency']);
 				$data['min_bid'] = $auction_info['min_bid'];
 				$data['current_bid_amount'] = $current_bid['bid_amount'];
 				$data['reserve_bid_amount'] = $auction_info['reserve_price'];
 				$data['reserve_bid'] = $this->currency->format($auction_info['reserve_price'],$this->session->data['currency']);
-				$data['next_bid_text'] = ($current_bid['bid_amount']>0)? $theNextBid : $minimumBid;
-				$data['next_bid'] = ($current_bid['bid_amount']>0)? $this->model_auction_bidding->getNextBid($current_bid['bid_amount']) : $this->model_auction_bidding->getNextBid($auction_info['min_bid']);
+				$data['next_bid_text'] = (floatval($current_bid['bid_amount'])>0)? $theNextBid : $minimumBid;
+				$data['next_bid'] = (floatval($current_bid['bid_amount'])>0)? $this->model_auction_bidding->getNextBid($current_bid['bid_amount']) : $auction_info['min_bid'];
 				//$data['button_bid'] .= $this->currency->format($data['next_bid'],$this->session->data['currency']);
 				$data['buy_now'] = $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
+				$data['want_buy_now'] = $auction_info['buy_now_price'];
 				$data['button_buynow'] .= ' For Only ' . $this->currency->format($auction_info['buy_now_price'],$this->session->data['currency']);
 				$data['current_bid'] = $this->currency->format($current_bid['bid_amount'],$this->session->data['currency']);
 			} else {
+				$data['min_bid'] = '0';
 				$data['buy_now'] = false;
+				$data['want_buy_now'] = false;
 				$data['current_bid'] = false;
 				$data['reserve_bid'] = false;
 			}
@@ -591,8 +590,6 @@ class ControllerAuctionAuction extends Controller {
 		$json['bids'] = array();
 		$json['isUsersBid'] = array();
 
-		//debuglog("bidList:");
-		//debuglog($bidList);
 		foreach($bidList as $bidAmount){
 			array_push($json['bids'],$bidAmount['bid_amount']);
 			if($this->customer->isLogged() && $bidAmount['bidder_id'] === $this->customer->getId()){
@@ -606,12 +603,10 @@ class ControllerAuctionAuction extends Controller {
 		if($json['currentBid']){
 			$nextBid = $this->model_auction_bidding->getNextBid($json['currentBid']);
 		} else {
-			$nextBid = $this->model_auction_bidding->getNextBid($min_bid);
+			$nextBid = $min_bid; 
 		}
 		
 		$json['nextBid'] = $nextBid;
-		//debuglog("Json:");
-		//debuglog($json);
 		
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
@@ -622,12 +617,11 @@ class ControllerAuctionAuction extends Controller {
 		$json = array();
 	
 		// things to do here
-		// mark auction as closed
-		$this->load->model('auction/auction');
-		$this->model_auction_auction->closeWonAuction($auction_id);
+		
 
 		// place final winning bid of the Buy Now Price
 		$this->load->model('auction/bidding');
+		$this->load->model('auction/auction');
 		$buyNowPrice = $this->model_auction_auction->getBuyNowPrice($auction_id);
 		$thisWinningBid = array(
 			'auction_id'	=> $this->db->escape($auction_id),
@@ -640,8 +634,17 @@ class ControllerAuctionAuction extends Controller {
 
 		// move all bids to history
 		$this->model_auction_bidding->moveBids2History($auction_id);
-		// email seller
-		// email winning bidder
+		
+		// mark auction as closed
+		
+		$winningInfo = $this->model_auction_auction->closeWonAuction($auction_id);
+		debuglog($winningInfo);
+		$winningInfo['type'] = 'buynow';
+		//$PostOffice = $this->load->controller('common/postoffice');
+		$well = $this->sendMail($winningInfo);
+		if($well){
+			debuglog("ok responded was sent");
+		}
 
 		$json['url'] = "index.php?route=auction/closed_auctions&auction_id=" . $auction_id;
 
@@ -652,11 +655,12 @@ class ControllerAuctionAuction extends Controller {
 	}
 
 	public function PlaceBid(){
+		$this->load->model('auction/bidding');
 		$auction_id = $this->request->post['auction_id'];
 		$bidAmount = $this->request->post['bid_amount'];
 		$min_bid = $this->request->post['min_bid'];
 		$last_bid = $this->model_auction_bidding->getLastBid($auction_id);
-		$next_bid = (empty($last_bid))?$this->model_auction_bidding->getNextBid($min_bid):$this->model_auction_bidding->getNextBid($last_bid['bid_amount']);
+		$next_bid = (empty($last_bid))?$min_bid:$this->model_auction_bidding->getNextBid($last_bid['bid_amount']);
 		if(!$bidAmount){
 			$bidAmount=$next_bid;
 		}
@@ -671,9 +675,269 @@ class ControllerAuctionAuction extends Controller {
 		
 		$result = $this->model_auction_bidding->placeBid($thisBid);
 		
+		// Add to activity log
+		if ($this->config->get('config_customer_activity')) {
+			$this->load->model('account/activity');
+
+			$activity_data = array(
+				'customer_id' => $this->customer->getId(),
+				'name'        => $this->customer->getFirstName() . ' ' . $this->customer->getLastName()
+			);
+
+			$this->model_account_activity->addActivity('place_bid', $activity_data);
+		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function Limbo(){
+		$json = array();
+
+		$auctionId = $this->request->post['auction_id'];
+		$this->load->language('mail/auction');
+		
+		$this->load->model('auction/auction');
+		$this->load->model("account/customer");
+		$this->load->model('auction/bidding');
+
+		$currentStatus = $this->model_auction_auction->getAuctionStatus($auctionId);
+		switch ($currentStatus) {
+			case '1':
+			$sellerInfo = $this->model_auction_auction->openAuction($auctionId);
+			$well = $this->sendMail($sellerInfo);
+			if($well){
+				debuglog("ok responded was sent about opening");
+			}
+			break;
+
+			case '2':
+			debuglog("open now what");
+			//	if time has run out
+			$winningBidder = '';
+			if ($this->model_auction_auction->hasExpired($auctionId)) {
+				$current_bid = $this->model_auction_bidding->getCurrentBid($auctionId);
+				$reserve_bid = $this->model_auction_auction->getReserveBid($auctionId);
+				
+				$testamount = $current_bid['bid_amount'] - $reserve_bid;
+				
+				if ($current_bid['bid_amount'] > 0 && $testamount >= 0)  {
+					// we have a winner
+					$auctionInfo = $this->declareWinner($current_bid);
+					$auctionInfo['type'] = 'winner';
+
+					$well = $this->sendMail($auctionInfo);
+				} elseif ($this->model_auction_auction->isRelistable($auctionId)) {
+					$auctionInfo = $this->model_auction_auction->relistAuction($auctionId);
+					$seller_info = $this->model_account_customer->getCustomerInfoById($auctionInfo['seller_id']);
+					$seller_info['type'] = 'relist';
+					$seller_info['link'] = html_entity_decode($this->url->link('auction/edit', 'auction_id=' . $auctionInfo['auction_id'], true) . "\n\n", ENT_QUOTES, 'UTF-8');
+					$sellerInfo = array_merge($seller_info, $auctionInfo);
+					$auctionInfo['highest_bid'] = $current_bid['bid_amount'];
+					$sellerInfo['message'] = $this->getRelistMessage($auctionInfo);
+
+					$well = $this->sendMail($sellerInfo);
+				} else {
+					// not relistable just close it and send emails
+				}
+
+				$sellerInfo = $this->model_auction_auction->closeAuction($auctionId);
+				$this->model_auction_bidding->moveBids2History($auctionId);
+			}
+			
+			break;
+			
+			default:
+			debuglog("hmmm this shouldn't happen");
+			debuglog($currentStatus);
+		}
+
+		$json['success'] = 'Yaaaaay it works';
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+	
+	public function declareWinner($bid_data) {
+		$bidderInfo = $this->model_account_customer->getCustomerInfoById($this->db->escape($bid_data['bidder_id']));
+		$auction_data = $this->model_auction_auction->getAuctionInfoOfWinner($this->db->escape($bid_data['auction_id']));
+		$sellerInfo = $this->model_account_customer->getCustomerInfoById($auction_data['customer_id']);
+		$auction_info['seller_name'] = $sellerInfo['fullname'];
+		$auction_info['seller_email'] = $sellerInfo['email_address'];
+		$auction_info['bidder_name'] = $bidderInfo['fullname'];
+		$auction_info['bidder_email'] = $bidderInfo['email_address'];
+		$auction_info['title'] = $auction_data['title'];
+		$auction_info['bid_amount'] = $this->db->escape($bid_data['bid_amount']);
+
+		return $auction_info;
+	}
+
+	public function getRelistMessage($auction) {
+		$relistMessage = '';
+
+		$followingSuggestions = array();
+  	if (!$auction['options']['buy_now_only']){
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_1'));
+		} else {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_8'));
+		}
+		if(!$auction['options']['featured']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_2'));
+		}
+		if(!$auction['options']['bolded_item']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_3'));
+		}
+		if(!$auction['options']['on_carousel']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_4'));
+		}
+		if(!$auction['options']['highlighted']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_5'));
+		}
+		if(!$auction['options']['slideshow']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_6'));
+		}
+		if(!$auction['options']['social_media']) {
+			array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_7'));
+		}
+		
+		array_push($followingSuggestions,'-' . $this->language->get('text_suggestion_10'));
+
+		$relistMessage = sprintf($this->language->get('text_auction_relisted'), $auction['title']) . "\n";
+		$relistMessage .= sprintf($this->language->get('text_relist_highest'), $auction['highest_bid']) . "\n";
+		$relistMessage .= sprintf($this->language->get('text_relist_timelimit'), $auction['start_date']) . "\n";
+		$relistMessage .= sprintf($this->language->get('text_relist_suggestions')) . "\n";
+		foreach($followingSuggestions as $followingSuggestion) {
+			$relistMessage .= $followingSuggestion . "\n";
+		}
+		$relistMessage .= $this->language->get('text_thank_you');
+
+
+		return $relistMessage;
+	}
+
+	private function sendMail($mailInfo) {
+		if (!isset($mailInfo['type'])) {
+			$sendmsg = 'admin';
+		} else {
+			switch ($mailInfo['type']) {
+				case 'opening':
+				// mail seller that the auction is open
+				$sellerSubject = html_entity_decode($this->language->get('text_subject_opened'), ENT_QUOTES, 'UTF-8');
+				$sellerMessage = html_entity_decode(sprintf($this->language->get('text_auction_opened'),$mailInfo['fullname'],$mailInfo['title']), ENT_QUOTES, 'UTF-8');
+				$sendmsg = 'seller';
+				break;
+
+				case 'buynow':
+				// mail to them
+				$sellerSubject = html_entity_decode($this->language->get('text_subject_bn_seller'), ENT_QUOTES, 'UTF-8');
+				$bidderSubject = html_entity_decode($this->language->get('text_subject_bn_bidder'), ENT_QUOTES, 'UTF-8');
+				$sellerMessage = html_entity_decode(sprintf($this->language->get('text_message_bn_seller'),$mailInfo['seller_name'],$mailInfo['title'],$mailInfo['bidder_email']), ENT_QUOTES, 'UTF-8');
+				$bidderMessage = html_entity_decode(sprintf($this->language->get('text_message_bn_bidder'),$mailInfo['bidder_name'],$mailInfo['title'],$mailInfo['seller_email']), ENT_QUOTES, 'UTF-8');
+				$sendmsg = 'all';
+				break;
+
+				case 'relist':
+				$sellerSubject = html_entity_decode($this->language->get('text_subject_relisted'), ENT_QUOTES, 'UTF-8');
+				$sellerMessage = html_entity_decode($mailInfo['message']/*sprintf($this->language->get('text_message_relist_seller'),$mailInfo['fullname'],$mailInfo['title'],$mailInfo['link'])*/, ENT_QUOTES, 'UTF-8');
+				$sendmsg = 'seller';
+				break;
+
+				case 'winner':
+				$sellerSubject = html_entity_decode($this->language->get('text_subject_auction_won'), ENT_QUOTES, 'UTF-8');
+				$bidderSubject = html_entity_decode($this->language->get('text_subject_auction_won'), ENT_QUOTES, 'UTF-8');
+
+				$testSellMessage = $this->language->get('text_auction_won_smsg1') . "\n";
+				$testSellMessage .= $this->language->get('text_auction_won_smsg2') . "\n\n";
+				$testSellMessage .= $this->language->get('text_auction_won_contact1') . "\n";
+				$testSellMessage .= $this->language->get('text_auction_won_contact2');
+				$sellerMessage = sprintf($testSellMessage, $mailInfo['seller_name'], $mailInfo['title'], $mailInfo['bid_amount'], $mailInfo['bidder_name'], $mailInfo['bidder_name'], $mailInfo['bidder_name'], $mailInfo['bidder_email']);
+				
+				$testBidMessage = $this->language->get('text_auction_won_bmsg1') . "\n";
+				$testBidMessage .= $this->language->get('text_auction_won_bmsg2') . "\n\n";
+				$testBidMessage = $this->language->get('text_auction_won_contact1') . "\n";
+				$testBidMessage = $this->language->get('text_auction_won_contact2') . "\n";
+				$bidderMessage = sprintf($testBidMessage, $mailInfo['bidder_name'], $mailInfo['title'], $mailInfo['bid_amount'], $mailInfo['seller_name'], $mailInfo['seller_name'], $mailInfo['seller_email']);
+				
+				$sendmsg = 'all';
+				break;
+
+				default:
+				$sendmsg = 'admin';
+				break;
+			}
+		}
+
+		if ($sendmsg == 'all') {
+			// Send to Seller
+			$mail = new Mail();
+						$mail->protocol = $this->config->get('config_mail_protocol');
+						$mail->parameter = $this->config->get('config_mail_parameter');
+						$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+						$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+						$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+						$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+						$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+											
+						$mail->setTo($mailInfo['seller_email']);
+						$mail->setFrom($this->config->get('config_email'));
+						$mail->setSender($this->language->get('text_sender'));
+						$mail->setSubject($sellerSubject);
+						$mail->setText($sellerMessage);
+						$mail->send();
+			// Send to Bidder
+			$mail = new Mail();
+						$mail->protocol = $this->config->get('config_mail_protocol');
+						$mail->parameter = $this->config->get('config_mail_parameter');
+						$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+						$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+						$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+						$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+						$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+											
+						$mail->setTo($mailInfo['bidder_email']);
+						$mail->setFrom($this->config->get('config_email'));
+						$mail->setSender($this->language->get('text_sender'));
+						$mail->setSubject($bidderSubject);
+						$mail->setText($bidderMessage);
+						$mail->send();
+						$sent = true;
+		} elseif($sendmsg == 'seller') {
+			// Send to Seller
+			$mail = new Mail();
+						$mail->protocol = $this->config->get('config_mail_protocol');
+						$mail->parameter = $this->config->get('config_mail_parameter');
+						$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+						$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+						$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+						$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+						$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+											
+						$mail->setTo($mailInfo['email_address']);
+						$mail->setFrom($this->config->get('config_email'));
+						$mail->setSender($this->language->get('text_sender'));
+						$mail->setSubject($sellerSubject);
+						$mail->setText($sellerMessage);
+						$mail->send();
+						$sent = true;
+			} else {
+				// send to admin
+				$mail = new Mail();
+							$mail->protocol = $this->config->get('config_mail_protocol');
+							$mail->parameter = $this->config->get('config_mail_parameter');
+							$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+							$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+							$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+							$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+							$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+												
+							$mail->setTo($this->config->get('config_email'));
+							$mail->setFrom($this->config->get('config_email'));
+							$mail->setSender($this->language->get('text_sender'));
+							$mail->setSubject('Something went wrong');
+							$mail->setText("I don't know what but something went wrong");
+							$mail->send();
+							$sent = true;
+			}
+		return $sent;
 	}
 
 	// end of controller

@@ -251,7 +251,6 @@ class ControllerAuctionSearch extends Controller {
 					'price'       => $price,
 					'views'				=> $result['viewed'],
 					'bids'         => $numBids['num_bids'],
-					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $result['rating'],
 					'href'        => $this->url->link('auction/auction', 'auction_id=' . $result['auction_id'])
 				);

@@ -1,245 +1,219 @@
 <?php
 class ModelAuctionAuction extends Model {
     
-	public function relistClosingAuctions(){
-    
-        /* First for auctions that have winners:
-         *      Winners:    Have placed a bid that is higher than the reserved bid or if that is zero,
-         *                  than higher that the min_bid. And of course is the highest bid.
-         *      Winners should be notified of their win.
-         *      Sellers should be notified of the winning bid.
-         *      Auction closed
-         *      Bids moved to bid_history
-         *      Bids removed from current_bids
-         *      Depending on how some options are done, removed from their lists too.
-        */      
-         
-        /* Next check for auctions that have no winners but have remaining relistings.
-         * Auction should be set to created with a new start date = current date + grace period(not long-set option)
-         * Decrease the num_relists by one and notify the seller of the relisting.  Maybe send some tips.
-         * Notify Seller
-        */
-         
-         /* Finally, check for auctions that have no winner and no more relistings.
-         * These should be closed or put in some sort of limbo 
-         * and suggestions.
-         * Email sent to the seller with options and/or tips
-         */
+    public function openAuction($auction_id){
+        $auctionId = $this->db->escape($auction_id);
 
-        $effected_customers = array();
-        
-        $query = $this->db->query("SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS fullname, c.email as email_address FROM " . DB_PREFIX . "auctions a
+        $query = $this->db->query("SELECT CONCAT(c.firstname,' ',c.lastname) AS fullname, c.email AS email_address, ad.title AS title 
+        FROM " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad
-        ON (a.auction_id = ad.auction_id)
-        LEFT JOIN " . DB_PREFIX . "auction_options ao
-        ON (a.auction_id = ao.auction_id)
-        LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
-        ON (a.auction_id = a2s.auction_id)
+        ON (a.auction_id = ad.auction_id) 
         LEFT JOIN " . DB_PREFIX . "customer c
-        ON (a.customer_id = c.customer_id) 
-        WHERE a.status = '2'
-        AND ad.end_date <= NOW()
-        AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
-        
-        $sql = "SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS fullname, c.email as email_address FROM " . DB_PREFIX . "auctions a
-        LEFT JOIN " . DB_PREFIX . "auction_details ad
-        ON (a.auction_id = ad.auction_id)
-        LEFT JOIN " . DB_PREFIX . "auction_options ao
-        ON (a.auction_id = ao.auction_id)
-        LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
-        ON (a.auction_id = a2s.auction_id)
-        LEFT JOIN " . DB_PREFIX . "customer c
-        ON (a.customer_id = c.customer_id) 
-        WHERE a.status = '2'
-        AND ad.end_date <= NOW()
-        AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        
-        //debuglog($sql);
-        
-        if ($query->num_rows) {
-            $effected_auctions = $query->rows;
-			$effected_customers['relist'] = $effected_auctions;
-        } else {
-            $effected_auctions = false;
-			$effected_customers['relist'] = false;
-        }
-		
-		$grace_period = '1';  // grace period before reopening auctions relisted.  This will be a setting later.
-		
-		$this->load->model('auction/bidding');
-		if($effected_auctions) {
-			foreach($effected_auctions as $auction) {
-				$current_bid = $this->model_auction_bidding->getCurrentBid($auction['auction_id']);
-				if($auction['reserve_price'] > $current_bid['bid_amount'] && $auction['num_relist'] > 0){
-					$sql = "UPDATE " . DB_PREFIX . "auctions
-					SET num_relist = (num_relist - 1),
-					date_modified = NOW(),
-					status = '1',
-					modified_by = '1'
-					WHERE auction_id = '" . $auction['auction_id'] . "'";
-					//debuglog($sql);
-					$this->db->query($sql);
-					$new_start = (int)$auction['duration']*24 + $grace_period;
-					$sql = "UPDATE " . DB_PREFIX . "auction_details
-					SET start_date = DATE_ADD(NOW(), INTERVAL " . $grace_period . " HOUR),
-					end_date = DATE_ADD(NOW(), INTERVAL " . $new_start . " HOUR),
-					min_bid = " . max($auction['min_bid'], $current_bid['bid_amount']) . "
-					WHERE auction_id = '" . $auction['auction_id'] . "'";
-					
-					$this->db->query($sql);
-					
-					$this->model_auction_bidding->moveBids2History($auction['auction_id']);
-					debuglog("relisting: " . $auction['auction_id']);
-					$message = html_entity_decode('Auction: ' . $auction['auction_id'] . ' Relisted.', ENT_QUOTES, 'UTF-8');
-					$mail = new Mail();
-					$mail->setTo($this->config->get('config_email'));
-					$mail->setFrom($this->config->get('config_email'));
-					$mail->setSender("Closing Day");
-					$mail->setSubject(html_entity_decode("Auction Relisted", ENT_QUOTES, 'UTF-8'));
-					$mail->setText($message, ENT_QUOTES, 'UTF-8');
-					$mail->send();
-				} elseif($auction['reserve_price'] <= $current_bid['bid_amount']) {
-                    debuglog("We have a winner");
-                    /* What has to happen now is: 
-                    The auction has to close.
-                    The winning bid has to be flagged as the winner.
-                    The bids moved to history.
-                    The seller has to be notified with the details.
-                    The winning bidder has to be notified with the details.
-                    */
-                    $this->db->query("UPDATE " . DB_PREFIX . "auctions 
-                    SET status = '3', 
-                    winning_bid = '" . $current_bid['bid_amount'] . "' 
-                    WHERE auction_id = '" . $auction['auction_id'] . "'");
-                    $this->db->query("UPDATE " . DB_PREFIX . "current_bids SET winner = '1' WHERE bid_id = '" . $current_bid['bid_id'] . "'");
-                    $this->model_auction_bidding->moveBids2History($auction['auction_id']);
-                }
-			}
-		}
-		
-		return $effected_customers;
-	}
-		
-	public function closeOpenAuctions() {
-        //must check if latest bid exceeds the reserved bid if set and if not then if it is relisted
-        // need a cool off period before relist maybe - setting - then reset the start time, end time,
-        // decrease the relist count send email informing the seller that it didn't sell and give them the cool
-        // off period to edit settings maybe.
-        
-        // maybe put all closing none winners with no relist option in a limbo state and send emails to the sellers
-        // offering relisting before closing for good.
-        
-        // if latest bid exceeds the reserved bid then we have a winner!  Close the auction, send an email to
-        // the seller informing them that the item has sold and with the buyers details.
-        // Send the winning bidder and email informing them that they have won and that the seller will contact
-        // them with details.
-        
-        // We take no responsibility for the payment and delivery of items.  We only give the seller the platform
-        // to offer the item for sale.
-        $this->load->model('auction/bidding');
-        $closing_sql = "SELECT a.auction_id FROM " . DB_PREFIX . "auctions a 
-        LEFT JOIN " . DB_PREFIX . "auction_details ad1
-        ON (a.auction_id = ad1.auction_id) 
-        WHERE a.status = '2' AND ad1.end_date <= NOW()";
-        $closing_auctions = $this->db->query($closing_sql)->rows;
-        foreach($closing_auctions as $closing_auction){
-            $this->model_auction_bidding->moveBids2History($closing_auction['auction_id']);
-            $this->db->query("UPDATE " . DB_PREFIX . "auctions 
-            SET status = '3' 
-            WHERE auction_id = '" . $closing_auction['auction_id'] . "'");
-        }
-        /*
+        ON (a.customer_id = c.customer_id)
+        WHERE a.auction_id = '" . (int)$auctionId . "'");
+        $sellerInfo = $query->row;
+        $sellerInfo['type'] = 'opening';
+
         $this->db->query("UPDATE " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad1
         ON (a.auction_id = ad1.auction_id)
-        SET a.status = '3' 
-        WHERE a.status = '2' AND ad1.end_date <= NOW()");
-        */
-        //debuglog($closing_auctions);
-        $results = count($closing_auctions);
-        //debuglog($results);
-		if($results){
-			$effected_customers['closed'] = $results;
-		} else {
-			$effected_customers['closed'] = false;
-        }
-        
-        //$this->load->model('auction/bidding');
-        //$this->model_auction_bidding->moveBids2History($auction['auction_id']);
+        SET a.status = '2' 
+        WHERE a.auction_id = '" . (int)$auctionId . "'");
 
-       /* $message  = '<html dir="ltr" lang="en">' . "\n";
-					$message .= '  <head>' . "\n";
-					$message .= '    <title>Closing Auction</title>' . "\n";
-					$message .= '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
-					$message .= '  </head>' . "\n";
-					$message .= '  <body>' . html_entity_decode($results . ' Auctions Closed.', ENT_QUOTES, 'UTF-8') . '</body>' . "\n";
-					$message .= '</html>' . "\n";
-        */
-        $message = html_entity_decode($results . ' Auctions Closed.', ENT_QUOTES, 'UTF-8');
-        if($results) {
-            $mail = new Mail();
-            $mail->setTo($this->config->get('config_email'));
-            $mail->setFrom($this->config->get('config_email'));
-            $mail->setSender("Closing Day");
-            $mail->setSubject(html_entity_decode("Closing Auctions", ENT_QUOTES, 'UTF-8'));
-            $mail->setText($message, ENT_QUOTES, 'UTF-8');
-            $mail->send();
-        }
-        
-        return $effected_customers;
-        //$this->log->write($results . 'Auctions Closed.');
+        return $sellerInfo;
     }
-    
-    public function openCreatedAuctions() {
-        
+
+    public function closeAuction($auction_id){
+        $auctionId = $this->db->escape($auction_id);
+
         $query = $this->db->query("SELECT CONCAT(c.firstname,' ',c.lastname) AS fullname, c.email AS email_address
         FROM " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad
         ON (a.auction_id = ad.auction_id) 
         LEFT JOIN " . DB_PREFIX . "customer c
         ON (a.customer_id = c.customer_id)
-        WHERE a.status = '1' AND ad.start_date < NOW()");
+        WHERE a.auction_id = '" . (int)$auctionId . "'");
+        $sellerInfo = $query->row;
 
-        if ($query->num_rows) {
-            $customers_effected = $query->rows;
-        } else {
-            $customers_effected = false;
-        }
-        
-        
         $this->db->query("UPDATE " . DB_PREFIX . "auctions a
         LEFT JOIN " . DB_PREFIX . "auction_details ad1
         ON (a.auction_id = ad1.auction_id)
-        SET a.status = '2' 
-        WHERE a.status = '1' AND ad1.start_date < NOW()");
+        SET a.status = '3' 
+        WHERE a.auction_id = '" . (int)$auctionId . "'");
+
+        return $sellerInfo;
+    }
+
+    public function hasExpired($auction_id) {
+        $auctionId = $this->db->escape($auction_id);
+
+        $query = $this->db->query("SELECT auction_id FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . (int)$auctionId . "' AND NOW() - end_date >= 0");
+        $results = $query->row;
+        if(isset($results['auction_id'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isRelistable($auction_id) {
+        $auctionId = $this->db->escape($auction_id);
+        $query = $this->db->query("SELECT a.relist, ao.auto_relist FROM " . DB_PREFIX . "auctions a 
+        LEFT JOIN " . DB_PREFIX . "auction_options ao ON(ao.auction_id = a.auction_id) 
+        WHERE a.auction_id = '" . (int)$auctionId . "' AND a.status = '2'");
+        $results = $query->row;
+        if ($results['auto_relist'] == '1' && $results['relist'] > '0') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getReserveBid($auction_id){
+        $auctionId = $this->db->escape($auction_id);
+
+        $query = $this->db->query("SELECT reserve_price FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . $auctionId . "'");
+        $result = $query->row;
+        return $result['reserve_price'];
+    }
+
+    public function relistAuction($auction_id) {
+        $originalAuctionId = $this->db->escape($auction_id);
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auctions WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $original = $query->row;
+
+        $newRelist = $original['relist'] - 1;
+        $currentDate = $this->db->query("SELECT NOW() AS currenttime")->row;
+        $this->db->query("INSERT INTO " . DB_PREFIX . "auctions 
+        SET 
+            customer_id = '" . $original['customer_id'] . "', 
+            auction_type = '" . $original['auction_type'] . "', 
+            date_created = '" . $currentDate['currenttime'] . "', 
+            status = '1', 
+            num_relist = '" . $original['num_relist'] . "', 
+            relist = '" . $newRelist . "'");
+
+        $newAuctionId = $this->db->getLastId();
+        // copy photos and update main_image
+        $this->db->query("UPDATE " . DB_PREFIX . "auctions 
+        SET 
+        main_image = '" . $original['main_image'] . "' 
+        WHERE auction_id = '" . (int)$newAuctionId . "'");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_photos WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $photos = $query->rows;
+        foreach($photos as $photo) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "auction_photos 
+            SET 
+            auction_id = '" . $newAuctionId . "', 
+            sort_order = '" . $photo['sort_order'] . "', 
+            image = '" . $photo['image'] . "'");
+        }
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_description WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $results = $query->rows;
+
+        foreach ($results as $language_id => $value) {
+            $languageId = (int)$language_id + 1;
+			$this->db->query("INSERT INTO " . DB_PREFIX . "auction_description
+							 SET
+							 auction_id = '" . (int)$newAuctionId . "',
+							 language_id = '" . (int)$languageId . "',
+							 name = '" . $this->db->escape($value['name']) . "',
+							 subname = '" . $this->db->escape($value['subname']) . "',
+							 description = '" . $this->db->escape($value['description']) . "',
+							 tag = '" . $this->db->escape($value['tag']) . "',
+							 meta_title = '" . $this->db->escape($value['meta_title']) . "',
+							 meta_description = '" . $this->db->escape($value['meta_description']) . "',
+							 meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'
+							 ");
+        }
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $result = $query->row;
+
+        $auctionInfo['seller_id'] = $original['customer_id'];
+        $auctionInfo['title'] = $result['title'];
+        $auctionInfo['auction_id'] = $newAuctionId;
         
-        $results = $this->db->countAffected();
-        //$this->load->model("extension/module");
-        //$auctionOpenMsg = $this->model_extension_module->getModulebyName('Auction Open','html');
-        if ($results) {
-            $mail = new Mail();
-            $mail->setTo($this->config->get('config_email'));
-            $mail->setFrom($this->config->get('config_email'));
-            $mail->setSender("Opening Day");
-            $mail->setSubject(html_entity_decode("Opening Auctions", ENT_QUOTES, 'UTF-8'));
-            $mail->setText(html_entity_decode($results . " Auctions Opened.", ENT_QUOTES, 'UTF-8'));
-            $mail->send();
-            //debuglog($auctionOpenMsg);
-            /*foreach($customers_effected as $customer_effected){
-                //debuglog($customer_effected);
-                $mail = new Mail();
-                $mail->setTo($customer_effected['email_address']);
-                $mail->setFrom($this->config->get('config_email'));
-                $mail->setSender($this->config->get('config_name'));
-                $mail->setSubject(html_entity_decode($auctionOpenMsg['module_description'][1]['title'], ENT_QUOTES, 'UTF-8'));
-                $mail->setHtml('<!DOCTYPE <html><body>' . $auctionOpenMsg['module_description'][1]['description'] . '</body></html>', ENT_QUOTES, 'UTF-8');
-                //$mail->send();
-                debuglog($mail);
-            }*/
+        $grace_period = '1';
+        $endlength = strval(($result['duration'] * 24) + $grace_period);
+
+        $newStartDate = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $grace_period . " HOUR) AS newStartDate")->row;
+        $newEndDate = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL " . $endlength . " HOUR) AS newEndDate")->row;
+        $auctionInfo['start_date'] = $newStartDate['newStartDate'];
+
+        $this->db->query("INSERT INTO " . DB_PREFIX . "auction_details 
+        SET 
+            auction_id = '" . (int)$newAuctionId . "',
+            title = '" . $result['title'] . "', 
+            subtitle = '" . $result['subtitle'] . "', 
+            min_bid = '" . $result['min_bid'] . "', 
+            shipping_cost = '" . $result['shipping_cost'] . "', 
+            additional_shipping = '" . $result['additional_shipping'] . "', 
+            reserve_price = '" . $result['reserve_price'] . "', 
+            duration = '" . $result['duration'] . "', 
+            increment = '" . $result['increment'] . "', 
+            shipping = '" . $result['shipping'] . "', 
+            payment = '" . $result['payment'] . "', 
+            international_shipping = '" . $result['international_shipping'] . "', 
+            initial_quantity = '" . $result['initial_quantity'] . "', 
+            quantity = '" . $result['quantity'] . "', 
+            current_fee = '" . $result['current_fee'] . "', 
+            buy_now_price = '" . $result['buy_now_price'] . "', 
+            start_date = '" . $newStartDate['newStartDate'] . "', 
+            end_date = '" . $newEndDate['newEndDate'] . "'");
+
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_options WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $result = $query->row;
+        $auctionInfo['options'] = $result;
+
+        $this->db->query("INSERT INTO " . DB_PREFIX . "auction_options 
+        SET 
+            auction_id = '" . $newAuctionId . "',  
+            custom_bid_increments = '" . $result['custom_bid_increments'] . "', 
+            bolded_item = '" . $result['bolded_item'] . "', 
+            on_carousel = '" . $result['on_carousel'] . "', 
+            buy_now_only = '" . $result['buy_now_only'] . "', 
+            featured = '" . $result['featured'] . "', 
+            highlighted = '" . $result['highlighted'] . "', 
+            slideshow = '" . $result['slideshow'] . "', 
+            social_media = '" . $result['social_media'] . "', 
+            auto_relist = '" . $result['auto_relist'] . "'");
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_to_category WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $results = $query->rows;
+
+        foreach($results as $category) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_category 
+            SET 
+            auction_id = '" . $newAuctionId . "', 
+            category_id = '" . $category['category_id'] . "'");
+        }
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_to_layout WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $results = $query->rows;
+
+        foreach($results as $layout) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_layout 
+            SET 
+            auction_id = '" . $newAuctionId . "', 
+            store_id = '" . $layout['store_id'] . "', 
+            layout_id = '" . $layout['layout_id'] . "'");
         }
         
-        return $customers_effected;
-        //$this->log->write($results . ' Auctions Opened.');
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_to_store WHERE auction_id = '" . (int)$originalAuctionId . "'");
+        $results = $query->rows;
+
+        foreach($results as $result) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "auction_to_store 
+            SET 
+            auction_id = '" . $newAuctionId . "', 
+            store_id = '" . $result['store_id'] . "'");
+        }
+        
+        return $auctionInfo;
     }
     
     public function getBuyNowPrice($auction_id){
@@ -254,22 +228,52 @@ class ModelAuctionAuction extends Model {
         SET status = '3'  
         WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
         $this->db->query($sql);
-        debuglog($sql);
+        $query = "SELECT  
+            ad.title AS title, 
+            bh.bidder_id AS bidder, 
+            bh.bid_amount AS bid_amount, 
+            CONCAT(s.firstname, ' ', s.lastname) AS seller_name, 
+            s.email AS seller_email, 
+            CONCAT(b.firstname, ' ', b.lastname) AS bidder_name, 
+            b.email AS bidder_email 
+            FROM " . DB_PREFIX . "auctions a 
+            LEFT JOIN " . DB_PREFIX . "auction_details ad ON (a.auction_id = ad.auction_id) 
+            LEFT JOIN " . DB_PREFIX . "bid_history bh ON (a.auction_id = bh.auction_id) 
+            LEFT JOIN " . DB_PREFIX . "customer s ON (a.customer_id = s.customer_id) 
+            LEFT JOIN " . DB_PREFIX . "customer b ON (bh.bidder_id = b.customer_id) 
+            WHERE a.auction_id = '" . $this->db->escape($auction_id) . "' 
+            AND bh.winner = '1'";
 
+        $results = $this->db->query($query);
+        $auctionInfo = $results->row;
+
+        return $auctionInfo;
     }
 
-    public function declareWinners(){
-        /* To declare winners follow these steps:
-        1. Get list of closing auctions
-            Already got list during the relist closing auctions section, maybe pass it in here instead
-        2. Get current Bid for each of these auctions
-        3. Check the closing bid compared to the reserve amount and if the closing bid
-            is greater than or equal to the reserve bid then it has a winner.
-        4. Close auction and set the winning bid to winner
-        5. Move bids to history
-        6. Send notifications out.
-        */
-
+    public function getAuctionDurations(){
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "durations ORDER BY duration");
+        return $query->rows;
     }
+    
+    public function getAuctionTypes(){
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_types");
+        return $query->rows;
+    }
+    
+    public function getAuctionStatus($auctionId) {
+        $results = $this->db->query("SELECT status FROM " . DB_PREFIX . "auctions WHERE auction_id = '" . $this->db->escape($auctionId) . "'");
+        return $results->row['status'];
+    }
+
+    public function getAuctionInfoOfWinner($auction_id) {
+        $auctionId = $this->db->escape($auction_id);
+
+        $query = "SELECT a.customer_id AS customer_id, ad.title AS title FROM " . DB_PREFIX . "auctions a 
+        LEFT JOIN " . DB_PREFIX . "auction_details ad ON (a.auction_id = ad.auction_id) 
+        WHERE a.auction_id = '" . $auctionId . "'";
+        return $this->db->query($query)->row;
+    }
+
+
     // End of Model
 }

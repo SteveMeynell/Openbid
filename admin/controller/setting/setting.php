@@ -903,6 +903,11 @@ class ControllerSettingSetting extends Controller {
 			'value' => 'contact'
 		);
 
+		$data['captcha_pages'][] = array(
+			'text'  => $this->language->get('text_selling'),
+			'value' => 'selling'
+		);
+
 		if (isset($this->request->post['config_logo'])) {
 			$data['config_logo'] = $this->request->post['config_logo'];
 		} else {
@@ -1038,8 +1043,8 @@ class ControllerSettingSetting extends Controller {
 		);
 
 		$data['mail_alerts'][] = array(
-			'text'  => $this->language->get('text_mail_order'),
-			'value' => 'order'
+			'text'  => $this->language->get('text_mail_auction'),
+			'value' => 'auction'
 		);
 
 		$data['mail_alerts'][] = array(

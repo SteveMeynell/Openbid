@@ -20,3 +20,4 @@ $_['entry_password']               = 'Password';
 $_['error_login']                  = 'Warning: No match for E-Mail Address and/or Password.';
 $_['error_attempts']               = 'Warning: Your account has exceeded allowed number of login attempts. Please try again in 1 hour.';
 $_['error_approved']               = 'Warning: Your account requires approval before you can login.';
+$_['error_confirmation']            = 'Warning: You need to confirm your email address before you can login.';

@@ -32,6 +32,7 @@ class ControllerAccountTransaction extends Controller {
 
 		$data['heading_title'] = $this->language->get('heading_title');
 
+		$data['column_auction_title'] = $this->language->get('column_auction_title');
 		$data['column_date_added'] = $this->language->get('column_date_added');
 		$data['column_description'] = $this->language->get('column_description');
 		$data['column_amount'] = sprintf($this->language->get('column_amount'), $this->config->get('config_currency'));
@@ -63,6 +64,7 @@ class ControllerAccountTransaction extends Controller {
 		foreach ($results as $result) {
 			$data['transactions'][] = array(
 				'amount'      => $this->currency->format($result['amount'], $this->config->get('config_currency')),
+				'title'				=> $result['auction_id'],
 				'description' => $result['description'],
 				'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added']))
 			);

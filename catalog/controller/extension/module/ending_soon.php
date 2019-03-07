@@ -35,8 +35,8 @@ class ControllerExtensionModuleEndingSoon extends Controller {
 			
 			foreach ($results as $result) {
 				
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+				if ($result['main_image']) {
+					$image = $this->model_tool_image->resize($result['main_image'], $setting['width'], $setting['height']);
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
 				}
@@ -45,9 +45,11 @@ class ControllerExtensionModuleEndingSoon extends Controller {
 					$tempcurrent_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
 					$current_bid = $this->currency->format($tempcurrent_bid['bid_amount'],$this->session->data['currency']);
 					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
+					$want_buy_now = $result['buy_now_price'];
 				} else {
 					$current_bid = false;
 					$buy_now = false;
+					$want_buy_now = false;
 				}
 				
 
@@ -69,6 +71,7 @@ class ControllerExtensionModuleEndingSoon extends Controller {
 					'current_bid'       => $current_bid,
 					'buy_now_only'	=> $result['buy_now_only'],
 					'buy_now'     => $buy_now,
+					'want_buy_now'	=> $want_buy_now,
 					'rating'		=> $rating,
 					'end_date'		=> $result['end_date'],
 					'views'      => $result['viewed'],
@@ -76,7 +79,8 @@ class ControllerExtensionModuleEndingSoon extends Controller {
 				);
 			}
 
-			return $this->load->view('extension/module/ending_soon', $data);
+			
 		}
+		return $this->load->view('extension/module/ending_soon', $data);
 	}
 }

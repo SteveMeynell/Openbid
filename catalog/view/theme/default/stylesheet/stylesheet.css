@@ -471,14 +471,14 @@ footer h5 {
 .btn-info {
 	color: #ffffff;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-	background-color: #df5c39;
-	background-image: linear-gradient(to bottom, #e06342, #dc512c);
+	background-color: #3952df;
+	background-image: linear-gradient(to bottom, #4542e0, #2c72dc);
 	background-repeat: repeat-x;
-	border-color: #dc512c #dc512c #a2371a;
+	border-color: #462cdc #2c38dc #331aa2;
 }
 .btn-info:hover, .btn-info:active, .btn-info.active, .btn-info.disabled, .btn-info[disabled] {
 	background-image: none;
-	background-color: #df5c39;
+	background-color: #39b8df;
 }
 .btn-link {
 	border-color: rgba(0, 0, 0, 0);
@@ -1016,5 +1016,5 @@ h2.price {
 /* Missing focus and border color to overwrite bootstrap */
 .btn-info:hover, .btn-info:active, .btn-info.active, .btn-info.disabled, .btn-info[disabled] {
     background-image: none;
-    background-color: #df5c39;
+    background-color: #5839df;
 }

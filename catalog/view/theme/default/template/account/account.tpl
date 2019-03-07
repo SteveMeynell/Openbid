@@ -32,22 +32,76 @@
         <?php } ?>
       </ul>
       <?php } ?>
-      <h2><?php echo $text_my_orders; ?></h2>
+      <h2><?php echo $text_my_auctions; ?></h2>
       <ul class="list-unstyled">
-        <li><a href="<?php echo $order; ?>"><?php echo $text_order; ?></a></li>
-        <li><a href="<?php echo $download; ?>"><?php echo $text_download; ?></a></li>
+        <li><a href="<?php echo $auctions; ?>"><?php echo $text_auction; ?></a></li>
+        <li><a href="<?php echo $bids; ?>"><?php echo $text_bids; ?></a></li>
         <?php if ($reward) { ?>
         <li><a href="<?php echo $reward; ?>"><?php echo $text_reward; ?></a></li>
         <?php } ?>
         <li><a href="<?php echo $return; ?>"><?php echo $text_return; ?></a></li>
-        <li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>
+        <li><a href="<?php echo $fees; ?>"><?php echo $text_fees; ?></a></li>
         <li><a href="<?php echo $recurring; ?>"><?php echo $text_recurring; ?></a></li>
       </ul>
       <h2><?php echo $text_my_newsletter; ?></h2>
       <ul class="list-unstyled">
         <li><a href="<?php echo $newsletter; ?>"><?php echo $text_newsletter; ?></a></li>
       </ul>
-      <?php echo $content_bottom; ?></div>
-    <?php echo $column_right; ?></div>
+      <div class="<?php echo $class; ?>">
+        <canvas id="myChart" width="200" height="200"></canvas>
+      </div>
+      <?php echo $content_bottom; ?>
+    </div>
+    <?php echo $column_right; ?>
+  </div>
 </div>
 <?php echo $footer; ?> 
+<script>
+$(document).ready(function(){
+  $.ajax({
+    url: 'index.php?route=account/account/getBidCount',
+		type: 'get',
+		dataType: 'json',
+    success: function(json){
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ["Non Winning Bids", "Winning Bids"],
+          datasets: [{
+              data: [json['all_bids']-json['winning_bids'],json['winning_bids']],
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+          }]
+        },
+        options: {
+          title: {
+              display: true,
+              text: 'Auctions Bid On'
+          }
+        }
+      });
+    },
+    error: function(textStatus){
+      console.log("error");
+      console.log(textStatus)
+    }
+  });
+  
+});
+</script>

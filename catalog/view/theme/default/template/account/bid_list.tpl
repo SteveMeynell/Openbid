@@ -15,30 +15,31 @@
     <?php } ?>
     <div id="content" class="<?php echo $class; ?>"><?php echo $content_top; ?>
       <h1><?php echo $heading_title; ?></h1>
-      <?php if ($orders) { ?>
+      <?php if ($bids) { ?>
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead>
             <tr>
-              <td class="text-right"><?php echo $column_order_id; ?></td>
-              <td class="text-left"><?php echo $column_customer; ?></td>
-              <td class="text-right"><?php echo $column_product; ?></td>
-              <td class="text-left"><?php echo $column_status; ?></td>
+              <td class="text-right"><?php echo $column_bid_id; ?></td>
+              <td class="text-right"><?php echo $column_auction_id; ?></td>
+              <td class="text-left"><?php echo $column_title; ?></td>
+              <td class="text-right"><?php echo $column_bid_date; ?></td>
               <td class="text-right"><?php echo $column_total; ?></td>
-              <td class="text-left"><?php echo $column_date_added; ?></td>
+              <td class="text-left"><?php echo $column_winner; ?></td>
+              <td class="text-left"><?php echo $column_action; ?></td>
               <td></td>
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($orders as $order) { ?>
+            <?php foreach ($bids['history'] as $bid) { ?>
             <tr>
-              <td class="text-right">#<?php echo $order['order_id']; ?></td>
-              <td class="text-left"><?php echo $order['name']; ?></td>
-              <td class="text-right"><?php echo $order['products']; ?></td>
-              <td class="text-left"><?php echo $order['status']; ?></td>
-              <td class="text-right"><?php echo $order['total']; ?></td>
-              <td class="text-left"><?php echo $order['date_added']; ?></td>
-              <td class="text-right"><a href="<?php echo $order['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
+              <td class="text-right">#<?php echo $bid['bid_id']; ?></td>
+              <td class="text-right">#<?php echo $bid['auction_id']; ?></td>
+              <td class="text-left"><?php echo $bid['title']; ?></td>
+              <td class="text-left"><?php echo $bid['bid_date']; ?></td>
+              <td class="text-left"><?php echo $bid['bid_amount']; ?></td>
+              <td class="text-left"><?php echo $bid['winner']; ?></td>
+              <td class="text-right"><a href="<?php echo $bid['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
             </tr>
             <?php } ?>
           </tbody>

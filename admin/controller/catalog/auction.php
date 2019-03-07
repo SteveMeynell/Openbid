@@ -459,8 +459,8 @@ class ControllerCatalogAuction extends Controller {
 		
 		foreach ($results as $result) {
 			
-			if (isset($result['image']) && is_file(DIR_IMAGE . $result['image'])) {
-			$thumb = $this->model_tool_image->resize($result['image'], 100, 100);
+			if (isset($result['main_image']) && is_file(DIR_IMAGE . $result['main_image'])) {
+			$thumb = $this->model_tool_image->resize($result['main_image'], 100, 100);
 			} else {
 				$thumb = $this->model_tool_image->resize('no_image.png', 100, 100);
 			}
@@ -1314,7 +1314,7 @@ class ControllerCatalogAuction extends Controller {
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];
 		} elseif (!empty($auction_info)) {
-			$data['image'] = $auction_info['image'];
+			$data['image'] = $auction_info['main_image'];
 		} else {
 			$data['image'] = '';
 		}
@@ -1323,8 +1323,8 @@ class ControllerCatalogAuction extends Controller {
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
 			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
-		} elseif (!empty($auction_info) && is_file(DIR_IMAGE . $auction_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($auction_info['image'], 100, 100);
+		} elseif (!empty($auction_info) && is_file(DIR_IMAGE . $auction_info['main_image'])) {
+			$data['thumb'] = $this->model_tool_image->resize($auction_info['main_image'], 100, 100);
 		} else {
 			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 		}

@@ -1,8 +1,8 @@
 <h3><?php echo $heading_title; ?></h3>
-<div class="row product-layout">
+<div class="row">
   <?php foreach ($auctions as $auction) { ?>
-  <div class="auction-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="auction-thumb transition">
+  <div class="product-layout col-lg-6 col-md-3 col-sm-6 col-xs-12" id="auction-main-<?php echo $auction['auction_id']; ?>">
+    <div class="product-thumb transition">
       <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['title']; ?>" title="<?php echo $auction['title']; ?>" class="img-responsive" /></a></div>
       <div class="caption">
         <h3><a href="<?php echo $auction['href']; ?>"><?php echo $auction['title']; ?></a></h3>
@@ -19,21 +19,23 @@
           <?php } ?>
         </div>
         <?php } ?>
-        <?php if ($auction['price']) { ?>
         <p class="price">
-          <?php if (!$auction['special']) { ?>
-          <?php echo $auction['price']; ?>
-          <?php } else { ?>
-          <span class="price-new"><?php echo $auction['special']; ?></span> <span class="price-old"><?php echo $auction['price']; ?></span>
-          <?php } ?>
-          <?php if ($auction['tax']) { ?>
-          <span class="price-tax"><?php echo $text_tax; ?> <?php echo $auction['tax']; ?></span>
-          <?php } ?>
-        </p>
-        <?php } ?>
+              <?php if (!$auction['current_bid'] && !$auction['buy_now']) { ?>
+                <span class="price-new"><?php echo $text_please_login; ?></span>
+                <?php } else { ?>
+                  <?php if (!$auction['buy_now_only']) { ?>
+                    <?php if ($auction['want_buy_now']) { ?>
+                      <span class="price-new"><?php echo $text_buy_now; ?> <?php echo $auction['buy_now']; ?></span>
+                    <?php } ?>
+                    <span class="price-new"><?php echo $text_current_bid; ?></span> <span class="price-new"><?php echo $auction['current_bid']; ?></span>
+                  <?php } else { ?>
+                    <span class="price-new"><?php echo $text_buy_now_only; ?></span> <span class="price-new"><?php echo $auction['buy_now']; ?></span>
+                  <?php } ?>
+              <?php } ?>
+            </p>
       </div>
       <div class="button-group">
-        <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
+        <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_bid; ?></span></button>
         <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
         <button type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-exchange"></i></button>
       </div>

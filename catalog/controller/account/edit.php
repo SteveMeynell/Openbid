@@ -62,14 +62,15 @@ class ControllerAccountEdit extends Controller {
 		$data['text_additional'] = $this->language->get('text_additional');
 		$data['text_select'] = $this->language->get('text_select');
 		$data['text_loading'] = $this->language->get('text_loading');
+		$data['entry_customer_group'] = $this->language->get('entry_customer_group');
 
 		$data['entry_firstname'] = $this->language->get('entry_firstname');
 		$data['entry_lastname'] = $this->language->get('entry_lastname');
 		$data['entry_email'] = $this->language->get('entry_email');
 		$data['entry_telephone'] = $this->language->get('entry_telephone');
-		$data['entry_fax'] = $this->language->get('entry_fax');
+	
 
-		$data['button_continue'] = $this->language->get('button_continue');
+		$data['button_save'] = $this->language->get('button_save');
 		$data['button_back'] = $this->language->get('button_back');
 		$data['button_upload'] = $this->language->get('button_upload');
 
@@ -147,13 +148,29 @@ class ControllerAccountEdit extends Controller {
 			$data['telephone'] = '';
 		}
 
-		if (isset($this->request->post['fax'])) {
-			$data['fax'] = $this->request->post['fax'];
-		} elseif (!empty($customer_info)) {
-			$data['fax'] = $customer_info['fax'];
-		} else {
-			$data['fax'] = '';
+		$data['customer_groups'] = array();
+
+		if (is_array($this->config->get('config_customer_group_display'))) {
+			$this->load->model('account/customer_group');
+
+			$customer_groups = $this->model_account_customer_group->getCustomerGroups();
+
+			foreach ($customer_groups as $customer_group) {
+				if (in_array($customer_group['customer_group_id'], $this->config->get('config_customer_group_display'))) {
+					$data['customer_groups'][] = $customer_group;
+				}
+			}
 		}
+
+		if (isset($this->request->post['customer_group_id'])) {
+			$data['customer_group_id'] = $this->request->post['customer_group_id'];
+		} elseif (!empty($customer_info)) {
+			$data['customer_group_id'] = $customer_info['customer_group_id'];
+		} else {
+			$data['customer_group_id'] = '';
+		}
+debuglog($data['customer_group_id']);
+debuglog($this->customer->getAddressId());
 
 		// Custom Fields
 		$this->load->model('account/custom_field');
@@ -197,9 +214,12 @@ class ControllerAccountEdit extends Controller {
 			$this->error['warning'] = $this->language->get('error_exists');
 		}
 
+		/*
+
 		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
 			$this->error['telephone'] = $this->language->get('error_telephone');
 		}
+		*/
 
 		// Custom field validation
 		$this->load->model('account/custom_field');

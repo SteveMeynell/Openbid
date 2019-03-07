@@ -1,8 +1,8 @@
 <h3><?php echo $heading_title; ?></h3>
-<div class="row product-layout">
+<div class="row">
   <?php foreach ($auctions as $auction) { ?>
-  <div class="auction-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="auction-thumb transition">
+  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="product-thumb transition">
       <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['title']; ?>" title="<?php echo $auction['title']; ?>" class="img-responsive" /></a></div>
       <div class="caption">
         <h3><a href="<?php echo $auction['href']; ?>"><?php echo $auction['title']; ?></a></h3>

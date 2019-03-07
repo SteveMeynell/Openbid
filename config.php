@@ -9,6 +9,7 @@ define('HTTPS_SERVER', 'http://localhost/OpenBid/');
 define('DIR_APPLICATION', 'D:/xampp/htdocs/OpenBid/catalog/');
 define('DIR_SYSTEM', 'D:/xampp/htdocs/OpenBid/system/');
 define('DIR_IMAGE', 'D:/xampp/htdocs/OpenBid/image/');
+define('DIR_AUCTION_IMAGE', 'D:/xampp/htdocs/OpenBid/image/catalog/auctions/');
 define('DIR_LANGUAGE', 'D:/xampp/htdocs/OpenBid/catalog/language/');
 define('DIR_TEMPLATE', 'D:/xampp/htdocs/OpenBid/catalog/view/theme/');
 define('DIR_CONFIG', 'D:/xampp/htdocs/OpenBid/system/config/');

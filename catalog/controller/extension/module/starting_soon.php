@@ -1,5 +1,6 @@
 <?php
 class ControllerExtensionModuleStartingSoon extends Controller {
+
 	public function index($setting) {
 		$this->load->language('extension/module/starting_soon');
 
@@ -25,7 +26,7 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 
 		$data['auctions'] = array();
 
-
+//debuglog($setting);
 		$results = $this->model_catalog_auction->getStartingSoonAuctions($setting);
 
 		if ($results) {
@@ -33,8 +34,8 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 			
 			foreach ($results as $result) {
 				
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+				if ($result['main_image']) {
+					$image = $this->model_tool_image->resize($result['main_image'], $setting['width'], $setting['height']);
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
 				}
@@ -68,7 +69,9 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 				);
 			}
 
-			return $this->load->view('extension/module/starting_soon', $data);
+			
 		}
+		return $this->load->view('extension/module/starting_soon', $data);
 	}
+	
 }

@@ -4,9 +4,192 @@ class ModelCatalogAuction extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "auctions SET viewed = (viewed + 1) WHERE auction_id = '" . (int)$auction_id . "'");
 	}
 
+	/*
+	public function getAuctionRelist($auction_id){
+
+		debuglog("Model Catalog Auction getAuctionRelist");
+		$originalAuctionInfo = $this->db->query("
+								  SELECT DISTINCT * 
+								  FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
+								  ON (a.auction_id = ad2.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+								  ON (a.auction_id = a2s.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad1
+								  ON (a.auction_id = ad1.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_options ao
+									ON (a.auction_id = ao.auction_id) 
+									LEFT JOIN " . DB_PREFIX . "auction_to_layout a2l
+								  ON (a.auction_id = a2l.auction_id) 
+								  WHERE a.auction_id = '" . (int)$auction_id . "'
+								  AND ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
+									AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
+
+		
+									
+		$relistAuctionInfo = $this->db->query("
+									SELECT DISTINCT * 
+									FROM " . DB_PREFIX . "relist_link a 
+									LEFT JOIN " . DB_PREFIX . "auctions_relist a1 
+									ON (a.auction_id = a1.auction_id) 
+									LEFT JOIN " . DB_PREFIX . "auction_description_relist a2 
+									ON (a.auction_id = a2.auction_id) 
+									LEFT JOIN " . DB_PREFIX . "auction_details_relist a3 
+									ON (a.auction_id = a3.auction_id) 
+									LEFT JOIN " . DB_PREFIX . "auction_options_relist a4 
+									ON (a.auction_id = a4.auction_id) 
+									WHERE a.auction_id = " . $auction_id);
+
+									
+		$auctionInfo = array(
+			'original'	=> $originalAuctionInfo->row,
+			'relisting'	=> $relistAuctionInfo->row
+		);
+
+		//category
+		$auctionInfo['original']['auction_category'] = array();
+		$auctionInfo['relisting']['auction_category'] = array();
+		$originalCategories = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "auction_to_category WHERE auction_id = '" . (int)$auction_id . "'")->rows;
+		$relistCategories = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "auction_to_category_relist WHERE auction_id = '" . (int)$auction_id . "'")->rows;
+		foreach($originalCategories as $originalCategory) {
+			array_push($auctionInfo['original']['auction_category'],$originalCategory['category_id']);
+		}
+		foreach($relistCategories as $relistCategory) {
+			array_push($auctionInfo['relisting']['auction_category'],$relistCategory['category_id']);
+		}
+		
+		// photos
+		$auctionInfo['original']['auction_photos'] = array();
+		$auctionInfo['relisting']['auction_photos'] = array();
+		$originalPhotos = $this->db->query("SELECT image FROM " . DB_PREFIX . "auction_photos WHERE auction_id = '" . (int)$auction_id . "'")->rows;
+		$relistPhotos = $this->db->query("SELECT image FROM " . DB_PREFIX . "auction_photos_relist WHERE auction_id = '" . (int)$auction_id . "'")->rows;
+		foreach($originalPhotos as $originalPhoto) {
+			array_push($auctionInfo['original']['auction_photos'],$originalPhoto['image']);
+		}
+		foreach($relistPhotos as $relistPhoto) {
+			array_push($auctionInfo['relisting']['auction_photos'],$relistPhoto['image']);
+		}
+
+		$currenttime = $this->db->query("SELECT NOW() as currenttime")->row['currenttime'];
+            
+    $data = array();
+                
+    $data['seller_id']							=   $auctionInfo['original']['customer_id'];
+    $data['auction_type']						=   (is_null($auctionInfo['relisting']['auction_type']))?$auctionInfo['original']['auction_type']:$auctionInfo['relisting']['auction_type'];
+    $data['auction_status']					=  '1';
+		$data['num_relist']							=  $auctionInfo['relisting']['relist'];
+		$data['relist']									= $auctionInfo['original']['relist'];
+    $data['date_created']						=  $currenttime;
+    $data['main_image']           	=  (is_null($auctionInfo['relisting']['main_image']))?$auctionInfo['original']['main_image']:$auctionInfo['relisting']['main_image'];
+            
+    $NumHours = '1'; // Will add this as a setting
+
+    $newStartDates = date_add(date_create($data['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
+		$data['custom_start_date']			=	(is_null($auctionInfo['relisting']['start_date']))?$newStartDates->format('Y-m-d H:i:s'):$auctionInfo['relisting']['start_date'];;
+    $numDays = (is_null($auctionInfo['relisting']['duration']))?$auctionInfo['original']['duration']:$auctionInfo['relisting']['duration'];
+    if($numDays == '0'){
+    	$numDays = '1';
+     }
+     $data['duration']   						=   $numDays;
+		$newEndDate = date_add($newStartDates,date_interval_create_from_date_string($numDays . ' days'));
+//$data['dummy'] =  (is_null($auctionInfo['relisting']['dummy']))?$auctionInfo['original']['dummy']:$auctionInfo['relisting']['dummy'];
+    $data['custom_end_date']				= $newEndDate->format('Y-m-d H:i:s');
+            
+    $data['min_bid']             		=  (is_null($auctionInfo['relisting']['min_bid']))?$auctionInfo['original']['min_bid']:$auctionInfo['relisting']['min_bid'];
+    $data['shipping_cost']        	=  (is_null($auctionInfo['relisting']['shipping_cost']))?$auctionInfo['original']['shipping_cost']:$auctionInfo['relisting']['shipping_cost'];
+    $data['additional_shipping']  	=  (is_null($auctionInfo['relisting']['additional_shipping']))?$auctionInfo['original']['additional_shipping']:$auctionInfo['relisting']['additional_shipping'];
+    $data['reserve_price']        	=  (is_null($auctionInfo['relisting']['reserve_price']))?$auctionInfo['original']['reserve_price']:$auctionInfo['relisting']['reserve_price'];
+    $data['increment']            	=  (is_null($auctionInfo['relisting']['increment']))?$auctionInfo['original']['increment']:$auctionInfo['relisting']['increment'];
+    $data['shipping']             	=  (is_null($auctionInfo['relisting']['shipping']))?$auctionInfo['original']['shipping']:$auctionInfo['relisting']['shipping'];
+    $data['international_shipping']	=  (is_null($auctionInfo['relisting']['international_shipping']))?$auctionInfo['original']['international_shipping']:$auctionInfo['relisting']['international_shipping'];
+    $data['initial_quantity']       =  (is_null($auctionInfo['relisting']['initial_quantity']))?$auctionInfo['original']['initial_quantity']:$auctionInfo['relisting']['initial_quantity'];
+    $data['buy_now_price']          =  (is_null($auctionInfo['relisting']['buy_now_price']))?$auctionInfo['original']['buy_now_price']:$auctionInfo['relisting']['buy_now_price'];
+    $data['bolded_item']            =  (is_null($auctionInfo['relisting']['bolded_item']))?$auctionInfo['original']['bolded_item']:$auctionInfo['relisting']['bolded_item'];
+    $data['featured']								=  (is_null($auctionInfo['relisting']['featured']))?$auctionInfo['original']['featured']:$auctionInfo['relisting']['featured'];
+    $data['highlighted']            =  (is_null($auctionInfo['relisting']['highlighted']))?$auctionInfo['original']['highlighted']:$auctionInfo['relisting']['highlighted'];
+    $data['slideshow']             	=  (is_null($auctionInfo['relisting']['slideshow']))?$auctionInfo['original']['slideshow']:$auctionInfo['relisting']['slideshow'];
+    $data['social_media']           =  (is_null($auctionInfo['relisting']['social_media']))?$auctionInfo['original']['social_media']:$auctionInfo['relisting']['social_media'];
+    $data['auto_relist']            =  (is_null($auctionInfo['relisting']['auto_relist']))?$auctionInfo['original']['auto_relist']:$auctionInfo['relisting']['auto_relist'];
+    $data['on_carousel']            =  (is_null($auctionInfo['relisting']['on_carousel']))?$auctionInfo['original']['on_carousel']:$auctionInfo['relisting']['on_carousel'];
+    $data['buy_now_only']           =  (is_null($auctionInfo['relisting']['buy_now_only']))?$auctionInfo['original']['buy_now_only']:$auctionInfo['relisting']['buy_now_only'];
+
+            
+		$Title          =   (is_null($auctionInfo['relisting']['title']))?$auctionInfo['original']['title']:$auctionInfo['relisting']['title'];
+		$data['title']	=		$Title;
+		$Subtitle				=	(is_null($auctionInfo['relisting']['subtitle']))?$auctionInfo['original']['subtitle']:$auctionInfo['relisting']['subtitle'];
+    $newDescription	=	(is_null($auctionInfo['relisting']['description']))?$auctionInfo['original']['description']:$auctionInfo['relisting']['description'];
+    $newLanguageId  =   (is_null($auctionInfo['relisting']['language_id']))?$auctionInfo['original']['language_id']:$auctionInfo['relisting']['language_id'];
+    $newTags      	=   (is_null($auctionInfo['relisting']['tag']))?$auctionInfo['original']['tag']:$auctionInfo['relisting']['tag'];
+
+    $seader = $Title . ' ' . (null !== $Subtitle ? $Subtitle .' ': '') . $newDescription;
+		$keywords = make_keywords($seader);
+		$addon_keywords = 'For sale ' . $Title . ', Auctioning ' . $Title .', ';
+						
+		$data['auction_description'][$newLanguageId]	=	array(
+				'name' => $Title,
+				'subname' => $Subtitle,
+				'description' => $newDescription,
+				'tag' => $newTags,
+				'meta_title' => 'Auctioning ' . $Title,
+				'meta_description' => strip_tags($newDescription),
+				'meta_keyword' => $addon_keywords . $keywords
+		);
+
+    $data['auction_store'][]				=   '0';
+    $data['auction_layout'][]				=   '0';
+		$data['auction_category']				=	$auctionInfo['original']['auction_category'];
+
+    //debuglog("Catalog Data: ");
+		//debuglog($auctionInfo);
+						
+		return $data;
+
+	}
+*/
+
 	public function getAuction($auction_id) {
+		$sql = "SELECT DISTINCT *,
+		ad1.duration AS duration,
+		ad1.start_date AS start_date,
+		ad1.end_date AS end_date,
+		ad1.min_bid AS min_bid,
+		ad1.shipping_cost AS shipping_cost,
+		ad1.additional_shipping AS additional_shipping,
+		ad1.reserve_price AS reserve_price,
+		ad1.buy_now_price AS buy_now_price,
+		ad1.min_bid AS min_bid,
+		ad1.quantity AS quantity,
+		ad1.shipping AS shipping_allowed,
+		ad1.international_shipping AS international_allowed,
+		ad2.name AS name,
+		ad2.subname AS subname,
+		ad2.description AS description,
+		ad2.tag AS tag,
+		ao.buy_now_only AS buy_now_only,
+		ao.featured AS featured,
+		ao.on_carousel AS on_carousel,
+		ao.slideshow AS slideshow,
+		ao.bolded_item AS bolded_item,
+		ao.social_media AS social_media,
+		ao.highlighted AS highlighted, 
+		ao.auto_relist AS auto_relist
+		FROM " . DB_PREFIX . "auctions a
+		LEFT JOIN " . DB_PREFIX . "auction_description ad2
+		ON (a.auction_id = ad2.auction_id)
+		LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+		ON (a.auction_id = a2s.auction_id)
+		LEFT JOIN " . DB_PREFIX . "auction_details ad1
+		ON (a.auction_id = ad1.auction_id)
+		LEFT JOIN " . DB_PREFIX . "auction_options ao
+		ON (a.auction_id = ao.auction_id) 
+		WHERE a.auction_id = '" . (int)$auction_id . "'
+		AND ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
+		AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+
+
 		$query = $this->db->query("
-								  SELECT DISTINCT *,
+									SELECT DISTINCT *,
+									ad1.duration AS duration,
 								  ad1.start_date AS start_date,
 								  ad1.end_date AS end_date,
 								  ad1.min_bid AS min_bid,
@@ -22,9 +205,14 @@ class ModelCatalogAuction extends Model {
 								  ad2.subname AS subname,
 								  ad2.description AS description,
 								  ad2.tag AS tag,
-								  ao.buy_now_only AS buy_now_only,
-								  ao.bolded_item AS bolded_item,
-								  ao.highlighted AS highlighted
+									ao.buy_now_only AS buy_now_only,
+									ao.featured AS featured,
+									ao.on_carousel AS on_carousel,
+									ao.slideshow AS slideshow,
+									ao.bolded_item AS bolded_item,
+									ao.social_media AS social_media,
+									ao.highlighted AS highlighted, 
+									ao.auto_relist AS auto_relist
 								  FROM " . DB_PREFIX . "auctions a
 								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
 								  ON (a.auction_id = ad2.auction_id)
@@ -42,13 +230,16 @@ class ModelCatalogAuction extends Model {
 			return array(
 				'auction_id'       => $query->row['auction_id'],
 				'name'             => $query->row['name'],
+				'subname'             => $query->row['subname'],
 				'description'      => $query->row['description'],
 				'meta_title'       => $query->row['meta_title'],
 				'meta_description' => $query->row['meta_description'],
 				'meta_keyword'     => $query->row['meta_keyword'],
 				'tag'              => $query->row['tag'],
 				'quantity'         => $query->row['quantity'],
-				'image'            => $query->row['image'],
+				'duration'         => $query->row['duration'],
+				'num_relist'				=> $query->row['num_relist'],
+				'main_image'            => $query->row['main_image'],
 				'start_date'		=> $query->row['start_date'],
 				'reserve_price'          => $query->row['reserve_price'],
 				'end_date'       => $query->row['end_date'],
@@ -56,7 +247,12 @@ class ModelCatalogAuction extends Model {
 				'min_bid'		=> $query->row['min_bid'],
 				'buy_now_only'		=> $query->row['buy_now_only'],
 				'bolded'		=> $query->row['bolded_item'],
+				'featured'		=> $query->row['featured'],
+				'on_carousel'		=> $query->row['on_carousel'],
+				'slideshow'		=> $query->row['slideshow'],
 				'highlighted'		=> $query->row['highlighted'],
+				'social_media'		=> $query->row['social_media'], 
+				'auto_relist'			=> $query->row['auto_relist'],
 				'rating'			=> '4',
 				'reviews'			=> '',
 				'viewed'           => $query->row['viewed']
@@ -68,7 +264,7 @@ class ModelCatalogAuction extends Model {
 
 	public function getAuctions($data = array()) {
 		$sql = "
-		SELECT a.auction_id, a.customer_id, a.auction_type, a.status, a.image, a.viewed, 
+		SELECT a.auction_id, a.customer_id, a.auction_type, a.status, a.main_image AS image, a.viewed, 
 		ad1.start_date AS start_date,
 		ad1.end_date AS end_date,
 		ad1.min_bid AS min_bid,
@@ -223,7 +419,7 @@ class ModelCatalogAuction extends Model {
 		c.firstname as seller, 
 		a.num_bids as num_bids, 
 		a.winning_bid as winning_bid, 
-		a.image as main_image, 
+		a.main_image as main_image, 
 		a.viewed as views,
 		ad.language_id as language_id, 
 		ad.name as title, 
@@ -250,7 +446,7 @@ class ModelCatalogAuction extends Model {
 		c.firstname as seller, 
 		a.num_bids as num_bids, 
 		a.winning_bid as winning_bid, 
-		a.image as main_image, 
+		a.main_image as main_image, 
 		a.viewed as views,
 		ad.language_id as language_id, 
 		ad.name as title, 
@@ -274,17 +470,12 @@ class ModelCatalogAuction extends Model {
 
 		$sql .= $where . $orderBy;
 		$query = $this->db->query($sql);
-		//debuglog($query);
-
 
 		return $query->rows;
-
 	}
 
 
 	public function getLatestAuctions($limit) {
-		//$auction_data = $this->cache->get('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
-
 		$auction_data = array();
 			$query = $this->db->query("SELECT a.auction_id FROM " . DB_PREFIX . "auctions a
 									  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id)
@@ -298,16 +489,10 @@ class ModelCatalogAuction extends Model {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
 			}
 
-			//$this->cache->set('auction.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
-		
-
 		return $auction_data;
 	}
 
 	public function getTopSellers($limit){
-		//$auction_data = $this->cache->get('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
-		
-
 			$auction_data = array();
 			
 			$query = $this->db->query("SELECT COUNT(a.auction_id) AS count, a.customer_id AS customer 
@@ -320,18 +505,12 @@ class ModelCatalogAuction extends Model {
 			foreach ($query->rows as $result) {
 				$auction_data[$result['customer']] = $result['count'];
 			}
-			
-			//$this->cache->set('auction.top_sellers.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
-		
 		
 		return $auction_data;
 	}
 	
 	
 	public function getMostViewedAuctions($limit) {
-		//$auction_data = $this->cache->get('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
-
-
 			$auction_data = array();
 
 			$query = $this->db->query("SELECT a.auction_id, a.viewed AS viewed
@@ -349,10 +528,6 @@ class ModelCatalogAuction extends Model {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
 			}
 
-			//$this->cache->set('auction.most_viewed.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $auction_data);
-		
-		
-
 		return $auction_data;
 	}
 	
@@ -360,8 +535,6 @@ class ModelCatalogAuction extends Model {
 		$limit = $settings['limit'];
 		$starting_when = $settings['starting_when'];
 		$length = $settings['length'];
-		
-		//$auction_data = $this->cache->get('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit);
 		
 			$auction_data = array();
 			
@@ -397,17 +570,12 @@ class ModelCatalogAuction extends Model {
 			$sql .= $timeframe;
 			$sql .= $others;
 			
-
 			$query = $this->db->query($sql);
 
 			foreach ($query->rows as $result) {
-				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
+				$auction_data[$result['auction_id']] = $this->model_catalog_auction->getAuction($result['auction_id']);
 			}
 
-			//$this->cache->set('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit, $auction_data);
-		
-		
-//debuglog($auction_data);
 		return $auction_data;
 		
 	}
@@ -416,8 +584,6 @@ class ModelCatalogAuction extends Model {
 		$limit = $settings['limit'];
 		$ending_when = $settings['ending_when'];
 		$length = $settings['length'];
-		
-		//$auction_data = $this->cache->get('auction.ending_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$ending_when . (int)$length . (int)$limit);
 		
 			$auction_data = array();
 			
@@ -448,19 +614,13 @@ class ModelCatalogAuction extends Model {
 			$sql .= $timeframe;
 			$sql .= $others;
 			
-//debuglog($sql);
+	
 			$query = $this->db->query($sql);
-			
-			
 
 			foreach ($query->rows as $result) {
 				$auction_data[$result['auction_id']] = $this->getAuction($result['auction_id']);
 			}
 
-			//$this->cache->set('auction.starting_soon.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$starting_when . (int)$length . (int)$limit, $auction_data);
-		
-		
-//debuglog($auction_data);
 		return $auction_data;
 		
 	}
@@ -580,7 +740,7 @@ class ModelCatalogAuction extends Model {
 			
 			$sql .= ")";
 		}
-		//debuglog($sql);
+
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];
@@ -602,7 +762,7 @@ class ModelCatalogAuction extends Model {
 			case '3':
 			case '4':
 			default:
-				$sql = "SELECT a.auction_id AS auction_id, a.image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description
+				$sql = "SELECT a.auction_id AS auction_id, a.main_image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description
 				FROM " . DB_PREFIX . "auctions a
 				LEFT JOIN " . DB_PREFIX . "auction_details ad1
 				ON (a.auction_id = ad1.auction_id)
@@ -637,7 +797,7 @@ class ModelCatalogAuction extends Model {
 		public function getFeaturedAuctions($settings){
 		$auctions = array();
 		
-		$sql = "SELECT a.auction_id AS auction_id, a.image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description, ad1.reserve_price AS reserve_price 
+		$sql = "SELECT a.auction_id AS auction_id, a.main_image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description, ad1.reserve_price AS reserve_price, ao.buy_now_only, a.viewed, ad1.end_date, ad1.buy_now_price 
 				FROM " . DB_PREFIX . "auctions a
 				LEFT JOIN " . DB_PREFIX . "auction_details ad1
 				ON (a.auction_id = ad1.auction_id)
@@ -664,5 +824,7 @@ class ModelCatalogAuction extends Model {
 		return $auctions;
 	}
 	
+	
+
 	// End of Model
 }

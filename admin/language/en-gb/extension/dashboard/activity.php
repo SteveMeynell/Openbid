@@ -15,10 +15,17 @@ $_['text_customer_reset']          = '<a href="customer_id=%d">%s</a> reset thei
 $_['text_customer_login']          = '<a href="customer_id=%d">%s</a> logged in.';
 $_['text_customer_password']       = '<a href="customer_id=%d">%s</a> updated their account password.';
 $_['text_customer_register']       = '<a href="customer_id=%d">%s</a> registered a new account.';
+$_['text_customer_verify']       = '<a href="customer_id=%d">%s</a> verified their email address.';
+$_['text_customer_confirmation']       = '<a href="customer_id=%d">%s</a> resent a verification their email address.';
 $_['text_customer_return_account'] = '<a href="customer_id=%d">%s</a> submitted a product <a href="return_id=%d">return</a>.';
 $_['text_customer_return_guest']   = '%s submitted a product <a href="return_id=%d">return</a>.';
 $_['text_customer_order_account']  = '<a href="customer_id=%d">%s</a> added a <a href="order_id=%d">new order</a>.';
-$_['text_customer_order_guest']    = '%s created a <a href="order_id=%d">new order</a>.';
+$_['text_customer_new_auction']    = '<a href="customer_id=%d">%s</a> created a new <a href="auction_id=%d">auction</a>.';
+$_['text_customer_auction_edit']    = '<a href="customer_id=%d">%s</a> edited their <a href="auction_id=%d"> auction</a>.';
+$_['text_customer_winning_bidder']          = '<a href="customer_id=%d">%s</a> Winning Bidder.';
+$_['text_customer_place_bid']          = '<a href="customer_id=%d">%s</a> is bidding.';
+$_['text_customer_proxy_bidder']          = '<a href="customer_id=%d">%s</a> placed a proxy bid.';
+$_['text_customer_selling']          = '<a href="customer_id=%d">%s</a> created an auction.';
 $_['text_affiliate_edit']          = '<a href="affiliate_id=%d">%s</a> updated their account details.';
 $_['text_affiliate_forgotten']     = '<a href="affiliate_id=%d">%s</a> has requested a new password.';
 $_['text_affiliate_login']         = '<a href="affiliate_id=%d">%s</a> logged in.';

@@ -38,6 +38,9 @@
       <div class="buttons clearfix">
         <div class="pull-left"><a href="<?php echo $back; ?>" class="btn btn-default"><?php echo $button_back; ?></a></div>
         <div class="pull-right"><a href="<?php echo $add; ?>" class="btn btn-primary"><?php echo $button_new_address; ?></a></div>
+        <?php if ($canSwitch) { ?>
+          <div class="pull-right"><button type="button" class="btn btn-success" id="switch2seller"><?php echo $button_switch2seller; ?></button></div>
+        <?php } ?>
       </div>
       <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>

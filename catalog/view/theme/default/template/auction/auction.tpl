@@ -20,7 +20,7 @@
         <?php } else { ?>
         <?php $class = 'col-sm-8'; ?>
         <?php } ?>
-        <div class="<?php echo $class; ?>">
+        <div class="<?php echo $class; ?> auction-main">
           <?php if ($thumb || $images) { ?>
           <ul class="thumbnails">
             <?php if ($thumb) { ?>
@@ -107,10 +107,16 @@
             <h2><span class="price-new"><?php echo $text_please_login; ?></span></h2>
           <?php } else { ?>
             <?php if (!$buy_now_only) { ?>
-              <h2><span class="price-new"><?php echo $text_buy_now; ?> <?php echo $buy_now; ?></span></h2>
+              <?php if ($want_buy_now) { ?>
+                <h2><span class="price-new"><?php echo $text_buy_now; ?> <?php echo $buy_now; ?></span></h2>
+              <?php } ?>
               <?php if ($reserve_bid) {
-                if ($reserve_bid_amount <= $current_bid_amount) { ?>
-                  <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserved_bid_met; ?></span></h2>
+                if ($reserve_bid_amount <= $current_bid_amount) { 
+                  if ($reserve_bid_amount == '0') { ?>
+                    <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_no_reserved_bid; ?></span></h2>
+                  <?php } else { ?>
+                    <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $text_reserved_bid_met; ?></span></h2>
+                  <?php } ?>
                 <?php } else { ?>
                   <h2><span class="price-new"><?php echo $text_reserved_bid; ?> <?php echo $reserve_bid; ?></span></h2>
                 <?php }} ?>
@@ -119,7 +125,9 @@
                 <?php if ($can_bid == 'yes'){ ?>
                   <div class="btn-group">
                     <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction_id; ?>');"><i class="fa fa-heart"></i></button>
-                    <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>" ><i class="fa fa-gavel"></i></button>
+                    <?php if ($want_buy_now) { ?>
+                      <button type="button" id="BuyNowButton" data-toggle="tooltip" class="btn btn-success" title="<?php echo $button_buynow; ?>" ><i class="fa fa-gavel"></i></button>
+                    <?php } ?>
                     <button type="button" id="PlaceBidButton" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-gavel"></i></button>
                     <label>Next Minimum Bid</label>
                     <input type="text"class="auction price-new" id="proxy_amount" name="proxy_amount" placeholder="<?php echo $next_bid_text; ?>" data-toggle="tooltip" title="Anything higher than the minimum bid will be placed in proxy."></>
@@ -261,7 +269,8 @@ $(document).ready(function() {
 		dataType: 'json',
     data: {auction_id: '<?php echo $auction_id; ?>', min_bid: '<?php echo $min_bid; ?>'},
     success: function(json){
-      if(json['bids'].length){
+      //console.log(json['bids'].length);
+      if(json['bids'][0]){
         $("#proxy_amount").val("");
         for(i=json['bids'].length-1;i>=0;i--) {
           $("#bidHistory").append('<tr id="bidRow" class="bidRow"><td class="text-center" id="bidInfo">' + (i+1) +'</td><td class="text-center" id="bidAmount">' + json['bids'][i] + '</td></tr>');  

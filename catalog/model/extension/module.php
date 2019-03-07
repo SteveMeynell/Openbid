@@ -19,4 +19,19 @@ class ModelExtensionModule extends Model {
 			return array();	
 		}
 	}		
+
+	public function isModuleUsed ($code) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "module WHERE code = '" . $code . "'");
+
+		if ($query->row) {
+			$status = json_decode($query->row['setting'], true);
+			if ($status['status']) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }

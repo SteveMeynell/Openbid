@@ -9,7 +9,7 @@ $_['text_edit_address']    = 'Edit Address';
 $_['text_add']             = 'Your address has been successfully inserted';
 $_['text_edit']            = 'Your address has been successfully updated';
 $_['text_delete']          = 'Your address has been successfully deleted';
-$_['text_empty']           = 'You have no addresses in your account.';
+$_['text_empty']           = 'You have no addresses in your account.  You must register an address to become a seller.';
 
 // Entry
 $_['entry_firstname']      = 'First Name';
@@ -22,6 +22,7 @@ $_['entry_city']           = 'City';
 $_['entry_country']        = 'Country';
 $_['entry_zone']           = 'Region / State';
 $_['entry_default']        = 'Default Address';
+$_['entry_become_seller']   = 'Become Seller';
 
 // Error
 $_['error_delete']                = 'Warning: You must have at least one address!';

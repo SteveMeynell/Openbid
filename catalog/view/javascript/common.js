@@ -50,12 +50,59 @@ $(document).ready(function() {
 		$('#form-language').submit();
 	});
 
-	/* Sell something */
+	/* Sell something button*/
 	$('#sell_something').on('click', function(){
 		var url = $('base').attr('href') + 'index.php?route=auction/selling';
 		location = url;
 	});
 	
+	/* Login Button*/
+	$('#login_please').on('click', function(){
+		var url = $('base').attr('href') + 'index.php?route=account/login';
+		location = url;
+	});
+
+	/* Become a Seller Button*/
+	$('#become_seller').on('click', function(){
+		var url = $('base').attr('href') + 'index.php?route=account/address';
+		location = url;
+	});
+
+	/* Switch to Seller Button*/
+	$('#switch2seller').on('click', function(){
+		//var url = $('base').attr('href') + 'index.php?route=account/address';
+		//location = url;
+
+		$.ajax({
+			url: 'index.php?route=account/address/switch2Seller',
+			type: 'post',
+			data: '',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#switch2seller > button').button('loading');
+			},
+			complete: function() {
+				$('#switch2seller > button').button('reset');
+			},
+			success: function(json) {
+				$('.alert, .text-danger').remove();
+
+				if (json['redirect']) {
+					location = json['redirect'];
+				}
+
+				if (json['success']) {
+					console.log("success");
+
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+
+	});
+
 	/* Search */
 	$('#search input[name=\'search\']').parent().find('button').on('click', function() {
 		var url = $('base').attr('href') + 'index.php?route=auction/search';

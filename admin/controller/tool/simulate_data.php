@@ -63,16 +63,17 @@ class ControllerToolSimulateData extends Controller {
 																  'meta_description' => strip_tags($newAuction['description']),
 																  'meta_keyword' => $addon_keywords . $keywords
 																 );
-						$NumHours = rand(2,24);
+						$NumHours = rand(1,2);
 						$newStartDates = date_add(date_create($newData['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
 						$newData['custom_start_date']		=	$newStartDates->format('Y-m-d H:i:s');
 						$numDays = rand(1,5);
-						$end_date = date_add($newStartDates,date_interval_create_from_date_string($numDays . ' days'));
+						$endingHours = rand(1,6);
+						$end_date = date_add($newStartDates,date_interval_create_from_date_string($endingHours . ' hours'));
 						
 						$imgnum = rand(1,25);
 						$testimage = 'catalog/auctions/IMG_' . $imgnum . '.JPG';
 						
-						$newData['image'] = $testimage;
+						$newData['main_image'] = $testimage;
 						//date_add($end_date,date_interval_create_from_date_string('1 days'));
 						$newData['custom_end_date']		= $end_date->format('Y-m-d H:i:s');
 						$newData['duration']		=	$numDays;

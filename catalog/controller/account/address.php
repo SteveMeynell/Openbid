@@ -25,6 +25,8 @@ class ControllerAccountAddress extends Controller {
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
 
+		
+
 		$this->load->language('account/address');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -35,7 +37,12 @@ class ControllerAccountAddress extends Controller {
 
 		$this->load->model('account/address');
 
+		
+
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			
+			debuglog($this->request->post['sellerWish']);
+
 			$this->model_account_address->addAddress($this->request->post);
 			
 			$this->session->data['success'] = $this->language->get('text_add');
@@ -76,6 +83,7 @@ class ControllerAccountAddress extends Controller {
 		$this->load->model('account/address');
 		
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+
 			$this->model_account_address->editAddress($this->request->get['address_id'], $this->request->post);
 
 			// Default Shipping Address
@@ -189,6 +197,7 @@ class ControllerAccountAddress extends Controller {
 		$data['button_edit'] = $this->language->get('button_edit');
 		$data['button_delete'] = $this->language->get('button_delete');
 		$data['button_back'] = $this->language->get('button_back');
+		$data['button_switch2seller'] = $this->language->get('button_switch2seller');
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -249,8 +258,14 @@ class ControllerAccountAddress extends Controller {
 			);
 		}
 
+		if ($this->customer->getGroupId() == '1' && $this->customer->getAddressId()) {
+			$data['canSwitch'] = true;
+		} else {
+			$data['canSwitch'] = false;
+		}
 		$data['add'] = $this->url->link('account/address/add', '', true);
 		$data['back'] = $this->url->link('account/account', '', true);
+		
 
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
@@ -262,7 +277,11 @@ class ControllerAccountAddress extends Controller {
 		$this->response->setOutput($this->load->view('account/address_list', $data));
 	}
 
+
+
+
 	protected function getForm() {
+	
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -304,6 +323,7 @@ class ControllerAccountAddress extends Controller {
 		$data['entry_firstname'] = $this->language->get('entry_firstname');
 		$data['entry_lastname'] = $this->language->get('entry_lastname');
 		$data['entry_company'] = $this->language->get('entry_company');
+		
 		$data['entry_address_1'] = $this->language->get('entry_address_1');
 		$data['entry_address_2'] = $this->language->get('entry_address_2');
 		$data['entry_postcode'] = $this->language->get('entry_postcode');
@@ -311,7 +331,9 @@ class ControllerAccountAddress extends Controller {
 		$data['entry_country'] = $this->language->get('entry_country');
 		$data['entry_zone'] = $this->language->get('entry_zone');
 		$data['entry_default'] = $this->language->get('entry_default');
+		$data['entry_become_seller'] = $this->language->get('entry_become_seller');
 
+		
 		$data['button_continue'] = $this->language->get('button_continue');
 		$data['button_back'] = $this->language->get('button_back');
 		$data['button_upload'] = $this->language->get('button_upload');
@@ -379,7 +401,7 @@ class ControllerAccountAddress extends Controller {
 		} elseif (!empty($address_info)) {
 			$data['firstname'] = $address_info['firstname'];
 		} else {
-			$data['firstname'] = '';
+			$data['firstname'] = $this->customer->getFirstName();
 		}
 
 		if (isset($this->request->post['lastname'])) {
@@ -387,7 +409,7 @@ class ControllerAccountAddress extends Controller {
 		} elseif (!empty($address_info)) {
 			$data['lastname'] = $address_info['lastname'];
 		} else {
-			$data['lastname'] = '';
+			$data['lastname'] = $this->customer->getLastName();
 		}
 
 		if (isset($this->request->post['company'])) {
@@ -544,4 +566,42 @@ class ControllerAccountAddress extends Controller {
 
 		return !$this->error;
 	}
+
+	public function switch2Seller(){
+
+		$json = array();
+
+		$this->load->model('account/customer_group');
+		$this->load->model('account/customer');
+
+		$toGroupInfo = $this->model_account_customer_group->getCustomerGroup('3');
+		// email shouldn't have to be reconfirmed but authorizing should.
+		$newGroupInfo = array(
+			'group'		=> '3',
+			'switchAuthorization'	=>	!$toGroupInfo['approval']
+		);
+		
+		$this->model_account_customer->editCustomerGroupId($newGroupInfo);
+
+		$json['redirect'] = $this->url->link('account/logout', '', true);
+		// send mail and add to the activity table steve
+		$this->load->language('mail/verify');
+
+		// Add to activity log
+		if ($this->config->get('config_customer_activity')) {
+			$this->load->model('account/activity');
+
+			$activity_data = array(
+				'customer_id' => $this->customer->getId(),
+				'name'        => $this->customer->getFirstName() . ' ' . $this->customer->getLastName()
+			);
+
+			$this->model_account_activity->addActivity('switched', $activity_data);
+		}
+
+		$json['success'] = true;
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+	// end of controller
 }

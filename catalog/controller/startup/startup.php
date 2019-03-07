@@ -105,6 +105,8 @@ class ControllerStartupStartup extends Controller {
 		// Set the config language_id
 		$this->config->set('config_language_id', $languages[$code]['language_id']);	
 
+		
+
 		// Customer
 		$customer = new Cart\Customer($this->registry);
 		$this->registry->set('customer', $customer);
@@ -186,12 +188,18 @@ class ControllerStartupStartup extends Controller {
 		
 		// Encryption
 		$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
-		
+
 		// Auction Updates
-		$this->load->model('auction/auction');
-		$relisted_auctions = $this->model_auction_auction->relistClosingAuctions();
-		$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
-		$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
+		//$this->load->model('auction/auction');
+		//debuglog("From startup");
+		//$relisted_auctions = $this->model_auction_auction->relistClosingAuctions();
+		//debuglog("relisting");
+		//debuglog($relisted_auctions);
+		//$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
+		//debuglog("From Startup");
+		//$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
+		//debuglog("opening");
+		//debuglog($opened_auctions);
 		/*if ($effected_auctions['closed']) {
 			debuglog("Closed Auctions");
 			debuglog($effected_auctions['closed']);

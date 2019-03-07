@@ -11,6 +11,7 @@ define('HTTPS_CATALOG', 'http://localhost/OpenBid/');
 define('DIR_APPLICATION', 'D:/xampp/htdocs/OpenBid/admin/');
 define('DIR_SYSTEM', 'D:/xampp/htdocs/OpenBid/system/');
 define('DIR_IMAGE', 'D:/xampp/htdocs/OpenBid/image/');
+define('DIR_TRASH', DIR_IMAGE . 'trash/');
 define('DIR_LANGUAGE', 'D:/xampp/htdocs/OpenBid/admin/language/');
 define('DIR_TEMPLATE', 'D:/xampp/htdocs/OpenBid/admin/view/template/');
 define('DIR_CONFIG', 'D:/xampp/htdocs/OpenBid/system/config/');

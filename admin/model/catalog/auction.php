@@ -194,15 +194,15 @@ class ModelCatalogAuction extends Model {
 
 		$auction_id = $this->db->getLastId();
 
-		if (isset($data['image'])) {
+		if (isset($data['main_image'])) {
 			$this->db->query("UPDATE " . DB_PREFIX . "auctions
 							 SET
-							 image = '" . $this->db->escape($data['image']) . "'
+							 main_image = '" . $this->db->escape($data['main_image']) . "'
 							 WHERE auction_id = '" . (int)$auction_id . "'");
 		} else {
 			$this->db->query("UPDATE " . DB_PREFIX . "auctions
 							 SET
-							 image = 'catalog/Folder.jpg'
+							 main_image = 'catalog/Folder.jpg'
 							 WHERE
 							 auction_id = '" . (int)$data['auction_id'] . "'");
 		}
@@ -324,7 +324,7 @@ class ModelCatalogAuction extends Model {
 			if (!empty($data['image'])) {
 				$this->db->query("UPDATE " . DB_PREFIX . "auctions
 								 SET
-								 image = '" . $this->db->escape($data['image']) . "'
+								 main_image = '" . $this->db->escape($data['image']) . "'
 								 WHERE
 								 auction_id = '" . (int)$data['auction_id'] . "'");
 			} else {
@@ -332,7 +332,7 @@ class ModelCatalogAuction extends Model {
 				$testimage = 'catalog/auctions/IMG_' . $imgnum . '.JPG';
 				$this->db->query("UPDATE " . DB_PREFIX . "auctions
 								 SET
-								 image = '" . $testimage . "'
+								 main_image = '" . $testimage . "'
 								 WHERE
 								 auction_id = '" . (int)$data['auction_id'] . "'");
 			}
@@ -496,7 +496,8 @@ class ModelCatalogAuction extends Model {
 		}
 	}
 
-	public function deleteAuction($auction_id) {
+	public function deleteAuction($auctionId) {
+		$auction_id = $this->db->escape($auctionId);
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auctions WHERE auction_id = '" . (int)$auction_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . (int)$auction_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "auction_description WHERE auction_id = '" . (int)$auction_id . "'");
@@ -510,7 +511,12 @@ class ModelCatalogAuction extends Model {
 		//$this->db->query("DELETE FROM " . DB_PREFIX . "review WHERE auction_id = '" . (int)$auction_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'auction_id=" . (int)$auction_id . "'");
 		
-
+		/* must delete pictures
+		foreach (glob(DIR_IMAGE . "catalog/auctions/" . $auction_id . "/*.*") as $picFile) {
+			rename($picFile, DIR_TRASH . 'junk.jpg');
+		}
+		rmdir(DIR_IMAGE . "catalog/auctions/" . $auction_id);
+		*/
 		$this->cache->delete('auction');
 	}
 

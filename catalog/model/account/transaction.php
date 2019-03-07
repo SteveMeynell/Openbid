@@ -4,6 +4,7 @@ class ModelAccountTransaction extends Model {
 		$sql = "SELECT * FROM `" . DB_PREFIX . "customer_transaction` WHERE customer_id = '" . (int)$this->customer->getId() . "'";
 
 		$sort_data = array(
+			'auction_id',
 			'amount',
 			'description',
 			'date_added'

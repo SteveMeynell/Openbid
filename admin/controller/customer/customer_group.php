@@ -269,9 +269,11 @@ class ControllerCustomerCustomerGroup extends Controller {
 		$data['entry_name'] = $this->language->get('entry_name');
 		$data['entry_description'] = $this->language->get('entry_description');
 		$data['entry_approval'] = $this->language->get('entry_approval');
+		$data['entry_confirmation'] = $this->language->get('entry_confirmation');
 		$data['entry_sort_order'] = $this->language->get('entry_sort_order');
 
 		$data['help_approval'] = $this->language->get('help_approval');
+		$data['help_confirmation'] = $this->language->get('help_confirmation');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
@@ -344,6 +346,14 @@ class ControllerCustomerCustomerGroup extends Controller {
 			$data['approval'] = $customer_group_info['approval'];
 		} else {
 			$data['approval'] = '';
+		}
+
+		if (isset($this->request->post['confirmation'])) {
+			$data['confirmation'] = $this->request->post['confirmation'];
+		} elseif (!empty($customer_group_info)) {
+			$data['confirmation'] = $customer_group_info['confirmation'];
+		} else {
+			$data['confirmation'] = '';
 		}
 
 		if (isset($this->request->post['sort_order'])) {

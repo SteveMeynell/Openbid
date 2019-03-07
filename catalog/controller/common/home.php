@@ -9,9 +9,17 @@ class ControllerCommonHome extends Controller {
 			$this->document->addLink($this->config->get('config_url'), 'canonical');
 		}
 
+		
+	
+
 		if($this->config->get('jumbotron_status')) {
 			$data['jumbotron'] = $this->load->controller('extension/jumbotron/jumbotron');
 		}
+		
+		$this->load->model('catalog/information');
+		$information_info = $this->model_catalog_information->getInformation('8');
+
+		$data['information'] = html_entity_decode($information_info['description']);
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');

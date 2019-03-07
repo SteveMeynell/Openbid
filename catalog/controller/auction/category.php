@@ -18,7 +18,7 @@ class ControllerAuctionCategory extends Controller {
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'p.sort_order';
+			$sort = 'a.auction_id';
 		}
 
 		if (isset($this->request->get['order'])) {
@@ -185,13 +185,13 @@ class ControllerAuctionCategory extends Controller {
 				'start'              => ($page - 1) * $limit,
 				'limit'              => $limit
 			);
-debuglog($filter_data);
+
 			$auction_total = $this->model_catalog_auction->getTotalAuctions($filter_data);
-debuglog($auction_total);
+
 			$results = $this->model_catalog_auction->getAuctions($filter_data);
 			$feature_results = $this->model_catalog_auction->getAuctions($feature_filter_data);
 			// Featured Auctions
-			
+
 			foreach ($feature_results as $result) {
 				$this->load->model('auction/bidding');
 				if ($result['image']) {
@@ -234,7 +234,7 @@ debuglog($auction_total);
 			}
 			
 			// Regular Auctions
-			
+
 			foreach ($results as $result) {
 				$this->load->model('auction/bidding');
 				if ($result['image']) {
@@ -265,6 +265,7 @@ debuglog($auction_total);
 					'thumb'       => $image,
 					'name'        => $result['name'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
+					'thumb'				=> $image,
 					'current_bid'       => $current_bid,
 					'buy_now_only'	=> $result['buy_now_only'],
 					'buy_now'     => $buy_now,

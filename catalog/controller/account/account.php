@@ -7,6 +7,7 @@ class ControllerAccountAccount extends Controller {
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
 
+		$this->document->addScript('catalog/view/javascript/auction/Chart.js');
 		$this->load->language('account/account');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -34,18 +35,18 @@ class ControllerAccountAccount extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_my_account'] = $this->language->get('text_my_account');
-		$data['text_my_orders'] = $this->language->get('text_my_orders');
+		$data['text_my_auctions'] = $this->language->get('text_my_auctions');
 		$data['text_my_newsletter'] = $this->language->get('text_my_newsletter');
 		$data['text_edit'] = $this->language->get('text_edit');
 		$data['text_password'] = $this->language->get('text_password');
 		$data['text_address'] = $this->language->get('text_address');
 		$data['text_credit_card'] = $this->language->get('text_credit_card');
 		$data['text_wishlist'] = $this->language->get('text_wishlist');
-		$data['text_order'] = $this->language->get('text_order');
-		$data['text_download'] = $this->language->get('text_download');
+		$data['text_auction'] = $this->language->get('text_auction');
+		$data['text_bids'] = $this->language->get('text_bids');
 		$data['text_reward'] = $this->language->get('text_reward');
 		$data['text_return'] = $this->language->get('text_return');
-		$data['text_transaction'] = $this->language->get('text_transaction');
+		$data['text_fees'] = $this->language->get('text_fees');
 		$data['text_newsletter'] = $this->language->get('text_newsletter');
 		$data['text_recurring'] = $this->language->get('text_recurring');
 
@@ -71,8 +72,8 @@ class ControllerAccountAccount extends Controller {
 		}
 		
 		$data['wishlist'] = $this->url->link('account/wishlist');
-		$data['order'] = $this->url->link('account/order', '', true);
-		$data['download'] = $this->url->link('account/download', '', true);
+		$data['auctions'] = $this->url->link('account/auctions', '', true);
+		$data['bids'] = $this->url->link('account/bids', '', true);
 		
 		if ($this->config->get('reward_status')) {
 			$data['reward'] = $this->url->link('account/reward', '', true);
@@ -81,7 +82,7 @@ class ControllerAccountAccount extends Controller {
 		}		
 		
 		$data['return'] = $this->url->link('account/return', '', true);
-		$data['transaction'] = $this->url->link('account/transaction', '', true);
+		$data['fees'] = $this->url->link('account/transaction', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
 		$data['recurring'] = $this->url->link('account/recurring', '', true);
 		
@@ -117,6 +118,20 @@ class ControllerAccountAccount extends Controller {
 			);
 		}
 
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getBidCount() {
+		$this->load->model('account/bid');
+		$totalBids = $this->model_account_bid->getTotalBids();
+		$winningBids = $this->model_account_bid->getWinningBids();
+
+		$json = array(
+			'all_bids'			=> (int)$totalBids['historyTotal'] + (int)$totalBids['currentTotal'],
+			'winning_bids'	=> (int)$winningBids
+		);
+		
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}

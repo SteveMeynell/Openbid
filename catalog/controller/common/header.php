@@ -52,8 +52,10 @@ class ControllerCommonHeader extends Controller {
 			$this->load->model('account/wishlist');
 
 			$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());
+			$data['guest'] = ucwords($this->customer->getFirstName());
 		} else {
 			$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));
+			$data['guest'] = 'Guest';
 		}
 
 		$data['text_shopping_cart'] = $this->language->get('text_shopping_cart');
@@ -62,9 +64,9 @@ class ControllerCommonHeader extends Controller {
 		$data['text_account'] = $this->language->get('text_account');
 		$data['text_register'] = $this->language->get('text_register');
 		$data['text_login'] = $this->language->get('text_login');
-		$data['text_order'] = $this->language->get('text_order');
+		$data['text_auctions'] = $this->language->get('text_auctions');
 		$data['text_transaction'] = $this->language->get('text_transaction');
-		$data['text_download'] = $this->language->get('text_download');
+		$data['text_bids'] = $this->language->get('text_bids');
 		$data['text_logout'] = $this->language->get('text_logout');
 		$data['text_checkout'] = $this->language->get('text_checkout');
 		$data['text_category'] = $this->language->get('text_category');
@@ -76,9 +78,9 @@ class ControllerCommonHeader extends Controller {
 		$data['account'] = $this->url->link('account/account', '', true);
 		$data['register'] = $this->url->link('account/register', '', true);
 		$data['login'] = $this->url->link('account/login', '', true);
-		$data['order'] = $this->url->link('account/order', '', true);
+		$data['auctions'] = $this->url->link('account/auctions', '', true);
 		$data['transaction'] = $this->url->link('account/transaction', '', true);
-		$data['download'] = $this->url->link('account/download', '', true);
+		$data['bids'] = $this->url->link('account/bids', '', true);
 		$data['logout'] = $this->url->link('account/logout', '', true);
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);

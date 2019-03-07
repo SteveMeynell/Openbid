@@ -29,8 +29,8 @@ class ControllerExtensionModuleMostViewed extends Controller {
 			
 			foreach ($results as $result) {
 				
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+				if ($result['main_image']) {
+					$image = $this->model_tool_image->resize($result['main_image'], $setting['width'], $setting['height']);
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
 				}
@@ -39,9 +39,11 @@ class ControllerExtensionModuleMostViewed extends Controller {
 					$tempcurrent_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
 					$current_bid = $this->currency->format($tempcurrent_bid['bid_amount'],$this->session->data['currency']);
 					$buy_now = $this->currency->format($result['buy_now_price'],$this->session->data['currency']);
+					$want_buy_now = $result['buy_now_price'];
 				} else {
 					$current_bid = false;
 					$buy_now = false;
+					$want_buy_now = false;
 				}
 								
 				
@@ -60,6 +62,7 @@ class ControllerExtensionModuleMostViewed extends Controller {
 					'current_bid'	=> $current_bid,
 					'buy_now'     => $buy_now,
 					'buy_now_only'         => $result['buy_now_only'],
+					'want_buy_now'	=> $want_buy_now,
 					'bolded'         => $result['bolded'],
 					'highlighted'         => $result['highlighted'],
 					'rating'      => $rating,
