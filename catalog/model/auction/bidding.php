@@ -24,7 +24,7 @@ class ModelAuctionBidding extends Model {
                 $sql = "UPDATE " . DB_PREFIX . "auctions SET winning_bid = '" . $bidNewProxyAmount . "' 
                 WHERE auction_id = '" . $auction_id . "'";
                 $this->db->query($sql);
-
+                
                 // Add to activity log
                 if ($this->config->get('config_customer_activity')) {
 
@@ -46,6 +46,7 @@ class ModelAuctionBidding extends Model {
             quantity = '1',
             proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
             proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+            $result = $this->db->getLastId();
             $howmany +=1;
         } else {
             $proxyInfo = $this->model_account_customer->getCustomer($leadingBid['proxy_bidder_id']);
@@ -62,6 +63,7 @@ class ModelAuctionBidding extends Model {
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                $result = $this->db->getLastId();
                 // Add to activity log
                 if ($this->config->get('config_customer_activity')) {
 
@@ -82,6 +84,7 @@ class ModelAuctionBidding extends Model {
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                $result = $this->db->getLastId();
                 $howmany +=2;
                 // Add to activity log
                 if ($this->config->get('config_customer_activity')) {
@@ -108,6 +111,7 @@ class ModelAuctionBidding extends Model {
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $leadingBid['proxy_bid_amount'] . "'");
+                $result = $this->db->getLastId();
                 // Add to activity log
                 if ($this->config->get('config_customer_activity')) {
 
@@ -129,6 +133,7 @@ class ModelAuctionBidding extends Model {
                 quantity = '1',
                 proxy_bidder_id = '" . $leadingBid['proxy_bidder_id'] . "',
                 proxy_bid_amount = '" . $leadingBid['proxy_bid_amount'] . "'");
+                $result = $this->db->getLastId();
                 $howmany +=2;
                 // Add to activity log
                 if ($this->config->get('config_customer_activity')) {
@@ -157,6 +162,7 @@ class ModelAuctionBidding extends Model {
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $result = $this->db->getLastId();
                     $howmany +=1;
                     // Add to activity log
                     if ($this->config->get('config_customer_activity')) {
@@ -179,6 +185,7 @@ class ModelAuctionBidding extends Model {
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $result = $this->db->getLastId();
                     // Add to activity log
                     if ($this->config->get('config_customer_activity')) {
 
@@ -199,6 +206,7 @@ class ModelAuctionBidding extends Model {
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $result = $this->db->getLastId();
                     // Add to activity log
                     if ($this->config->get('config_customer_activity')) {
 
@@ -220,6 +228,7 @@ class ModelAuctionBidding extends Model {
                     quantity = '1',
                     proxy_bidder_id = '" . $this->db->escape($bid['bidder_id']) . "',
                     proxy_bid_amount = '" . $bidNewProxyAmount . "'");
+                    $result = $this->db->getLastId();
                     $howmany+=3;
                     // Add to activity log
                     if ($this->config->get('config_customer_activity')) {
@@ -238,7 +247,7 @@ class ModelAuctionBidding extends Model {
 
         
             
-        $result = $this->db->getLastId();
+        
         if(isset($bid['winner'])){
             $sql = "UPDATE " . DB_PREFIX . "current_bids SET winner = '1' WHERE bid_id = '" . $result . "'";
             $winner = $this->db->query($sql);
@@ -256,6 +265,7 @@ class ModelAuctionBidding extends Model {
                          ORDER BY bid_id DESC";
         $query = $this->db->query($sql);
         $results = $query->row;
+        
         if (isset($results['bid_amount'])) {
             return $results;
         } else {
@@ -315,5 +325,24 @@ class ModelAuctionBidding extends Model {
         AND winner = '1'";
         $winningBid = $this->db->query($sql);
         return $winningBid->row;
+    }
+
+    public function markBidWon($bid_id){
+        $sql = $this->db->query("UPDATE " . DB_PREFIX . "current_bids 
+        SET winner = '1' 
+        WHERE bid_id = '" . $this->db->escape($bid_id) . "'");
+    }
+
+    public function shouldExtendAuction($bid_id) {
+        $bidId = $this->db->escape($bid_id);
+        $sql = "SELECT TIME_TO_SEC(TIMEDIFF(ad.end_date, cb.bid_date)) diff FROM " . DB_PREFIX . "current_bids cb 
+        LEFT JOIN " . DB_PREFIX . "auction_details ad ON (cb.auction_id = ad.auction_id) 
+        WHERE bid_id = '" . (int)$bidId . "'";
+        debuglog($sql);
+        if($this->db->query($sql)->row['diff'] <= ($this->config->get('config_auction_extension_for') * 60)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 } // End of Model

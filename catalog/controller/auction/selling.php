@@ -18,6 +18,7 @@ class ControllerAuctionSelling extends Controller {
     $this->load->model('tool/image');
     $this->load->model('extension/module');
     $this->load->model('catalog/information');
+    $this->load->model('fees/fees');
 
     $this->getForm();
 
@@ -193,31 +194,39 @@ class ControllerAuctionSelling extends Controller {
   private function listAuction() {
     $sellersAuction = $this->request->post;
       $grace_period = '1 hours'; // needs to be a setting
+      $fees = array();
+      
 
       // auctions table
       $auction2BAdded['seller_id'] = $this->customer->getId();
       $auction2BAdded['auction_status'] = '1';
+      $auction2BAdded['auto_relist'] = $sellersAuction['auto_relist'];
       if ($sellersAuction['auto_relist']) {
         $auction2BAdded['num_relist'] = $sellersAuction['num_relist'];
+        $fees['reoccuring']['auto_relist'] = $sellersAuction['auto_relist'];
+        $fees['reoccuring']['num_relist'] = $sellersAuction['num_relist'];
       } else {
         $auction2BAdded['num_relist'] = '0';
+        $fees['reoccuring']['auto_relist'] = NULL;
       }
 
       // auction images
       $auction2BAdded['main_image'] = $sellersAuction['uploaded_images']['main_image'];
+      $fees['fee']['photo_count'] = 1;
 
       $auction2BAdded['auction_image'] = array();
       for($x=0; $x < $this->config->get('config_auction_max_gallery_pictures'); $x++) {
         if ($sellersAuction['uploaded_images'][$x] <> '') {
           array_push($auction2BAdded['auction_image'], ['image' => $sellersAuction['uploaded_images'][$x],
           'sort_order' => $x]);
+          $fees['fee']['photo_count'] += 1;
         }
       }
 
       // auction description
       $seader = $sellersAuction['auction_description'][1]['name'] . ' ' . (null !== $sellersAuction['auction_description'][1]['subname'] ? $sellersAuction['auction_description'][1]['subname'] .' ': '') . $sellersAuction['auction_description'][1]['description'];
 			$keywords = make_keywords($seader);
-						
+			$fees['fee']['subtitle'] = $sellersAuction['auction_description'][1]['subname'];
 			$addon_keywords = 'For sale ' . $sellersAuction['auction_description'][1]['name'] . ', Auctioning ' . $sellersAuction['auction_description'][1]['name'] .', ';
 			$tag_limit = array('limit_keywords_to' => 5);
 						
@@ -243,6 +252,7 @@ class ControllerAuctionSelling extends Controller {
       $auction2BAdded['shipping_cost'] = $sellersAuction['shipping_cost'];
       $auction2BAdded['additional_shipping'] = $sellersAuction['international_shipping_cost'];
       $auction2BAdded['reserve_price'] = $sellersAuction['reserve_bid'];
+      $fees['fee']['reserve'] = $sellersAuction['reserve_bid'];
       $auction2BAdded['duration'] = $sellersAuction['auction_duration'];
       $auction2BAdded['increment'] = '1';
       $auction2BAdded['shipping'] = $sellersAuction['shipping'];
@@ -252,26 +262,75 @@ class ControllerAuctionSelling extends Controller {
 
       // auction options
       $auction2BAdded['buy_now_only'] = $sellersAuction['buy_now_only'];
-      $auction2BAdded['featured'] = isset($sellersAuction['featured_option'])?$sellersAuction['featured_option']:'0';
+      $fees['fee']['buy_now_only'] = $sellersAuction['buy_now_only']?$sellersAuction['buy_now_price']:NULL;
+      
       $auction2BAdded['bolded_item'] = $sellersAuction['bolded_option'];
-      $auction2BAdded['on_carousel'] = isset($sellersAuction['carousel_option'])?$sellersAuction['carousel_option']:'0';
+      $fees['fee']['bolded'] = $sellersAuction['bolded_option']?$sellersAuction['bolded_option']:NULL;
       $auction2BAdded['highlighted'] = $sellersAuction['highlighted_option'];
-      $auction2BAdded['slideshow'] = isset($sellersAuction['slideshow_option'])?$sellersAuction['slideshow_option']:'0';
+      $fees['fee']['highlighted'] = $sellersAuction['highlighted_option']?$sellersAuction['highlighted_option']:NULL;
       $auction2BAdded['social_media'] = $sellersAuction['social_option'];
-      $auction2BAdded['auto_relist'] = $sellersAuction['auto_relist'];
+      $fees['fee']['social'] = $sellersAuction['social_option']?$sellersAuction['social_option']:NULL;
+      
+      $auction2BAdded['featured'] = isset($sellersAuction['featured_option'])?$sellersAuction['featured_option']:'0';
+      $fees['fee']['featured'] = (isset($sellersAuction['featured_option']) && $sellersAuction['featured_option'])?$sellersAuction['featured_option']:NULL;
+
+      $auction2BAdded['on_carousel'] = isset($sellersAuction['carousel_option'])?$sellersAuction['carousel_option']:'0';
+      $fees['fee']['carousel'] = (isset($sellersAuction['carousel_option']) && $sellersAuction['carousel_option'])?$sellersAuction['carousel_option']:NULL;
+      
+      $auction2BAdded['slideshow'] = isset($sellersAuction['slideshow_option'])?$sellersAuction['slideshow_option']:'0';
+      $fees['fee']['slideshow'] = (isset($sellersAuction['slideshow_option']) && $sellersAuction['slideshow_option'])?$sellersAuction['slideshow_option']:NULL;
+      
+      //debuglog($sellersAuction);
 
       // auction store
       $auction2BAdded['auction_store'][] = '0';
 
       // auction catagories
       $auction2BAdded['auction_category'] = $sellersAuction['auction_category'];
+      $fees['fee']['category_count'] = count($sellersAuction['auction_category']);
 
       // auction type  Dutch auctions not implimented yet
       $auction2BAdded['auction_type'] = '0';
 
-
+      
       $this->load->model('account/auction');
+      //debuglog($sellersAuction);
       $yourNewAuctionId = $this->model_account_auction->addAuction($auction2BAdded);
+      
+      // charge the account the fees
+      $this->load->model('fees/fees');
+      //debuglog($fees['fee']);
+      $fee_charge['fee'] = $this->model_fees_fees->getAllFees($fees['fee']);
+      
+      $fee_charge['current_total'] = $this->model_fees_fees->getAccountingTotalFees($fee_charge['fee']);
+      //debuglog("current total" . $fee_charge['current_total']);
+      $fee_charge['reoccuring'] = $this->model_fees_fees->getReoccuringFees($fees['reoccuring']);
+
+      // accounting
+      $this->load->model("bookkeeping/accounting");
+      foreach($fee_charge['fee'] as $short_code => $fee_amount) {
+        $fee_charge['fee'][$short_code]['code'] = $this->model_bookkeeping_accounting->getAccountCodeByShortCode('A-' . $short_code);
+      }
+      $fee_charge['auction_id'] = $yourNewAuctionId;
+      $fee_charge['customer_id'] = $auction2BAdded['seller_id'];
+      $fee_charge['description'] = $sellersAuction['auction_description'][1]['name'];
+      
+      // this is where you add the fees to the cart.  Also need to keep a separate record of the fees for later drill down.
+      // First lets add the fees to the fees_charged table and a transaction record
+      $fee_charge['gl_code'] = $this->model_bookkeeping_accounting->getAccountCodeByShortCode('AR-fees');
+      //$fee_charge['transaction_id'] = $this->model_bookkeeping_accounting->addTransaction($fee_charge);
+      $this->cart->add($fee_charge['auction_id'], $fee_charge['current_total']);
+      $fee_id = array();
+      foreach($fee_charge['fee'] as $shortcode => $fee) {
+        $fee2add = array(
+          'auction_id'    => $fee_charge['auction_id'], 
+          'customer_id'   => $fee_charge['customer_id'], 
+          'fee_code'        => $fee['code'], 
+          'amount'          => $fee['amount']);
+        array_push($fee_id, $this->model_fees_fees->addFee($fee2add));
+      }
+      
+      //debuglog($fee_id);
 
       // Send Emails
       $this->load->language('mail/selling');
@@ -336,6 +395,74 @@ class ControllerAuctionSelling extends Controller {
 		}
 
 		return !$this->error;
+  }
+
+  public function getFees() {
+    $this->load->model('fees/fees');
+
+    $json = array();
+
+    $data = $this->request->post;
+    $options_used = explode(',', $data['options_used']);
+    $json['auction_setup_fee'] = $this->currency->format($this->model_fees_fees->getAuctionSetupFee(),$this->session->data['currency']);
+    $json['subtitle_fee'] = empty($data['subtitle'])?NULL:$this->currency->format($this->model_fees_fees->getSubtitleFee($data['subtitle']),$this->session->data['currency']);
+
+    
+    if($data['reserve_bid']) {
+      $json['reserve_fee'] = $this->currency->format($this->model_fees_fees->getReserveFee($data['reserve_bid']),$this->session->data['currency']);
+    }
+
+    // photo counter
+    $json['photo_fee'] = empty($data['photo_counter'])?NULL:$this->currency->format($this->model_fees_fees->getPhotoFee($data['photo_counter']),$this->session->data['currency']);
+
+    // category counter
+    $json['category_fee'] = empty($data['category_counter'])?NULL:$this->currency->format($this->model_fees_fees->getCategoryFee($data['category_counter']),$this->session->data['currency']);
+    
+
+    foreach($options_used as $option) {
+      switch ($option) {
+        case 'featured-option':
+        $json['featured_fee'] = $this->currency->format($this->model_fees_fees->getFeaturedFee(),$this->session->data['currency']);
+        break;
+        case 'carousel-option':
+        $json['carousel_fee'] = $this->currency->format($this->model_fees_fees->getCarouselFee(),$this->session->data['currency']);
+        break;
+        case 'bolded-option':
+        $json['bolded_fee'] = $this->currency->format($this->model_fees_fees->getBoldedFee(),$this->session->data['currency']);
+        break;
+        case 'highlighted-option':
+        $json['highlighted_fee'] = $this->currency->format($this->model_fees_fees->getHighlightedFee(),$this->session->data['currency']);
+        break;
+        case 'social-option':
+        $json['social_fee'] = $this->currency->format($this->model_fees_fees->getSocialFee(),$this->session->data['currency']);
+        break;
+        case 'auto-relist':
+        $relist_amounts = $this->model_fees_fees->getRelistFee($data['num_relist']);
+        if (!is_null($relist_amounts)) {
+          $json['auto_relist_fee']['total_relist_fee']  = $this->currency->format($relist_amounts['relist_total'],$this->session->data['currency']);
+          $json['auto_relist_fee']['each_relisting']    = $this->currency->format($relist_amounts['each_relist'],$this->session->data['currency']);
+        } else {
+          $json['auto_relist_fee']['total_relist_fee']  = NULL;
+          $json['auto_relist_fee']['each_relisting']    = NULL;
+        }
+        break;
+        case 'slideshow-option':
+        $json['slideshow_fee'] = $this->currency->format($this->model_fees_fees->getSlideshowFee(),$this->session->data['currency']);
+        break;
+        case 'buy-now-only':
+        $json['buy_now_only_fee'] = $this->currency->format($this->model_fees_fees->getBuyNowOnlyFee($data['buy_now_price']),$this->session->data['currency']);
+        break;
+        default:
+        debuglog("shouldn't get here");
+        debuglog($option);
+      }
+    }
+    $json['total_fee'] = $this->currency->format($this->model_fees_fees->getTotalFees($json),$this->session->data['currency']);
+    $json['success'] = true;
+
+
+    $this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
   }
   // end of controller
 }

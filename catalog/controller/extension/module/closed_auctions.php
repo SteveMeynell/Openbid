@@ -21,11 +21,11 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 			$setting['limit'] = 5;
 		}
 
-		
+		//debuglog($setting['type']);
 		$this->load->model('catalog/auction');
 		$filter = array(
 			'limit'	=> $setting['limit'],
-			'winners'	=> true
+			'winners'	=> $setting['type']
 		);
 
 		$auctions = $this->model_catalog_auction->getClosedAuctions($filter);
@@ -38,6 +38,12 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
 				}
 	
+				if (is_null($auction_info['winning_bid'])) {
+					$overlayImage = $this->model_tool_image->resize('closed.png', $setting['width'], $setting['height']);
+				} else {
+					$overlayImage = $this->model_tool_image->resize('won_auction.png', $setting['width'], $setting['height']);
+				}
+
 				$price = $this->currency->format($auction_info['winning_bid'], $this->session->data['currency']);
 /*					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 						$price = $this->currency->format($this->tax->calculate($auction_info['price'], $auction_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
@@ -51,6 +57,7 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 				$data['auctions'][] = array(
 					'auction_id'  => $auction_info['auction_id'],
 					'thumb'       => $image,
+					'overlay_image'	=> $overlayImage,
 					'title'        => $auction_info['title'],
 					'subtitle'        => $auction_info['subtitle'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',

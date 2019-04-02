@@ -58,7 +58,7 @@ class ControllerCheckoutPaymentAddress extends Controller {
 		} else {
 			$data['payment_address_custom_field'] = array();
 		}
-
+//debuglog("payment address here");
 		$this->response->setOutput($this->load->view('checkout/payment_address', $data));
 	}
 
@@ -73,30 +73,14 @@ class ControllerCheckoutPaymentAddress extends Controller {
 		}
 
 		// Validate cart has products and has stock.
-		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
+		if (!$this->cart->hasFees()) {
 			$json['redirect'] = $this->url->link('checkout/cart');
 		}
-
-		// Validate minimum quantity requirements.
-		$products = $this->cart->getProducts();
-
-		foreach ($products as $product) {
-			$product_total = 0;
-
-			foreach ($products as $product_2) {
-				if ($product_2['product_id'] == $product['product_id']) {
-					$product_total += $product_2['quantity'];
-				}
-			}
-
-			if ($product['minimum'] > $product_total) {
-				$json['redirect'] = $this->url->link('checkout/cart');
-
-				break;
-			}
-		}
-
+//debuglog("save address here");
+//debuglog($json);
 		if (!$json) {
+			//debuglog($this->request->post);
+			//debuglog("this should have had the address in it");
 			if (isset($this->request->post['payment_address']) && $this->request->post['payment_address'] == 'existing') {
 				$this->load->model('account/address');
 
@@ -111,6 +95,8 @@ class ControllerCheckoutPaymentAddress extends Controller {
 					$this->load->model('account/address');
 
 					$this->session->data['payment_address'] = $this->model_account_address->getAddress($this->request->post['address_id']);
+					//debuglog("Ok payment address should be set in session");
+					//debuglog($this->session->data);
 
 					unset($this->session->data['payment_method']);
 					unset($this->session->data['payment_methods']);
@@ -186,6 +172,7 @@ class ControllerCheckoutPaymentAddress extends Controller {
 			}
 		}
 
+		//debuglog($this->session->data['payment_address']);
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}

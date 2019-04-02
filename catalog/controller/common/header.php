@@ -79,7 +79,7 @@ class ControllerCommonHeader extends Controller {
 		$data['register'] = $this->url->link('account/register', '', true);
 		$data['login'] = $this->url->link('account/login', '', true);
 		$data['auctions'] = $this->url->link('account/auctions', '', true);
-		$data['transaction'] = $this->url->link('account/transaction', '', true);
+		$data['transaction'] = $this->url->link('account/fees', '', true);
 		$data['bids'] = $this->url->link('account/bids', '', true);
 		$data['logout'] = $this->url->link('account/logout', '', true);
 		$data['shopping_cart'] = $this->url->link('checkout/cart');

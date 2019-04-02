@@ -34,4 +34,17 @@ class ModelExtensionModule extends Model {
 			return false;
 		}
 	}
+
+	public function getModuleByCode ($code) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "module WHERE code = '" . $code . "'");
+
+		$results = $query->rows;
+		foreach($results as $result) {
+			$settings = json_decode($result['setting'], true);
+			if ($settings['status'] && $settings['homepage']) {
+					return $result;
+			} 
+		}
+		return false;
+	}
 }

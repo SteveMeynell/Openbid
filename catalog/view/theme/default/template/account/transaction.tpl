@@ -20,9 +20,9 @@
         <table class="table table-bordered table-hover">
           <thead>
             <tr>
-              <td class="text-left"><?php echo $column_auction_title; ?></td>
+              <td class="text-left"><?php echo $column_transaction_id; ?></td>
               <td class="text-left"><?php echo $column_date_added; ?></td>
-              <td class="text-left"><?php echo $column_description; ?></td>
+              <td class="text-left"><?php echo $column_auction_title; ?></td>
               <td class="text-right"><?php echo $column_amount; ?></td>
             </tr>
           </thead>
@@ -30,7 +30,7 @@
             <?php if ($transactions) { ?>
             <?php foreach ($transactions  as $transaction) { ?>
             <tr>
-              <td class="text-left"><?php echo $transaction['title']; ?></td>
+              <td class="text-left"><?php echo $transaction['transaction_id']; ?></td>
               <td class="text-left"><?php echo $transaction['date_added']; ?></td>
               <td class="text-left"><?php echo $transaction['description']; ?></td>
               <td class="text-right"><?php echo $transaction['amount']; ?></td>

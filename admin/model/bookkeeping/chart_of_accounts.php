@@ -2,16 +2,19 @@
 class ModelBookkeepingChartOfAccounts extends Model {
     
     public function getAllAccounts() {
-        $sql = "SELECT * FROM '" . DB_PREFIX . "chartofaccounts'
-        ORDER BY glcode";
+        $sql = "SELECT * FROM '" . DB_PREFIX . "chart_of_accounts'
+        ORDER BY account_code";
         
-        $result = $sql; // make sql call when tables set up
+        $result = $this->db->query($sql)->rows; // make sql call when tables set up
         
         return $result; 
     }
     
     private function addAccount($data) {
-        // Data should include desired glcode, description, parent glcode
+        // Data should include desired account_code(unique), short_code, description, Type(ALCRE)
+        // First check if the account exists
+        // Second make sure all fields are set
+        // then add the account
     }
     
 } // End of Model

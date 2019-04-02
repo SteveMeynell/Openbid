@@ -6,22 +6,19 @@
   <input type="hidden" name="upload" value="1" />
   <input type="hidden" name="business" value="<?php echo $business; ?>" />
   <?php $i = 1; ?>
-  <?php foreach ($products as $product) { ?>
-  <input type="hidden" name="item_name_<?php echo $i; ?>" value="<?php echo $product['name']; ?>" />
-  <input type="hidden" name="item_number_<?php echo $i; ?>" value="<?php echo $product['model']; ?>" />
-  <input type="hidden" name="amount_<?php echo $i; ?>" value="<?php echo $product['price']; ?>" />
-  <input type="hidden" name="quantity_<?php echo $i; ?>" value="<?php echo $product['quantity']; ?>" />
-  <input type="hidden" name="weight_<?php echo $i; ?>" value="<?php echo $product['weight']; ?>" />
+  <?php foreach ($auctions as $auction) { ?>
+  <input type="hidden" name="item_name_<?php echo $i; ?>" value="<?php echo $auction['name']; ?>" />
+  <input type="hidden" name="item_number_<?php echo $i; ?>" value="<?php echo $i; ?>" />
+  <input type="hidden" name="amount_<?php echo $i; ?>" value="<?php echo $auction['total']; ?>" />
+  <input type="hidden" name="quantity_<?php echo $i; ?>" value="1" />
+  <input type="hidden" name="weight_<?php echo $i; ?>" value="0" />
   <?php $j = 0; ?>
-  <?php foreach ($product['option'] as $option) { ?>
-  <input type="hidden" name="on<?php echo $j; ?>_<?php echo $i; ?>" value="<?php echo $option['name']; ?>" />
-  <input type="hidden" name="os<?php echo $j; ?>_<?php echo $i; ?>" value="<?php echo $option['value']; ?>" />
+  <?php foreach ($auction['fees'] as $fee) { ?>
+  <input type="hidden" name="on<?php echo $j; ?>_<?php echo $i; ?>" value="<?php echo $fee['description']; ?>" />
+  <input type="hidden" name="os<?php echo $j; ?>_<?php echo $i; ?>" value="<?php echo $fee['amount']; ?>" />
   <?php $j++; ?>
   <?php } ?>
   <?php $i++; ?>
-  <?php } ?>
-  <?php if ($discount_amount_cart) { ?>
-    <input type="hidden" name="discount_amount_cart" value="<?php echo $discount_amount_cart; ?>" />
   <?php } ?>
   <input type="hidden" name="currency_code" value="<?php echo $currency_code; ?>" />
   <input type="hidden" name="first_name" value="<?php echo $first_name; ?>" />
@@ -44,7 +41,7 @@
   <input type="hidden" name="cancel_return" value="<?php echo $cancel_return; ?>" />
   <input type="hidden" name="paymentaction" value="<?php echo $paymentaction; ?>" />
   <input type="hidden" name="custom" value="<?php echo $custom; ?>" />
-  <input type="hidden" name="bn" value="OpenCart_2.0_WPS" />
+  <input type="hidden" name="bn" value="OpenBid_AutomaticBilling_WPS_CA" />
   <div class="buttons">
     <div class="pull-right">
       <input type="submit" value="<?php echo $button_confirm; ?>" class="btn btn-primary" />

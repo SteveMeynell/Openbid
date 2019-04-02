@@ -2,6 +2,12 @@
 class ModelToolImage extends Model {
 	public function resize($filename, $width, $height) {
 		if (!is_file(DIR_IMAGE . $filename) || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)) != DIR_IMAGE) {
+			debuglog("here is where it is bombing");
+			debuglog("ok which part...");
+			debuglog(DIR_IMAGE . $filename);
+			debuglog("this last one should be fine...");
+			debuglog("this next one however is probably the culprit");
+			debuglog(substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)));
 			return;
 		}
 

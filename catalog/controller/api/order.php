@@ -792,7 +792,7 @@ class ControllerApiOrder extends Controller {
 		$this->load->language('api/order');
 
 		$json = array();
-
+		//debuglog($this->session->data['api_id']);
 		if (!isset($this->session->data['api_id'])) {
 			$json['error'] = $this->language->get('error_permission');
 		} else {

@@ -1,9 +1,12 @@
 <h3><?php echo $heading_title; ?></h3>
   <div class="row">
     <?php foreach ($auctions as $auction) { ?>
-        <div class="product-layout col-lg-6 col-md-3 col-sm-6 col-xs-12" id="auction-main-<?php echo $auction['auction_id']; ?>">
+        <div class="product-layout col-lg-6 col-md-3 col-sm-6 col-xs-12" id="auction-module-<?php echo $auction['auction_id']; ?>">
           <div class="product-thumb transition">
-            <div class="image"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a></div>
+            <div class="image">
+              <img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" />
+              <img id="opening_auction" class="overlayImage" src="<?php echo $auction['opening_image']; ?>"/>
+            </div>
             <div class="caption">
               <h4><?php echo $auction['name']; ?></a></h4>
               <div class="text-justify"><?php echo $auction['description']; ?></div>

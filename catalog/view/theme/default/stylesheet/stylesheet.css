@@ -793,6 +793,7 @@ footer h5 {
 
 /* product list */
 .product-thumb {
+	position: relative;
 	border: 1px solid #ddd;
 	margin-bottom: 20px;
 	overflow: auto;
@@ -927,6 +928,7 @@ h2.price {
 	}
 }
 .thumbnails {
+	position: relative;
 	overflow: auto;
 	clear: both;
 	list-style: none;
@@ -941,6 +943,16 @@ h2.price {
 }
 .thumbnails > img {
 	width: 100%;
+}
+.overlayImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.image-overlayImage {
+  position: absolute;
+  top: 0;
+  left: 125px;
 }
 .image-additional a {
 	margin-bottom: 20px;

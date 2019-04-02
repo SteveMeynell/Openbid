@@ -101,7 +101,7 @@ class ModelAccountAuction extends Model {
   }
 
 	public function addAuction($data) {
-		debuglog("Model Account Auction addAuction");
+		//debuglog("Model Account Auction addAuction");
 		//debuglog($data);
 		// add in the actual auction table
 		if(isset($data['relist'])) {
@@ -269,7 +269,7 @@ class ModelAccountAuction extends Model {
 
 	public function editAuction($data) {
 		// add in the actual auction table
-		debuglog("Model Account Auction Edit");
+		//debuglog("Model Account Auction Edit");
 		
 		$auction_id = $this->db->escape($data['auction_id']);
 		$sellerId = $this->customer->getId();
@@ -419,6 +419,11 @@ class ModelAccountAuction extends Model {
 		
 	}
 
+	public function getAuctionTitle ($auction_id) {
+		$auctionId = $this->db->escape($auction_id);
+		$query = "SELECT title FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . $auctionId . "'";
+		return $this->db->query($query)->row['title'];
+	}
 
 	public function getHighestBid($auction_id) {
 		$auctionId = $this->db->escape($auction_id);

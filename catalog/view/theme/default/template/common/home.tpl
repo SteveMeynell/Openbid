@@ -17,11 +17,12 @@
     <div id="content" class="<?php echo $class; ?>">
       <?php 
         echo $content_top; 
+        if ($closed_auction_data) {
+          echo $closed_auction_data;
+        }
         if (isset($jumbotron)) {
           echo $jumbotron;
-        } else {
-          echo $information;
-        }
+        } 
         echo $content_bottom; 
         ?>
     </div>

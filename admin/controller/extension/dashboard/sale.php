@@ -107,12 +107,16 @@ class ControllerExtensionDashboardSale extends Controller {
 
 		$this->load->model('report/sale');
 
+		$total_sales = round($this->model_report_sale->getTotalSales(),2);
+
 		$today = $this->model_report_sale->getTotalSales(array('filter_date_added' => date('Y-m-d', strtotime('-1 day'))));
 
 		$yesterday = $this->model_report_sale->getTotalSales(array('filter_date_added' => date('Y-m-d', strtotime('-2 day'))));
 
 		$difference = $today - $yesterday;
 
+		$data['total_sales'] = $total_sales;
+		$data['new_sales'] = $difference;
 		if ($difference && (int)$today) {
 			$data['percentage'] = round(($difference / $today) * 100);
 		} else {
@@ -122,15 +126,15 @@ class ControllerExtensionDashboardSale extends Controller {
 		$sale_total = $this->model_report_sale->getTotalSales();
 
 		if ($sale_total > 1000000000000) {
-			$data['total'] = round($sale_total / 1000000000000, 1) . 'T';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000000000, 1)) . 'T';
 		} elseif ($sale_total > 1000000000) {
-			$data['total'] = round($sale_total / 1000000000, 1) . 'B';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000000, 1)) . 'B';
 		} elseif ($sale_total > 1000000) {
-			$data['total'] = round($sale_total / 1000000, 1) . 'M';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000000, 1)) . 'M';
 		} elseif ($sale_total > 1000) {
-			$data['total'] = round($sale_total / 1000, 1) . 'K';
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total / 1000, 1)) . 'K';
 		} else {
-			$data['total'] = round($sale_total);
+			$data['total'] = sprintf("$%1\$.2f",round($sale_total, 2));
 		}
 
 		$data['sale'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'], true);

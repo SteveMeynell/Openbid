@@ -21,6 +21,7 @@ $_['text_buy_now']      = 'Buy Now For:';
 $_['text_buy_now_only']      = 'Only Buy Now For:';
 $_['text_current_bid']  = 'Current Bid:';
 $_['text_viewed']       = 'Viewed:';
+$_['text_watching']       = 'Watching:';
 $_['text_ending_in']  = 'Auction Ending in:';
 $_['text_reserved_bid']  = 'Reserved Bid:';
 $_['text_reserved_bid_met']  = 'Reserved Bid Achieved!  Highest Bidder Wins!';

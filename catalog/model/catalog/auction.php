@@ -4,149 +4,6 @@ class ModelCatalogAuction extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "auctions SET viewed = (viewed + 1) WHERE auction_id = '" . (int)$auction_id . "'");
 	}
 
-	/*
-	public function getAuctionRelist($auction_id){
-
-		debuglog("Model Catalog Auction getAuctionRelist");
-		$originalAuctionInfo = $this->db->query("
-								  SELECT DISTINCT * 
-								  FROM " . DB_PREFIX . "auctions a
-								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
-								  ON (a.auction_id = ad2.auction_id)
-								  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
-								  ON (a.auction_id = a2s.auction_id)
-								  LEFT JOIN " . DB_PREFIX . "auction_details ad1
-								  ON (a.auction_id = ad1.auction_id)
-								  LEFT JOIN " . DB_PREFIX . "auction_options ao
-									ON (a.auction_id = ao.auction_id) 
-									LEFT JOIN " . DB_PREFIX . "auction_to_layout a2l
-								  ON (a.auction_id = a2l.auction_id) 
-								  WHERE a.auction_id = '" . (int)$auction_id . "'
-								  AND ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
-									AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
-
-		
-									
-		$relistAuctionInfo = $this->db->query("
-									SELECT DISTINCT * 
-									FROM " . DB_PREFIX . "relist_link a 
-									LEFT JOIN " . DB_PREFIX . "auctions_relist a1 
-									ON (a.auction_id = a1.auction_id) 
-									LEFT JOIN " . DB_PREFIX . "auction_description_relist a2 
-									ON (a.auction_id = a2.auction_id) 
-									LEFT JOIN " . DB_PREFIX . "auction_details_relist a3 
-									ON (a.auction_id = a3.auction_id) 
-									LEFT JOIN " . DB_PREFIX . "auction_options_relist a4 
-									ON (a.auction_id = a4.auction_id) 
-									WHERE a.auction_id = " . $auction_id);
-
-									
-		$auctionInfo = array(
-			'original'	=> $originalAuctionInfo->row,
-			'relisting'	=> $relistAuctionInfo->row
-		);
-
-		//category
-		$auctionInfo['original']['auction_category'] = array();
-		$auctionInfo['relisting']['auction_category'] = array();
-		$originalCategories = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "auction_to_category WHERE auction_id = '" . (int)$auction_id . "'")->rows;
-		$relistCategories = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "auction_to_category_relist WHERE auction_id = '" . (int)$auction_id . "'")->rows;
-		foreach($originalCategories as $originalCategory) {
-			array_push($auctionInfo['original']['auction_category'],$originalCategory['category_id']);
-		}
-		foreach($relistCategories as $relistCategory) {
-			array_push($auctionInfo['relisting']['auction_category'],$relistCategory['category_id']);
-		}
-		
-		// photos
-		$auctionInfo['original']['auction_photos'] = array();
-		$auctionInfo['relisting']['auction_photos'] = array();
-		$originalPhotos = $this->db->query("SELECT image FROM " . DB_PREFIX . "auction_photos WHERE auction_id = '" . (int)$auction_id . "'")->rows;
-		$relistPhotos = $this->db->query("SELECT image FROM " . DB_PREFIX . "auction_photos_relist WHERE auction_id = '" . (int)$auction_id . "'")->rows;
-		foreach($originalPhotos as $originalPhoto) {
-			array_push($auctionInfo['original']['auction_photos'],$originalPhoto['image']);
-		}
-		foreach($relistPhotos as $relistPhoto) {
-			array_push($auctionInfo['relisting']['auction_photos'],$relistPhoto['image']);
-		}
-
-		$currenttime = $this->db->query("SELECT NOW() as currenttime")->row['currenttime'];
-            
-    $data = array();
-                
-    $data['seller_id']							=   $auctionInfo['original']['customer_id'];
-    $data['auction_type']						=   (is_null($auctionInfo['relisting']['auction_type']))?$auctionInfo['original']['auction_type']:$auctionInfo['relisting']['auction_type'];
-    $data['auction_status']					=  '1';
-		$data['num_relist']							=  $auctionInfo['relisting']['relist'];
-		$data['relist']									= $auctionInfo['original']['relist'];
-    $data['date_created']						=  $currenttime;
-    $data['main_image']           	=  (is_null($auctionInfo['relisting']['main_image']))?$auctionInfo['original']['main_image']:$auctionInfo['relisting']['main_image'];
-            
-    $NumHours = '1'; // Will add this as a setting
-
-    $newStartDates = date_add(date_create($data['date_created']),date_interval_create_from_date_string($NumHours . ' hours'));
-		$data['custom_start_date']			=	(is_null($auctionInfo['relisting']['start_date']))?$newStartDates->format('Y-m-d H:i:s'):$auctionInfo['relisting']['start_date'];;
-    $numDays = (is_null($auctionInfo['relisting']['duration']))?$auctionInfo['original']['duration']:$auctionInfo['relisting']['duration'];
-    if($numDays == '0'){
-    	$numDays = '1';
-     }
-     $data['duration']   						=   $numDays;
-		$newEndDate = date_add($newStartDates,date_interval_create_from_date_string($numDays . ' days'));
-//$data['dummy'] =  (is_null($auctionInfo['relisting']['dummy']))?$auctionInfo['original']['dummy']:$auctionInfo['relisting']['dummy'];
-    $data['custom_end_date']				= $newEndDate->format('Y-m-d H:i:s');
-            
-    $data['min_bid']             		=  (is_null($auctionInfo['relisting']['min_bid']))?$auctionInfo['original']['min_bid']:$auctionInfo['relisting']['min_bid'];
-    $data['shipping_cost']        	=  (is_null($auctionInfo['relisting']['shipping_cost']))?$auctionInfo['original']['shipping_cost']:$auctionInfo['relisting']['shipping_cost'];
-    $data['additional_shipping']  	=  (is_null($auctionInfo['relisting']['additional_shipping']))?$auctionInfo['original']['additional_shipping']:$auctionInfo['relisting']['additional_shipping'];
-    $data['reserve_price']        	=  (is_null($auctionInfo['relisting']['reserve_price']))?$auctionInfo['original']['reserve_price']:$auctionInfo['relisting']['reserve_price'];
-    $data['increment']            	=  (is_null($auctionInfo['relisting']['increment']))?$auctionInfo['original']['increment']:$auctionInfo['relisting']['increment'];
-    $data['shipping']             	=  (is_null($auctionInfo['relisting']['shipping']))?$auctionInfo['original']['shipping']:$auctionInfo['relisting']['shipping'];
-    $data['international_shipping']	=  (is_null($auctionInfo['relisting']['international_shipping']))?$auctionInfo['original']['international_shipping']:$auctionInfo['relisting']['international_shipping'];
-    $data['initial_quantity']       =  (is_null($auctionInfo['relisting']['initial_quantity']))?$auctionInfo['original']['initial_quantity']:$auctionInfo['relisting']['initial_quantity'];
-    $data['buy_now_price']          =  (is_null($auctionInfo['relisting']['buy_now_price']))?$auctionInfo['original']['buy_now_price']:$auctionInfo['relisting']['buy_now_price'];
-    $data['bolded_item']            =  (is_null($auctionInfo['relisting']['bolded_item']))?$auctionInfo['original']['bolded_item']:$auctionInfo['relisting']['bolded_item'];
-    $data['featured']								=  (is_null($auctionInfo['relisting']['featured']))?$auctionInfo['original']['featured']:$auctionInfo['relisting']['featured'];
-    $data['highlighted']            =  (is_null($auctionInfo['relisting']['highlighted']))?$auctionInfo['original']['highlighted']:$auctionInfo['relisting']['highlighted'];
-    $data['slideshow']             	=  (is_null($auctionInfo['relisting']['slideshow']))?$auctionInfo['original']['slideshow']:$auctionInfo['relisting']['slideshow'];
-    $data['social_media']           =  (is_null($auctionInfo['relisting']['social_media']))?$auctionInfo['original']['social_media']:$auctionInfo['relisting']['social_media'];
-    $data['auto_relist']            =  (is_null($auctionInfo['relisting']['auto_relist']))?$auctionInfo['original']['auto_relist']:$auctionInfo['relisting']['auto_relist'];
-    $data['on_carousel']            =  (is_null($auctionInfo['relisting']['on_carousel']))?$auctionInfo['original']['on_carousel']:$auctionInfo['relisting']['on_carousel'];
-    $data['buy_now_only']           =  (is_null($auctionInfo['relisting']['buy_now_only']))?$auctionInfo['original']['buy_now_only']:$auctionInfo['relisting']['buy_now_only'];
-
-            
-		$Title          =   (is_null($auctionInfo['relisting']['title']))?$auctionInfo['original']['title']:$auctionInfo['relisting']['title'];
-		$data['title']	=		$Title;
-		$Subtitle				=	(is_null($auctionInfo['relisting']['subtitle']))?$auctionInfo['original']['subtitle']:$auctionInfo['relisting']['subtitle'];
-    $newDescription	=	(is_null($auctionInfo['relisting']['description']))?$auctionInfo['original']['description']:$auctionInfo['relisting']['description'];
-    $newLanguageId  =   (is_null($auctionInfo['relisting']['language_id']))?$auctionInfo['original']['language_id']:$auctionInfo['relisting']['language_id'];
-    $newTags      	=   (is_null($auctionInfo['relisting']['tag']))?$auctionInfo['original']['tag']:$auctionInfo['relisting']['tag'];
-
-    $seader = $Title . ' ' . (null !== $Subtitle ? $Subtitle .' ': '') . $newDescription;
-		$keywords = make_keywords($seader);
-		$addon_keywords = 'For sale ' . $Title . ', Auctioning ' . $Title .', ';
-						
-		$data['auction_description'][$newLanguageId]	=	array(
-				'name' => $Title,
-				'subname' => $Subtitle,
-				'description' => $newDescription,
-				'tag' => $newTags,
-				'meta_title' => 'Auctioning ' . $Title,
-				'meta_description' => strip_tags($newDescription),
-				'meta_keyword' => $addon_keywords . $keywords
-		);
-
-    $data['auction_store'][]				=   '0';
-    $data['auction_layout'][]				=   '0';
-		$data['auction_category']				=	$auctionInfo['original']['auction_category'];
-
-    //debuglog("Catalog Data: ");
-		//debuglog($auctionInfo);
-						
-		return $data;
-
-	}
-*/
-
 	public function getAuction($auction_id) {
 		$sql = "SELECT DISTINCT *,
 		ad1.duration AS duration,
@@ -229,6 +86,8 @@ class ModelCatalogAuction extends Model {
 		if ($query->num_rows) {
 			return array(
 				'auction_id'       => $query->row['auction_id'],
+				'customer_id'				=> $query->row['customer_id'],
+				'status'						=> $query->row['status'],
 				'name'             => $query->row['name'],
 				'subname'             => $query->row['subname'],
 				'description'      => $query->row['description'],
@@ -462,13 +321,19 @@ class ModelCatalogAuction extends Model {
 		LEFT JOIN " . DB_PREFIX . "auction_to_store a2s ON (a.auction_id = a2s.auction_id) ";
 		$where = "WHERE a.status = '3' 
 		AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
-		$orderBy = "ORDER BY a.date_modified DESC LIMIT " . (int)$filter['limit'];
+		$orderBy = "ORDER BY a.winning_bid DESC LIMIT " . (int)$filter['limit'];
 
+		
 		if(isset($filter['winners'])) {
-			$where .= " AND a.winning_bid > 0 ";
+			if($filter['winners'] == 'winners') {
+				$where .= " AND a.winning_bid > 0 ";
+			} elseif($filter['winners'] == 'closed') {
+				$where .= " AND a.winning_bid IS NULL ";
+			}
 		}
 
 		$sql .= $where . $orderBy;
+		
 		$query = $this->db->query($sql);
 
 		return $query->rows;

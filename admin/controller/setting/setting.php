@@ -103,10 +103,10 @@ class ControllerSettingSetting extends Controller {
 		$data['entry_cart_weight'] = $this->language->get('entry_cart_weight');
 		$data['entry_checkout_guest'] = $this->language->get('entry_checkout_guest');
 		$data['entry_checkout'] = $this->language->get('entry_checkout');
-		//$data['entry_order_status'] = $this->language->get('entry_order_status');
-		//$data['entry_processing_status'] = $this->language->get('entry_processing_status');
-		//$data['entry_complete_status'] = $this->language->get('entry_complete_status');
-		//$data['entry_fraud_status'] = $this->language->get('entry_fraud_status');
+		$data['entry_order_status'] = $this->language->get('entry_order_status');
+		$data['entry_processing_status'] = $this->language->get('entry_processing_status');
+		$data['entry_complete_status'] = $this->language->get('entry_complete_status');
+		$data['entry_fraud_status'] = $this->language->get('entry_fraud_status');
 		$data['entry_api'] = $this->language->get('entry_api');
 		//$data['entry_stock_display'] = $this->language->get('entry_stock_display');
 		//$data['entry_stock_warning'] = $this->language->get('entry_stock_warning');
@@ -179,9 +179,9 @@ class ControllerSettingSetting extends Controller {
 		$data['help_checkout'] = $this->language->get('help_checkout');
 		$data['help_invoice_prefix'] = $this->language->get('help_invoice_prefix');
 		$data['help_order_status'] = $this->language->get('help_order_status');
-		//$data['help_processing_status'] = $this->language->get('help_processing_status');
-		//$data['help_complete_status'] = $this->language->get('help_complete_status');
-		//$data['help_fraud_status'] = $this->language->get('help_fraud_status');
+		$data['help_processing_status'] = $this->language->get('help_processing_status');
+		$data['help_complete_status'] = $this->language->get('help_complete_status');
+		$data['help_fraud_status'] = $this->language->get('help_fraud_status');
 		$data['help_api'] = $this->language->get('help_api');
 		//$data['help_stock_display'] = $this->language->get('help_stock_display');
 		//$data['help_stock_warning'] = $this->language->get('help_stock_warning');
@@ -304,7 +304,7 @@ class ControllerSettingSetting extends Controller {
 			$data['error_voucher_max'] = '';
 		}
 
-/*		if (isset($this->error['processing_status'])) {
+		if (isset($this->error['processing_status'])) {
 			$data['error_processing_status'] = $this->error['processing_status'];
 		} else {
 			$data['error_processing_status'] = '';
@@ -315,7 +315,7 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$data['error_complete_status'] = '';
 		}
-*/
+
 		if (isset($this->error['ftp_hostname'])) {
 			$data['error_ftp_hostname'] = $this->error['ftp_hostname'];
 		} else {
@@ -743,7 +743,7 @@ class ControllerSettingSetting extends Controller {
 			$data['config_invoice_prefix'] = 'INV-' . date('Y') . '-00';
 		}
 
-/*		if (isset($this->request->post['config_order_status_id'])) {
+		if (isset($this->request->post['config_order_status_id'])) {
 			$data['config_order_status_id'] = $this->request->post['config_order_status_id'];
 		} else {
 			$data['config_order_status_id'] = $this->config->get('config_order_status_id');
@@ -770,11 +770,15 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$data['config_fraud_status_id'] = $this->config->get('config_fraud_status_id');
 		}
-*/
+
 		$this->load->model('localisation/auction_status');
 
 		$data['auction_statuses'] = $this->model_localisation_auction_status->getAuctionStatuses();
 
+		$this->load->model('localisation/order_status');
+
+		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+		
 		if (isset($this->request->post['config_api_id'])) {
 			$data['config_api_id'] = $this->request->post['config_api_id'];
 		} else {
@@ -1200,14 +1204,14 @@ class ControllerSettingSetting extends Controller {
 			$this->error['voucher_max'] = $this->language->get('error_voucher_max');
 		}
 
-/*		if (!isset($this->request->post['config_processing_status'])) {
+		if (!isset($this->request->post['config_processing_status'])) {
 			$this->error['processing_status'] = $this->language->get('error_processing_status');
 		}
 
 		if (!isset($this->request->post['config_complete_status'])) {
 			$this->error['complete_status'] = $this->language->get('error_complete_status');
 		}
-*/
+
 		if ($this->request->post['config_ftp_status']) {
 			if (!$this->request->post['config_ftp_hostname']) {
 				$this->error['ftp_hostname'] = $this->language->get('error_ftp_hostname');

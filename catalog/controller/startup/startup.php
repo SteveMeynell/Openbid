@@ -189,29 +189,6 @@ class ControllerStartupStartup extends Controller {
 		// Encryption
 		$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
 
-		// Auction Updates
-		//$this->load->model('auction/auction');
-		//debuglog("From startup");
-		//$relisted_auctions = $this->model_auction_auction->relistClosingAuctions();
-		//debuglog("relisting");
-		//debuglog($relisted_auctions);
-		//$closed_auctions = $this->model_auction_auction->closeOpenAuctions();
-		//debuglog("From Startup");
-		//$opened_auctions = $this->model_auction_auction->openCreatedAuctions();
-		//debuglog("opening");
-		//debuglog($opened_auctions);
-		/*if ($effected_auctions['closed']) {
-			debuglog("Closed Auctions");
-			debuglog($effected_auctions['closed']);
-		}
-		if ($effected_auctions['relist']) {
-			debuglog("relisted");
-			debuglog($effected_auctions['relist']);
-		}
-		if ($opened_auctions) {
-			debuglog("Open Auctions");
-			debuglog($opened_auctions);
-		}*/
 		
 	}
 }

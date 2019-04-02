@@ -9,7 +9,7 @@ class ControllerCommonCart extends Controller {
 		$totals = array();
 		//$taxes = $this->cart->getTaxes();
 		$total = 0;
-
+		$total = $this->cart->getTotal();
 		// Because __call can not keep var references so we put them into an array.
 		$total_data = array(
 			'totals' => &$totals,
@@ -51,81 +51,55 @@ class ControllerCommonCart extends Controller {
 		$data['text_cart'] = $this->language->get('text_cart');
 		$data['text_checkout'] = $this->language->get('text_checkout');
 		$data['text_recurring'] = $this->language->get('text_recurring');
-		$data['text_items'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+		$data['text_items'] = sprintf($this->language->get('text_items'), $this->cart->countFees(), $this->currency->format($total, $this->session->data['currency']));
 		$data['text_loading'] = $this->language->get('text_loading');
 
-		$data['button_remove'] = $this->language->get('button_remove');
+		$data['button_view_fees'] = $this->language->get('button_view_fees');
 
 		$this->load->model('tool/image');
 		$this->load->model('tool/upload');
 
-		$data['products'] = array();
+		$data['auctions'] = array();
 
-		foreach ($this->cart->getProducts() as $product) {
-			if ($product['image']) {
-				$image = $this->model_tool_image->resize($product['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
+		$auctions = $this->cart->getFees();
+
+		foreach ($auctions as $auction) {
+			//debuglog($auction);
+			if ($auction['image']) {
+				$image = $this->model_tool_image->resize($auction['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
 			} else {
 				$image = '';
 			}
 
-			$option_data = array();
-
-			foreach ($product['option'] as $option) {
-				if ($option['type'] != 'file') {
-					$value = $option['value'];
-				} else {
-					$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
-
-					if ($upload_info) {
-						$value = $upload_info['name'];
-					} else {
-						$value = '';
-					}
-				}
-
-				$option_data[] = array(
-					'name'  => $option['name'],
-					'value' => (utf8_strlen($value) > 20 ? utf8_substr($value, 0, 20) . '..' : $value),
-					'type'  => $option['type']
-				);
-			}
 
 			// Display prices
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-				$unit_price = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
+				//$unit_price = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
 				
-				$price = $this->currency->format($unit_price, $this->session->data['currency']);
-				$total = $this->currency->format($unit_price * $product['quantity'], $this->session->data['currency']);
+				//$price = $this->currency->format($unit_price, $this->session->data['currency']);
+				$total = $this->currency->format($auction['total_fees'], $this->session->data['currency']);
 			} else {
-				$price = false;
 				$total = false;
 			}
 
-			$data['products'][] = array(
-				'cart_id'   => $product['cart_id'],
-				'thumb'     => $image,
-				'name'      => $product['name'],
-				'model'     => $product['model'],
-				'option'    => $option_data,
-				'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
-				'quantity'  => $product['quantity'],
-				'price'     => $price,
-				'total'     => $total,
-				'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-			);
-		}
-
-		// Gift Voucher
-		$data['vouchers'] = array();
-
-		if (!empty($this->session->data['vouchers'])) {
-			foreach ($this->session->data['vouchers'] as $key => $voucher) {
-				$data['vouchers'][] = array(
-					'key'         => $key,
-					'description' => $voucher['description'],
-					'amount'      => $this->currency->format($voucher['amount'], $this->session->data['currency'])
-				);
+			if ($auction['status'] == '1') {
+				$href = $this->url->link('auction/edit', 'auction_id=' . $auction['auction_id']);
+			} elseif ($auction['status'] == '2') {
+				$href = $this->url->link('auction/auction', 'auction_id=' . $auction['auction_id']);
+			} else {
+				$href = $this->url->link('auction/closed_auctions', 'auction_id=' . $auction['auction_id']);
 			}
+
+			$data['auctions'][] = array(
+				'cart_id'   => $auction['cart_id'],
+				'thumb'     => $image,
+				'name'      => $auction['name'],
+				'recurring' => '',
+				'amount'  	=> $this->currency->format($auction['amount'], $this->session->data['currency']),
+				'num_fees'	=> $auction['num_fees'],
+				'total'     => $total,
+				'href'      => $href
+			);
 		}
 
 		$data['totals'] = array();

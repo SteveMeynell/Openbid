@@ -9,13 +9,20 @@ class ControllerCommonHome extends Controller {
 			$this->document->addLink($this->config->get('config_url'), 'canonical');
 		}
 
-		
-	
-
 		if($this->config->get('jumbotron_status')) {
 			$data['jumbotron'] = $this->load->controller('extension/jumbotron/jumbotron');
 		}
-		
+		$this->load->model('extension/module');
+		$homepage_info = $this->model_extension_module->getModuleByCode('closed_auctions');
+		debuglog($homepage_info);
+		if($homepage_info) {
+			$setting_info = json_decode($homepage_info['setting'], true);
+			$data['closed_auction_data'] = $this->load->controller('extension/module/closed_auctions', $setting_info);
+		} else {
+			$data['closed_auction_data'] = false;
+		}
+
+
 		$this->load->model('catalog/information');
 		$information_info = $this->model_catalog_information->getInformation('8');
 

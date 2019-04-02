@@ -36,8 +36,10 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 				
 				if ($result['main_image']) {
 					$image = $this->model_tool_image->resize($result['main_image'], $setting['width'], $setting['height']);
+					$opening_image = $this->model_tool_image->resize('opening_soon.png', $setting['width']*1.25, $setting['height']);
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
+					$opening_image = '';
 				}
 
 				/*if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
@@ -59,12 +61,13 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 				}
 
 				$data['auctions'][] = array(
-					'auction_id'  => $result['auction_id'],
-					'thumb'       => $image,
-					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
-					'rating'		=> $rating,
-					'start_date'	=> $result['start_date'],
+					'auction_id'		=> $result['auction_id'],
+					'thumb'					=> $image,
+					'opening_image'	=> $opening_image,
+					'name'					=> $result['name'],
+					'description'		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
+					'rating'				=> $rating,
+					'start_date'		=> $result['start_date'],
 					'starting_in'		=> $starting_in
 				);
 			}

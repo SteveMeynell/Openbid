@@ -69,6 +69,9 @@ class ControllerToolUpload extends Controller {
 
 			move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . $file);
 
+			
+			$json['thumb'] = $this->resize($file, $filename, $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+
 			// Hide the uploaded file name so people can not link to it directly.
 			$this->load->model('tool/upload');
 
@@ -79,5 +82,53 @@ class ControllerToolUpload extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function resize($filename, $file, $width, $height) {
+		
+		if (!is_file(DIR_UPLOAD . $filename) || substr(str_replace('\\', '/', realpath(DIR_UPLOAD .$filename)), 0, strlen(DIR_UPLOAD)) != DIR_UPLOAD) {
+			return;
+		}
+
+		$extension = pathinfo($file, PATHINFO_EXTENSION);
+
+		$image_old = $filename;
+		$image_new = 'cache/uploads/' . utf8_substr($file, 0, utf8_strrpos($file, '.')) . '-' . (int)$width . 'x' . (int)$height . '.' . $extension;
+
+		if (!is_file(DIR_IMAGE . $image_new) || (filectime(DIR_UPLOAD . $image_old) > filectime(DIR_IMAGE . $image_new))) {
+			list($width_orig, $height_orig, $image_type) = getimagesize(DIR_UPLOAD . $image_old);
+				 
+			if (!in_array($image_type, array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF))) { 
+				return DIR_UPLOAD . $image_old;
+			}
+						
+			$path = '';
+
+			$directories = explode('/', dirname($image_new));
+
+			foreach ($directories as $directory) {
+				$path = $path . '/' . $directory;
+
+				if (!is_dir(DIR_IMAGE . $path)) {
+					@mkdir(DIR_IMAGE . $path, 0777);
+				}
+			}
+
+			if ($width_orig != $width || $height_orig != $height) {
+				$image = new Image(DIR_UPLOAD . $image_old);
+				$image->resize($width, $height);
+				$image->save(DIR_IMAGE . $image_new);
+			} else {
+				copy(DIR_UPLOAD . $image_old, DIR_IMAGE . $image_new);
+			}
+		}
+		
+		$image_new = str_replace(' ', '%20', $image_new);  // fix bug when attach image on email (gmail.com). it is automatic changing space " " to +
+		
+		if ($this->request->server['HTTPS']) {
+			return $this->config->get('config_ssl') . 'image/' . $image_new;
+		} else {
+			return $this->config->get('config_url') . 'image/' . $image_new;
+		}
 	}
 }

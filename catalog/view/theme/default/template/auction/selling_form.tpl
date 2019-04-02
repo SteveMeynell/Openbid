@@ -19,7 +19,7 @@
           <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-gavel"></i> <?php echo $text_form; ?></h3>
           </div>
-          <div class="panel-body">
+          <div class="panel-body" id="tabs">
             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-selling" class="form-horizontal">
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab-description" data-toggle="tab"><?php echo $tab_description; ?></a></li>
@@ -67,7 +67,7 @@
                           <div class="form-group">
                             <label class="col-sm-2 control-label" for="input-subname<?php echo $language['language_id']; ?>"><?php echo $entry_subname; ?></label>
                             <div class="col-sm-10">
-                              <input type="text" name="auction_description[<?php echo $language['language_id']; ?>][subname]" value="<?php echo isset($auction_description[$language['language_id']]) ? $auction_description[$language['language_id']]['subname'] : ''; ?>" placeholder="<?php echo $entry_subname; ?>" id="input-subname<?php echo $language['language_id']; ?>" class="form-control" />
+                              <input type="text" name="auction_description[<?php echo $language['language_id']; ?>][subname]" value="<?php echo isset($auction_description[$language['language_id']]) ? $auction_description[$language['language_id']]['subname'] : ''; ?>" placeholder="<?php echo $entry_subname; ?>" id="input-subname<?php echo $language['language_id']; ?>" class="form-control fees-apply" />
                               <?php if (isset($error_subname[$language['language_id']])) { ?>
                               <div class="text-danger"><?php echo $error_subname[$language['language_id']]; ?></div>
                               <?php } ?>
@@ -93,7 +93,7 @@
                       <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="<?php echo $help_category; ?>"><?php echo $entry_category; ?></span></label>
                       <div class="col-sm-10">
                         <input type="text" name="category" value="" placeholder="<?php echo $entry_category; ?>" id="input-category" class="form-control" />
-                        <div id="auction-category" class="well well-sm" style="height: 150px; overflow: auto;">
+                        <div id="auction-category" class="well well-sm fees-apply" style="height: 150px; overflow: auto;">
 
                         </div>
                       </div>
@@ -136,9 +136,10 @@
                         <?php foreach ($auction_images as $auction_image) { ?>
                           <tr id="image-num<?php echo $auction_image['sort_order']; ?>">
                             <td class="text-left">
-                              <a href="" id="thumb-image<?php echo $auction_image['sort_order']; ?>" data-toggle="image" class="img-thumbnail"><img src="<?php echo $auction_image['thumb']; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a>
+                              <a href="" id="thumb-image<?php echo $auction_image['sort_order']; ?>" data-toggle="image" class="img-thumbnail"><img src="<?php echo $auction_image['thumb']; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" style="width: 100px; height: 100px;" /></a>
                               <button type="button" id="button-upload" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-default btn-block"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
-                              <input type="hidden" name="uploaded_images[<?php echo $auction_image['sort_order']; ?>]" value="" id="input-images; ?>" />
+                              <input type="hidden" name="uploaded_images[<?php echo $auction_image['sort_order']; ?>]; ?>" value="" id="input-images; ?>" />
+                              <div id="photo-list" style="display: none;"></div>
                             </td>
                             <td class="text-left">
                               <button type="button" onclick="removeImage(<?php echo $auction_image['sort_order']; ?>);" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button>
@@ -158,11 +159,11 @@
                         <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_featured_option; ?>"><?php echo $entry_featured_option; ?></span></label>
                         <div class="col-sm-10">
                           <label class="radio-inline">
-                            <input type="radio" name="featured_option" value="1" checked="checked" />
+                            <input type="radio" id="featured-option" class="fees-apply" name="featured_option" value="1" checked="checked"/>
                             <?php echo $text_yes; ?>
                           </label>
                           <label class="radio-inline">
-                            <input type="radio" name="featured_option" value="0" />
+                            <input type="radio" class="fees-apply" name="featured_option" value="0"/>
                             <?php echo $text_no; ?>
                           </label>
                         </div>
@@ -173,11 +174,11 @@
                         <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_carousel_option; ?>"><?php echo $entry_carousel_option; ?></span></label>
                         <div class="col-sm-10">
                           <label class="radio-inline">
-                            <input type="radio" name="carousel_option" value="1" checked="checked" />
+                            <input type="radio" id="carousel-option" class="fees-apply" name="carousel_option" value="1" checked="checked"/>
                             <?php echo $text_yes; ?>
                           </label>
                           <label class="radio-inline">
-                            <input type="radio" name="carousel_option" value="0" />
+                            <input type="radio" class="fees-apply" name="carousel_option" value="0"/>
                             <?php echo $text_no; ?>
                           </label>
                         </div>
@@ -188,11 +189,11 @@
                         <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_slideshow_option; ?>"><?php echo $entry_slideshow_option; ?></span></label>
                         <div class="col-sm-10">
                           <label class="radio-inline">
-                            <input type="radio" name="slideshow_option" value="1" checked="checked" />
+                            <input type="radio" id="slideshow-option" class="fees-apply" name="slideshow_option" value="1" checked="checked"/>
                             <?php echo $text_yes; ?>
                           </label>
                           <label class="radio-inline">
-                            <input type="radio" name="slideshow_option" value="0" />
+                            <input type="radio" class="fees-apply" name="slideshow_option" value="0"/>
                             <?php echo $text_no; ?>
                           </label>
                         </div>
@@ -202,11 +203,11 @@
                       <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_bolded_option; ?>"><?php echo $entry_bolded_option; ?></span></label>
                       <div class="col-sm-10">
                         <label class="radio-inline">
-                          <input type="radio" name="bolded_option" value="1" checked="checked" />
+                          <input type="radio" id="bolded-option" class="fees-apply" name="bolded_option" value="1" checked="checked"/>
                           <?php echo $text_yes; ?>
                         </label>
                         <label class="radio-inline">
-                          <input type="radio" name="bolded_option" value="0" />
+                          <input type="radio" class="fees-apply" name="bolded_option" value="0"/>
                           <?php echo $text_no; ?>
                         </label>
                       </div>
@@ -215,11 +216,11 @@
                       <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_highlighted_option; ?>"><?php echo $entry_highlighted_option; ?></span></label>
                       <div class="col-sm-10">
                         <label class="radio-inline">
-                          <input type="radio" name="highlighted_option" value="1" checked="checked" />
+                          <input type="radio" id="highlighted-option" class="fees-apply" name="highlighted_option" value="1" checked="checked"/>
                           <?php echo $text_yes; ?>
                         </label>
                         <label class="radio-inline">
-                          <input type="radio" name="highlighted_option" value="0" />
+                          <input type="radio" class="fees-apply" name="highlighted_option" value="0"/>
                           <?php echo $text_no; ?>
                         </label>
                       </div>
@@ -228,11 +229,11 @@
                       <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_social_option; ?>"><?php echo $entry_social_option; ?></span></label>
                       <div class="col-sm-10">
                         <label class="radio-inline">
-                          <input type="radio" name="social_option" value="1" checked="checked" />
+                          <input type="radio" id="social-option" class="fees-apply" name="social_option" value="1" checked="checked"/>
                           <?php echo $text_yes; ?>
                         </label>
                         <label class="radio-inline">
-                          <input type="radio" name="social_option" value="0" />
+                          <input type="radio" class="fees-apply" name="social_option" value="0"/>
                           <?php echo $text_no; ?>
                         </label>
                       </div>
@@ -249,18 +250,18 @@
                         <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_buy_now_only; ?>"><?php echo $entry_buy_now_only; ?></span></label>
                           <div class="col-sm-2">
                             <label class="radio-inline">
-                              <input type="radio" name="buy_now_only" value="1"/>
+                              <input id="buy-now-only" type="radio" name="buy_now_only" value="1" class="fees-apply"/>
                               <?php echo $text_yes; ?>
                             </label>
                             <label class="radio-inline">
-                              <input type="radio" name="buy_now_only" value="0" checked="checked"/>
+                              <input type="radio" name="buy_now_only" value="0" class="fees-apply" checked="checked"/>
                               <?php echo $text_no; ?>
                             </label>
                           </div>
                           <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_buy_now_price; ?>"><?php echo $entry_buy_now_price; ?></span></label>
                             <div class="col-sm-6">
                               <label class="text-inline">
-                                <input type="number" name="buy_now_price" min="0" value="0"/>
+                                <input type="number" name="buy_now_price" class="fees-apply" min="0" value="0"/>
                               </label>
                             </div>
                         </div>
@@ -276,7 +277,7 @@
                         <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_reserve_bid; ?>"><?php echo $entry_reserve_bid; ?></span></label>
                         <div class="col-sm-4">
                           <label class="text-inline">
-                            <input type="number" name="reserve_bid" min="0" value="0"/>
+                            <input type="number" name="reserve_bid" class="fees-apply" min="0" value="0"/>
                           </label>
                         </div>
                       </div>
@@ -289,18 +290,18 @@
                           <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_auto_relist; ?>"><?php echo $entry_auto_relist; ?></span></label>
                           <div class="col-sm-2">
                             <label class="radio-inline">
-                              <input type="radio" name="auto_relist" value="1" checked="checked" />
+                              <input id="auto-relist" type="radio" name="auto_relist" class="fees-apply" value="1" checked="checked"/>
                               <?php echo $text_yes; ?>
                             </label>
                             <label class="radio-inline">
-                              <input type="radio" name="auto_relist" value="0" />
+                              <input type="radio" name="auto_relist" class="fees-apply" value="0"/>
                               <?php echo $text_no; ?>
                             </label>
                           </div>
                           <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_num_relist; ?>"><?php echo $entry_num_relist; ?></span></label>
                             <div class="col-sm-6">
                               <label class="text-inline">
-                                <input type="number" name="num_relist" min="0" max="<?php echo $max_relists; ?>" value="1"/>
+                                <input type="number" class="fees-apply" name="num_relist" min="0" max="<?php echo $max_relists; ?>" value="1"/>
                               </label>
                             </div>
                         <?php } ?>
@@ -381,6 +382,13 @@
                     </details>
                   </div>
                   <br>
+                  <fieldset>
+                    <legend>Listing Cost</legend>
+                    <div class="container">
+                    <ul id="fee-list">
+                    </ul>
+                    </div>
+                  </fieldset>
                   <br>
 
                   <fieldset>
@@ -422,173 +430,197 @@
 </div>
 <?php echo $footer; ?>
 
+
+
 <script type="text/javascript"><!--
-// Category
-$('input[name=\'category\']').autocomplete({
-	'source': function(request, response) {
-		$.ajax({
-			url: 'index.php?route=auction/category/autocomplete&filter_name=' +  encodeURIComponent(request),
-			dataType: 'json',
-			success: function(json) {
-				response($.map(json, function(item) {
-					return {
-						label: item['name'],
-						value: item['category_id']
-					}
-				}));
+  // Fees
+  
+  var tabs = $('.nav-tabs a[href="#tab-confirm"]');
+  tabs.on("focus", function() {
+    var photo_counter = 0;
+    var category_counter = 0;
+    
+    var option_fees = $("input[type='radio']:checked")
+      .filter(".fees-apply")
+      .map(function() {
+        if(this.id) return this.id;
+      })
+      .get()
+      .join();
+  
+    var subtitle_fee = $("input[type='text']").filter(".fees-apply").val();
+    console.log(subtitle_fee);
+    var buy_now_price = -1;
+    var reserve_bid = -1;
+    var num_relist = -1;
+
+    $("input[type='number']")
+      .filter(".fees-apply")
+      .each(function(index) {
+        if(this.name == 'buy_now_price') {buy_now_price = this.value;}
+        if(this.name == 'reserve_bid') {reserve_bid = this.value;}
+        if(this.name == 'num_relist') {num_relist = this.value;}
+      });
+
+    var photos_fee = $("input[type='hidden']").filter(".photos-fees-apply").each(
+      function(index){
+        if($(this.value)) {
+          photo_counter++;
+        }
+      }
+    );
+
+    var category_fee = $("input[type='hidden']").filter(".category-fees-apply").each(
+      function(index){
+        if($(this.value)) {
+          category_counter++;
+        }
+      }
+    );
+
+    $.ajax({
+      url: 'index.php?route=auction/selling/getFees',
+      type: 'post',
+      dataType: 'json',
+      data: 'photo_counter=' + photo_counter + '&category_counter=' + category_counter + '&subtitle=' + subtitle_fee + '&options_used=' + option_fees + '&buy_now_price=' + buy_now_price + '&reserve_bid=' + reserve_bid + '&num_relist=' + num_relist,
+      complete: function() {
+        console.log("completed");
+      },
+      success: function(json) {
+        console.log("success");
+        $('#fee-list').empty();
+        $('#auction-fee-total').remove();
+        
+        $('#fee-list').append('<li id="auction-fee">Auction Setup Fee: ' + json['auction_setup_fee'] + '</li>');
+        if(json['subtitle_fee'] !== null) {
+          $('#fee-list').append('<li id="auction-fee">Adding Sub Title Fee: ' + json['subtitle_fee'] + '</li>');
+        }
+        if(json['category_fee'] !== null) {
+          $('#fee-list').append('<li id="auction-fee">Adding Extra Category Fee: ' + json['category_fee'] + '</li>');
+        }
+        if(json['photo_fee'] !== null) {
+          $('#fee-list').append('<li id="auction-fee">Adding Extra Photos Fee: ' + json['photo_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('featured_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Featured Item Fee: ' + json['featured_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('carousel_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Carousel Advertising Fee: ' + json['carousel_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('bolded_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Bolding Item Fee: ' + json['bolded_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('highlighted_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Highlighting Item Fee: ' + json['highlighted_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('social_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Advertising on Social Media Fee: ' + json['social_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('buy_now_only_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Buy Now Only Fee: ' + json['buy_now_only_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('reserve_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Reserve Pricing Fee: ' + json['reserve_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('auto_relist_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Total Relisting Fee: ' + json['auto_relist_fee']['total_relist_fee'] + ' - Amount Charged After Each Relisting: ' + json['auto_relist_fee']['each_relisting'] + '</li>');
+        }
+
+        $('#fee-list').after('<h3 id="auction-fee-total">Please pay this amount: ' + json['total_fee'] + '</h3>');
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 			}
-		});
-	},
-	'select': function(item) {
-		$('input[name=\'category\']').val('');
+    });
+  });
+  
+  // Category
+  $('input[name=\'category\']').autocomplete({
+    'source': function(request, response) {
+      $.ajax({
+        url: 'index.php?route=auction/category/autocomplete&filter_name=' +  encodeURIComponent(request),
+        dataType: 'json',
+        success: function(json) {
+          response($.map(json, function(item) {
+            return {
+              label: item['name'],
+              value: item['category_id']
+            }
+          }));
+        }
+      });
+    },
+    'select': function(item) {
+      $('input[name=\'category\']').val('');
 
-		$('#auction-category' + item['value']).remove();
+      $('#auction-category' + item['value']).remove();
 
-		$('#auction-category').append('<div id="auction-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="auction_category[]" value="' + item['value'] + '" /></div>');
-	}
-});
+      $('#auction-category').append('<div id="auction-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" class="category-fees-apply" name="auction_category[]" value="' + item['value'] + '" /></div>');
+    }
+  });
 
-$('#auction-category').delegate('.fa-minus-circle', 'click', function() {
-	$(this).parent().remove();
-});
+  $('#auction-category').delegate('.fa-minus-circle', 'click', function() {
+    $(this).parent().remove();
+  });
 
-$('button[id^=\'button-upload\']').on('click', function() {
-	var node = this;
-
-	$('#form-upload').remove();
-
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
-
-	$('#form-upload input[name=\'file\']').trigger('click');
-
-	if (typeof timer != 'undefined') {
-    	clearInterval(timer);
-	}
-
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-
-			$.ajax({
-				url: 'index.php?route=tool/upload',
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).button('loading');
-				},
-				complete: function() {
-					$(node).button('reset');
-				},
-				success: function(json) {
-					$('.text-danger').remove();
-
-					if (json['error']) {
-						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
-					}
-
-					if (json['success']) {
-						alert(json['success']);
-            PreviewImages(json['code']);
-
-						$(node).parent().find('input').val(json['code']);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
-		}
-	}, 500);
-});
+  
 </script>
 <script type="text/javascript"><!--
+  $('button[id^=\'button-upload\']').on('click', function() {
+      var node = this;
 
+      $('#form-upload').remove();
 
-function removeImage(image_row) {
-console.log("clear image info");
-console.log(image_row);
-}
+      $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
 
-function PreviewImages(code){
-  console.log("image upload");
-  console.log(code);
-}
-</script>
- <script>
-        var photoMain = document.querySelector('#photo-main');
-        var preview = document.querySelector('.preview');
-        var maxImageSize = <?php echo $max_image_size; ?> * 1024;
-        var imageWidth = <?php echo $max_image_width; ?>;
-        var imageHeight = <?php echo $max_image_height; ?>;
-        photoMain.style.visibility = 'hidden';
-        photoMain.addEventListener('change', updateImageDisplay);
-        function updateImageDisplay() {
-          while(preview.firstChild) {
-            preview.removeChild(preview.firstChild);
-          }
-          var curFiles = photoMain.files;
-          if(curFiles.length === 0) {
-            var para = document.createElement('p');
-            para.textContent = 'No files currently selected for upload';
-            preview.appendChild(para);
-          } else {
-            var list = document.createElement('ol');
-            preview.appendChild(list);
-            for(var i = 0; i < curFiles.length; i++) {
-              var listItem = document.createElement('li');
-              var para = document.createElement('p');
-              if(validFileType(curFiles[i])) {
-                if(validFileSize(curFiles[i].size)) {
-                  para.textContent = 'File name ' + curFiles[i].name + ', file size ' + returnFileSize(curFiles[i].size) + '.';
-                  var image = new Image(imageWidth, imageHeight); //document.createElement('img');
-                  image.src = window.URL.createObjectURL(curFiles[i]);
-                  listItem.appendChild(image);
-                  listItem.appendChild(para);
-                } else {
-                  para.textContent = 'File name ' + curFiles[i].name + ': File size is too large. Update your selection.';
-                  listItem.appendChild(para);
-                }
-              } else {
-                para.textContent = 'File name ' + curFiles[i].name + ': Not a valid file type. Update your selection.';
-                listItem.appendChild(para);
+      $('#form-upload input[name=\'file\']').trigger('click');
+
+      if (typeof timer != 'undefined') {
+          clearInterval(timer);
+      }
+
+      timer = setInterval(function() {
+        if ($('#form-upload input[name=\'file\']').val() != '') {
+          clearInterval(timer);
+
+          $.ajax({
+            url: 'index.php?route=tool/upload',
+            type: 'post',
+            dataType: 'json',
+            data: new FormData($('#form-upload')[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+              $(node).button('loading');
+            },
+            complete: function() {
+              $(node).button('reset');
+            },
+            success: function(json) {
+              $('.text-danger').remove();
+
+              if (json['error']) {
+                $(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
               }
-              list.appendChild(listItem);
-            }
-          }
-        }
-        var fileTypes = [
-          'image/jpeg',
-          'image/pjpeg',
-          'image/png'
-        ]
-        function validFileType(file) {
-          for(var i = 0; i < fileTypes.length; i++) {
-            if(file.type === fileTypes[i]) {
-              return true;
-            }
-          }
-          return false;
-        }
-        function validFileSize(number) {
-          if(number > maxImageSize) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-        function returnFileSize(number) {
-          if(number < 1024) {
-            return number + 'bytes';
-          } else if(number > 1024 && number < 1048576) {
-            return (number/1024).toFixed(1) + 'KB';
-          } else if(number > 1048576) {
-            return (number/1048576).toFixed(1) + 'MB';
-          }
-        }
 
+              if (json['success']) {
+                alert(json['success']);
+                $(node).parent().find('input').val(json['code']);
+                $(node).parent().find('img').attr('src', json['thumb']);
+                $('#photo-list').append('<input type="hidden" class="photos-fees-apply" value="" id="input-images" />');
+              }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+              alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+          });
+        }
+      }, 500);
+    });
 
-     </script>
+  function removeImage(image_row) {
+    console.log("clear image info");
+    console.log(image_row);
+  }
+</script>

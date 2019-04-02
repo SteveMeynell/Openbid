@@ -20,11 +20,16 @@
         <?php } else { ?>
         <?php $class = 'col-sm-8'; ?>
         <?php } ?>
-        <div class="<?php echo $class; ?> auction-main">
+        <div class="<?php echo $class; ?> auction-main" id="auction-main" value="<?php echo $auction_id; ?>">
           <?php if ($thumb || $images) { ?>
           <ul class="thumbnails">
             <?php if ($thumb) { ?>
-            <li><a class="thumbnail" href="<?php echo $popup; ?>" title="<?php echo $heading_title; ?>"><img src="<?php echo $thumb; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a></li>
+            <li>
+              <a class="thumbnail" href="<?php echo $popup; ?>" title="<?php echo $heading_title; ?>">
+                <img src="<?php echo $thumb; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" />
+                <img id="closed_auction" class="overlayImage" src="<?php echo $closed_image; ?>"/>
+              </a>
+            </li>
             <?php } ?>
             <?php if ($images) { ?>
             <?php foreach ($images as $image) { ?>
@@ -97,6 +102,7 @@
         <div class="<?php echo $class; ?>">
           <h1><?php echo $heading_title; ?></h1>
           <p><?php echo $text_viewed . ' ' . $views; ?></p>
+          <p><?php echo $text_watching . ' ' . $watches; ?></p>
           <h3><?php echo $text_ending_in; ?></h3>
             <h4>
               <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $end_date; ?>"></div>
@@ -171,8 +177,8 @@
               <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;"><?php echo $reviews; ?></a> / <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;"><?php echo $text_write; ?></a></p>
             <hr>
             <!-- AddThis Button BEGIN -->
-            <div class="addthis_toolbox addthis_default_style" data-url="<?php echo $share; ?>"><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a> <a class="addthis_button_tweet"></a> <a class="addthis_button_pinterest_pinit"></a> <a class="addthis_counter addthis_pill_style"></a></div>
-            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-515eeaf54693130e"></script>
+            <!-- <div class="addthis_toolbox addthis_default_style" data-url="<?php echo $share; ?>"><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a> <a class="addthis_button_tweet"></a> <a class="addthis_button_pinterest_pinit"></a> <a class="addthis_counter addthis_pill_style"></a></div> -->
+            <!-- <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-515eeaf54693130e"></script> -->
             <!-- AddThis Button END -->
           </div>
           <?php } ?>
@@ -192,22 +198,7 @@
       <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>
 </div>
-<script type="text/javascript"><!--
-$('.date').datetimepicker({
-	pickTime: false
-});
 
-$('.datetime').datetimepicker({
-	pickDate: true,
-	pickTime: true
-});
-
-$('.time').datetimepicker({
-	pickDate: false
-});
-
-
-//--></script>
 <script type="text/javascript"><!--
 $('#review').delegate('.pagination a', 'click', function(e) {
     e.preventDefault();
@@ -261,7 +252,29 @@ $(document).ready(function() {
 		}
 	});
   getHistory();
+  $("#closed_auction").hide();
   });
+
+  function checkNewBids() {
+    if($("#bidRow").length) {
+      $.ajax({
+      url: 'index.php?route=auction/auction/checkForNewBids',
+      type: 'get',
+      dataType: 'json',
+      data: {auction_id: '<?php echo $auction_id; ?>', num_bids: $("#bidRow").length},
+      success: function(json){
+        if(json['newBids']) {
+          getHistory();
+        } 
+      },
+      error: function(textStatus){
+        console.log("error");
+        console.log(textStatus)
+      }
+      });
+    }
+  }
+
   function getHistory(){
   $.ajax({
     url: 'index.php?route=auction/auction/getBidHistory',
@@ -269,7 +282,6 @@ $(document).ready(function() {
 		dataType: 'json',
     data: {auction_id: '<?php echo $auction_id; ?>', min_bid: '<?php echo $min_bid; ?>'},
     success: function(json){
-      //console.log(json['bids'].length);
       if(json['bids'][0]){
         $("#proxy_amount").val("");
         for(i=json['bids'].length-1;i>=0;i--) {
@@ -295,6 +307,35 @@ $(document).ready(function() {
     }
   });
   }
+  function closeThisAuction(){
+    $.ajax({
+        url: 'index.php?route=auction/auction/Limbo',
+        type: 'post',
+        data: 'auction_id=<?php echo $auction_id; ?>',
+        dataType: 'json',
+        beforeSend: function() {
+            $("#closed_auction").show();
+            $(':button[type="button"]').prop('disabled', true);
+            $("#starting_in_time").remove();
+            $("#time_remaining").text("Closed!");
+        },
+        complete: function() {
+            console.log("completed");
+        },
+        success: function(json) {
+            if (json['redirect']) {
+                location = json['redirect'];
+            }
+
+            if (json['success']) {
+                console.log("success");
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+    });
+  }
 $("#BuyNowButton").click(function(){
   $.ajax({
     url: 'index.php?route=auction/auction/BuyRightNow',
@@ -302,7 +343,6 @@ $("#BuyNowButton").click(function(){
     dataType: 'json',
     data: {auction_id: '<?php echo $auction_id; ?>'},
     success: function(json){
-      console.log("success");
       window.location.replace(json['url']);
       $(".bidRow").empty();
       getHistory();
@@ -323,6 +363,8 @@ $("#PlaceBidButton").click(function(){
     data: {auction_id: '<?php echo $auction_id; ?>', bid_amount: proxyBid, min_bid: '<?php echo $min_bid; ?>'},
     success: function(json){
       console.log("success");
+      console.log("should extend auction: " + json['extend']);
+      $('#starting_in_time').attr("hidden", json['extend']);
       $(".bidRow").empty();
       getHistory();
     },

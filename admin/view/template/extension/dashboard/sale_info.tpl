@@ -5,9 +5,10 @@
     <?php } elseif ($percentage < 0) { ?>
     <i class="fa fa-caret-down"></i>
     <?php } ?>
-    <?php echo $percentage; ?>% </span></div>
+    <?php echo $percentage; ?></span></div>
   <div class="tile-body"><i class="fa fa-credit-card"></i>
     <h2 class="pull-right"><?php echo $total; ?></h2>
+    <div><small>Total Fees Paid: <?php echo $total_sales; ?>-Today: <?php echo $new_sales; ?></small></div>
   </div>
   <div class="tile-footer"><a href="<?php echo $sale; ?>"><?php echo $text_view; ?></a></div>
 </div>

@@ -213,7 +213,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 			$data['seller'] = $auction_info['seller'];
 			$data['num_bids'] = $auction_info['num_bids'];
 			$data['sold_for'] = (isset($winning_bid['bid_amount']) && $winning_bid['winner'])?$winning_bid['bid_amount']:'Did Not Sell!';
-			
+			$data['sold'] = $winning_bid['winner'];
 
 
 			$this->load->model('tool/image');
@@ -229,6 +229,10 @@ class ControllerAuctionClosedAuctions extends Controller {
 			} else {
 				$data['thumb'] = '';
 			}
+
+			$data['closed_image'] = $this->model_tool_image->resize('closed.png', $this->config->get($this->config->get('config_theme') . '_image_thumb_width')*2, $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+			$data['winner_image'] = $this->model_tool_image->resize('thewinner.png', $this->config->get($this->config->get('config_theme') . '_image_thumb_width')*2, $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+			$data['won_image'] = $this->model_tool_image->resize('won_auction.png', $this->config->get($this->config->get('config_theme') . '_image_thumb_width')*2, $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
 
 			$data['images'] = array();
 

@@ -7,31 +7,45 @@ function displayTimeRemaining() {
     var l = testtime.length;
     
     for(nodecounter=0;nodecounter<l;nodecounter++){
-        var myDateTime = checkTime(testtime[nodecounter].attributes.hidden.value);
-        var daysRemaining = DateDiff("d",myTime,myDateTime,1);
-        var hoursRemaining = DateDiff("h",myTime,myDateTime,1) - (daysRemaining*24);
-        var minutesRemaining = DateDiff("n",myTime,myDateTime,1) - ((daysRemaining*1440) + (hoursRemaining*60));
-        var secondsRemaining = DateDiff("s",myTime,myDateTime,1) - ((daysRemaining*86400) + (hoursRemaining*3600) + (minutesRemaining*60));
-        
-        
-        
-        if (daysRemaining) {
-            Times[nodecounter].textContent = daysRemaining + " Days and " + hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
-        } else if (hoursRemaining){
-            Times[nodecounter].textContent = hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
-        } else if (minutesRemaining){
-            Times[nodecounter].textContent = minutesRemaining + " Minutes " + secondsRemaining + " Seconds!";
-        } else if (secondsRemaining){
-            Times[nodecounter].textContent = secondsRemaining + " Seconds!";
-        } 
-        
-        if (secondsRemaining < 0){
-            var auctionId = testtime[nodecounter].previousSibling.previousSibling.attributes.hidden.value;
-            var tester = hideAuctions(auctionId);
+        try {
+            if ($("#auction-main").length) {
+                if($.isFunction(checkNewBids)) {
+                        checkNewBids();
+                }
+            }
+            var myDateTime = checkTime(testtime[nodecounter].attributes.hidden.value);
+            var daysRemaining = DateDiff("d",myTime,myDateTime,1);
+            var hoursRemaining = DateDiff("h",myTime,myDateTime,1) - (daysRemaining*24);
+            var minutesRemaining = DateDiff("n",myTime,myDateTime,1) - ((daysRemaining*1440) + (hoursRemaining*60));
+            var secondsRemaining = DateDiff("s",myTime,myDateTime,1) - ((daysRemaining*86400) + (hoursRemaining*3600) + (minutesRemaining*60));
+            
+            
+            
+            if (daysRemaining) {
+                Times[nodecounter].textContent = daysRemaining + " Days and " + hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
+            } else if (hoursRemaining){
+                Times[nodecounter].textContent = hoursRemaining + " Hours " + minutesRemaining + " Minutes!";
+            } else if (minutesRemaining){
+                Times[nodecounter].textContent = minutesRemaining + " Minutes " + secondsRemaining + " Seconds!";
+            } else if (secondsRemaining){
+                Times[nodecounter].textContent = secondsRemaining + " Seconds!";
+            } 
+            
+            if (secondsRemaining < 0){
+                if ($("#auction-main").length) {
+                    closeThisAuction();
+                } else {
+                    var auctionId = testtime[nodecounter].previousSibling.previousSibling.attributes.hidden.value;
+                    var tester = hideAuctions(auctionId);
+                }
+            }
+        }
+        catch {
+            continue;
         }
     }
     t = setTimeout(function() {
-        displayTimeRemaining()
+        displayTimeRemaining();
     }, 500);
     
 }
@@ -46,8 +60,7 @@ function hideAuctions(auctionId) {
         data: 'auction_id=' + auctionId,
         dataType: 'json',
         beforeSend: function() {
-            console.log("before send");
-            $("#auction-main-" + auctionId).remove();
+            $("#auction-module-" + auctionId).remove();
         },
         complete: function() {
             console.log("completed");

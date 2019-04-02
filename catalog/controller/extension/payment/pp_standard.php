@@ -17,53 +17,20 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 		$this->load->model('checkout/order');
 
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
+		
 		if ($order_info) {
 			$data['business'] = $this->config->get('pp_standard_email');
 			$data['item_name'] = html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8');
 
-			$data['products'] = array();
+			$data['auctions'] = $order_info['auctions'];
 
-			foreach ($this->cart->getProducts() as $product) {
-				$option_data = array();
+			$data['total'] = $this->currency->format($order_info['total'], $order_info['currency_code'], false, false);
 
-				foreach ($product['option'] as $option) {
-					if ($option['type'] != 'file') {
-						$value = $option['value'];
-					} else {
-						$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
-						
-						if ($upload_info) {
-							$value = $upload_info['name'];
-						} else {
-							$value = '';
-						}
-					}
-
-					$option_data[] = array(
-						'name'  => $option['name'],
-						'value' => (utf8_strlen($value) > 20 ? utf8_substr($value, 0, 20) . '..' : $value)
-					);
-				}
-
-				$data['products'][] = array(
-					'name'     => htmlspecialchars($product['name']),
-					'model'    => htmlspecialchars($product['model']),
-					'price'    => $this->currency->format($product['price'], $order_info['currency_code'], false, false),
-					'quantity' => $product['quantity'],
-					'option'   => $option_data,
-					'weight'   => $product['weight']
-				);
-			}
-
-			$data['discount_amount_cart'] = 0;
-
-			$total = $this->currency->format($order_info['total'] - $this->cart->getSubTotal(), $order_info['currency_code'], false, false);
-
+			/*
 			if ($total > 0) {
-				$data['products'][] = array(
+				$data['auctions'][] = array(
 					'name'     => $this->language->get('text_total'),
-					'model'    => '',
+					'num_fees'    => '',
 					'price'    => $total,
 					'quantity' => 1,
 					'option'   => array(),
@@ -72,6 +39,8 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			} else {
 				$data['discount_amount_cart'] -= $total;
 			}
+			*/
+
 
 			$data['currency_code'] = $order_info['currency_code'];
 			$data['first_name'] = html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8');
@@ -95,12 +64,13 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			}
 
 			$data['custom'] = $this->session->data['order_id'];
-
+//debuglog($data);
 			return $this->load->view('extension/payment/pp_standard', $data);
 		}
 	}
 
 	public function callback() {
+		debuglog("ok got to callback");
 		if (isset($this->request->post['custom'])) {
 			$order_id = $this->request->post['custom'];
 		} else {
@@ -132,7 +102,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
 			$response = curl_exec($curl);
-
+debuglog($response);
 			if (!$response) {
 				$this->log->write('PP_STANDARD :: CURL failed ' . curl_error($curl) . '(' . curl_errno($curl) . ')');
 			}

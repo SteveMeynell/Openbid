@@ -4,37 +4,23 @@
     <thead>
       <tr>
         <td class="text-left"><?php echo $column_name; ?></td>
-        <td class="text-left"><?php echo $column_model; ?></td>
         <td class="text-right"><?php echo $column_quantity; ?></td>
-        <td class="text-right"><?php echo $column_price; ?></td>
+        <td class="text-right"><?php echo $column_date_added; ?></td>
         <td class="text-right"><?php echo $column_total; ?></td>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($products as $product) { ?>
+      <?php foreach ($auctions as $auction) { ?>
       <tr>
-        <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
-          <?php foreach ($product['option'] as $option) { ?>
+        <td class="text-left"><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a>
+          <?php foreach ($auction['fee_details'] as $fee) { ?>
           <br />
-          &nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
+          &nbsp;<small> - <?php echo $fee['description']; ?>: <?php echo $fee['amount']; ?></small>
           <?php } ?>
-          <?php if($product['recurring']) { ?>
-          <br />
-          <span class="label label-info"><?php echo $text_recurring_item; ?></span> <small><?php echo $product['recurring']; ?></small>
-          <?php } ?></td>
-        <td class="text-left"><?php echo $product['model']; ?></td>
-        <td class="text-right"><?php echo $product['quantity']; ?></td>
-        <td class="text-right"><?php echo $product['price']; ?></td>
-        <td class="text-right"><?php echo $product['total']; ?></td>
-      </tr>
-      <?php } ?>
-      <?php foreach ($vouchers as $voucher) { ?>
-      <tr>
-        <td class="text-left"><?php echo $voucher['description']; ?></td>
-        <td class="text-left"></td>
-        <td class="text-right">1</td>
-        <td class="text-right"><?php echo $voucher['amount']; ?></td>
-        <td class="text-right"><?php echo $voucher['amount']; ?></td>
+        </td>
+        <td class="text-right"><?php echo $auction['num_fees']; ?></td>
+        <td class="text-right"><?php echo $auction['date_added']; ?></td>
+        <td class="text-right"><?php echo $auction['total']; ?></td>
       </tr>
       <?php } ?>
     </tbody>

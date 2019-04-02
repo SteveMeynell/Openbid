@@ -17,6 +17,8 @@ $_['text_return_account'] = '<a href="customer_id=%d">%s</a> submitted a product
 $_['text_return_guest']   = '%s submitted a product return.';
 $_['text_order_account']  = '<a href="customer_id=%d">%s</a> created a <a href="order_id=%d">new order</a>.';
 $_['text_order_guest']    = '%s created a <a href="order_id=%d">new order</a>.';
+$_['text_new_auction']    = '<a href="customer_id=%d">%s</a> created a new <a href="auction_id=%d">auction</a>.';
+$_['text_place_bid']          = '<a href="customer_id=%d">%s</a> is bidding.';
 
 // Column
 $_['column_customer']     = 'Customer';

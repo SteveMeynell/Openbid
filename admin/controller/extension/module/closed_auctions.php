@@ -26,11 +26,19 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 		$data['text_edit'] = $this->language->get('text_edit');
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
+		$data['text_all'] = $this->language->get('text_all');
+		$data['text_yes'] = $this->language->get('text_yes');
+		$data['text_no'] = $this->language->get('text_no');
+		$data['text_closed'] = $this->language->get('text_closed');
+		$data['text_winners'] = $this->language->get('text_winners');
+		
 
 		$data['entry_name'] = $this->language->get('entry_name');
 		$data['entry_limit'] = $this->language->get('entry_limit');
 		$data['entry_width'] = $this->language->get('entry_width');
 		$data['entry_height'] = $this->language->get('entry_height');
+		$data['entry_type'] = $this->language->get('entry_type');
+		$data['entry_homepage'] = $this->language->get('entry_homepage');
 		$data['entry_status'] = $this->language->get('entry_status');
 
 		$data['help_limit'] = $this->language->get('help_limit');
@@ -67,6 +75,13 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 		} else {
 			$data['error_height'] = '';
 		}
+
+		if (isset($this->error['type'])) {
+			$data['error_type'] = $this->error['type'];
+		} else {
+			$data['error_type'] = '';
+		}
+
 
 		$data['breadcrumbs'] = array();
 
@@ -138,6 +153,22 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 			$data['height'] = 200;
 		}
 
+		if (isset($this->request->post['type'])) {
+			$data['type'] = $this->request->post['type'];
+		} elseif (!empty($module_info)) {
+			$data['type'] = $module_info['type'];
+		} else {
+			$data['type'] = '';
+		}
+
+		if (isset($this->request->post['homepage'])) {
+			$data['homepage'] = $this->request->post['homepage'];
+		} elseif (!empty($module_info)) {
+			$data['homepage'] = $module_info['homepage'];
+		} else {
+			$data['homepage'] = '';
+		}
+
 		if (isset($this->request->post['status'])) {
 			$data['status'] = $this->request->post['status'];
 		} elseif (!empty($module_info)) {
@@ -172,6 +203,10 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 		
 		if (!$this->request->post['height']) {
 			$this->error['height'] = $this->language->get('error_height');
+		}
+
+		if (!$this->request->post['type']) {
+			$this->error['type'] = $this->language->get('error_type');
 		}
 
 		return !$this->error;

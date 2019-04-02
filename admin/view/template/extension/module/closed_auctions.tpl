@@ -62,6 +62,40 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-type"><?php echo $entry_type; ?></label>
+            <div class="col-sm-10">
+              <select name="type" id="input-type" class="form-control">
+                <?php if ($type == 'closed') { ?>
+                <option value="all"><?php echo $text_all; ?></option>
+                <option value="closed" selected="selected"><?php echo $text_closed; ?></option>
+                <option value="winners"><?php echo $text_winners; ?></option>
+                <?php } elseif ($type =='winners') { ?>
+                <option value="all"><?php echo $text_all; ?></option>
+                <option value="closed"><?php echo $text_closed; ?></option>
+                <option value="winners" selected="selected"><?php echo $text_winners; ?></option>
+                <?php } else { ?>
+                <option value="all" selected="selected"><?php echo $text_all; ?></option>
+                <option value="closed"><?php echo $text_closed; ?></option>
+                <option value="winners"><?php echo $text_winners; ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-homepage"><?php echo $entry_homepage; ?></label>
+            <div class="col-sm-10">
+              <select name="homepage" id="input-homepage" class="form-control">
+                <?php if ($homepage) { ?>
+                <option value="1" selected="selected"><?php echo $text_yes; ?></option>
+                <option value="0"><?php echo $text_no; ?></option>
+                <?php } else { ?>
+                <option value="1"><?php echo $text_yes; ?></option>
+                <option value="0" selected="selected"><?php echo $text_no; ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
             <div class="col-sm-10">
               <select name="status" id="input-status" class="form-control">

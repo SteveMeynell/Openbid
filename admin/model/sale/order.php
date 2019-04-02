@@ -169,8 +169,25 @@ class ModelSaleOrder extends Model {
 		}
 	}
 
+
+
+
 	public function getOrders($data = array()) {
-		$sql = "SELECT o.order_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS order_status, o.shipping_code, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `" . DB_PREFIX . "order` o";
+		$sql = "SELECT 
+		o.order_id, 
+		CONCAT(o.firstname, ' ', o.lastname) AS customer, 
+		(SELECT os.name 
+		FROM " . DB_PREFIX . "order_status os 
+		WHERE os.order_status_id = o.order_status_id 
+		AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS 
+		order_status, 
+		o.shipping_code, 
+		o.total, 
+		o.currency_code, 
+		o.currency_value, 
+		o.date_added, 
+		o.date_modified 
+		FROM `" . DB_PREFIX . "order` o";
 
 		if (isset($data['filter_order_status'])) {
 			$implode = array();
@@ -240,34 +257,22 @@ class ModelSaleOrder extends Model {
 
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
-
+//debuglog($sql);
 		$query = $this->db->query($sql);
 
 		return $query->rows;
 	}
 
-	public function getOrderProducts($order_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_product WHERE order_id = '" . (int)$order_id . "'");
+	public function getOrderAuctions($order_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_auction WHERE order_id = '" . (int)$order_id . "'");
 
 		return $query->rows;
 	}
 
-	public function getOrderOptions($order_id, $order_product_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_option WHERE order_id = '" . (int)$order_id . "' AND order_product_id = '" . (int)$order_product_id . "'");
+	public function getOrderFees($order_id, $order_auction_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_fee_detail WHERE order_id = '" . (int)$order_id . "' AND order_auction_id = '" . (int)$order_auction_id . "'");
 
 		return $query->rows;
-	}
-
-	public function getOrderVouchers($order_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_voucher WHERE order_id = '" . (int)$order_id . "'");
-
-		return $query->rows;
-	}
-
-	public function getOrderVoucherByVoucherId($voucher_id) {
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order_voucher` WHERE voucher_id = '" . (int)$voucher_id . "'");
-
-		return $query->row;
 	}
 
 	public function getOrderTotals($order_id) {

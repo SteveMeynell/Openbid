@@ -48,24 +48,6 @@
           </div>
         </div>
         <?php } ?>
-        <?php if ($shipping_required) { ?>
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title"><?php echo $text_checkout_shipping_address; ?></h4>
-          </div>
-          <div class="panel-collapse collapse" id="collapse-shipping-address">
-            <div class="panel-body"></div>
-          </div>
-        </div>
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title"><?php echo $text_checkout_shipping_method; ?></h4>
-          </div>
-          <div class="panel-collapse collapse" id="collapse-shipping-method">
-            <div class="panel-body"></div>
-          </div>
-        </div>
-        <?php } ?>
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title"><?php echo $text_checkout_payment_method; ?></h4>
@@ -121,11 +103,13 @@ $(document).ready(function() {
     });
 });
 <?php } else { ?>
+console.log("logged");
 $(document).ready(function() {
     $.ajax({
         url: 'index.php?route=checkout/payment_address',
         dataType: 'html',
         success: function(html) {
+            
             $('#collapse-payment-address .panel-body').html(html);
 
 			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><?php echo $text_checkout_payment_address; ?> <i class="fa fa-caret-down"></i></a>');
@@ -151,6 +135,7 @@ $(document).delegate('#button-account', 'click', function() {
 			$('#button-account').button('reset');
         },
         success: function(html) {
+            console.log("success");
             $('.alert, .text-danger').remove();
 
             $('#collapse-payment-address .panel-body').html(html);

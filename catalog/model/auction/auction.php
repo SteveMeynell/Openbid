@@ -84,6 +84,7 @@ class ModelAuctionAuction extends Model {
         $original = $query->row;
 
         $newRelist = $original['relist'] - 1;
+        $thisRelisting = $original['num_relist'] - $newRelist;
         $currentDate = $this->db->query("SELECT NOW() AS currenttime")->row;
         $this->db->query("INSERT INTO " . DB_PREFIX . "auctions 
         SET 
@@ -115,15 +116,23 @@ class ModelAuctionAuction extends Model {
 
         foreach ($results as $language_id => $value) {
             $languageId = (int)$language_id + 1;
+            if(substr($value['name'],-8) == 'Relisted') {
+                $name = substr($this->db->escape($value['name']), 0, -13) . ' - ' . strval($thisRelisting) . 'XRelisted';
+                $metaTitle = substr($this->db->escape($value['meta_title']), 0, -13) . ' - ' . strval($thisRelisting) . 'XRelisted';
+            } else {
+                $name = $this->db->escape($value['name']) . ' - ' . strval($thisRelisting) . 'XRelisted';
+                $metaTitle = $this->db->escape($value['meta_title']) . ' - ' . strval($thisRelisting) . 'XRelisted';
+            }
+
 			$this->db->query("INSERT INTO " . DB_PREFIX . "auction_description
 							 SET
 							 auction_id = '" . (int)$newAuctionId . "',
 							 language_id = '" . (int)$languageId . "',
-							 name = '" . $this->db->escape($value['name']) . "',
+							 name = '" . $name . "',
 							 subname = '" . $this->db->escape($value['subname']) . "',
 							 description = '" . $this->db->escape($value['description']) . "',
 							 tag = '" . $this->db->escape($value['tag']) . "',
-							 meta_title = '" . $this->db->escape($value['meta_title']) . "',
+							 meta_title = '" . $metaTitle . "',
 							 meta_description = '" . $this->db->escape($value['meta_description']) . "',
 							 meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'
 							 ");
@@ -146,7 +155,7 @@ class ModelAuctionAuction extends Model {
         $this->db->query("INSERT INTO " . DB_PREFIX . "auction_details 
         SET 
             auction_id = '" . (int)$newAuctionId . "',
-            title = '" . $result['title'] . "', 
+            title = '" . $result['title'] . "-Relist', 
             subtitle = '" . $result['subtitle'] . "', 
             min_bid = '" . $result['min_bid'] . "', 
             shipping_cost = '" . $result['shipping_cost'] . "', 
@@ -224,10 +233,6 @@ class ModelAuctionAuction extends Model {
     }
 
     public function closeWonAuction($auction_id){
-        $sql = "UPDATE " . DB_PREFIX . "auctions 
-        SET status = '3'  
-        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
-        $this->db->query($sql);
         $query = "SELECT  
             ad.title AS title, 
             bh.bidder_id AS bidder, 
@@ -247,6 +252,12 @@ class ModelAuctionAuction extends Model {
         $results = $this->db->query($query);
         $auctionInfo = $results->row;
 
+        $sql = "UPDATE " . DB_PREFIX . "auctions 
+        SET status = '3', 
+        winning_bid = '" . (float)$auctionInfo['bid_amount'] . "' 
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        $this->db->query($sql);
+
         return $auctionInfo;
     }
 
@@ -265,6 +276,16 @@ class ModelAuctionAuction extends Model {
         return $results->row['status'];
     }
 
+    public function getAuctionStatusByOrder($order_id) {
+        $orderId = $this->db->escape($order_id);
+        $sql = "SELECT oa.auction_id, a.status FROM " . DB_PREFIX . "order_auction oa 
+        LEFT JOIN " . DB_PREFIX . "auctions a ON (oa.auction_id = a.auction_id) 
+        WHERE oa.order_id = '" . (int)$orderId . "'";
+        debuglog($sql);
+        $query = $this->db->query($sql);
+        return $query->rows;
+    }
+    
     public function getAuctionInfoOfWinner($auction_id) {
         $auctionId = $this->db->escape($auction_id);
 
@@ -274,6 +295,17 @@ class ModelAuctionAuction extends Model {
         return $this->db->query($query)->row;
     }
 
+    public function extendAuction($auction_id) {
+        $auctionId = $this->db->escape($auction_id);
+        $extendTime = $this->config->get('config_auction_extension_for') * 60;
+        $sql = "UPDATE " . DB_PREFIX . "auction_details 
+        SET 
+        end_date = ADDTIME(end_date, '" . $extendTime . "') 
+        WHERE auction_id = '" . (int)$auctionId . "'";
+        $this->db->query($sql);
+        $query = $this->db->query("SELECT end_date FROM " . DB_PREFIX . "auction_details WHERE auction_id = '" . (int)$auctionId . "'");
+        return $query->row['end_date'];
+    }
 
     // End of Model
 }

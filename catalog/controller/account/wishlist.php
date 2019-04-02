@@ -11,7 +11,9 @@ class ControllerAccountWishList extends Controller {
 
 		$this->load->model('account/wishlist');
 
-		$this->load->model('catalog/product');
+		$this->load->model('catalog/auction');
+
+		$this->load->model('auction/bidding');
 
 		$this->load->model('tool/image');
 
@@ -49,9 +51,11 @@ class ControllerAccountWishList extends Controller {
 
 		$data['column_image'] = $this->language->get('column_image');
 		$data['column_name'] = $this->language->get('column_name');
-		$data['column_model'] = $this->language->get('column_model');
-		$data['column_stock'] = $this->language->get('column_stock');
-		$data['column_price'] = $this->language->get('column_price');
+		$data['column_start_date'] = $this->language->get('column_start_date');
+		$data['column_end_date'] = $this->language->get('column_end_date');
+		$data['column_reserve_price'] = $this->language->get('column_reserve_price');
+		$data['column_buy_now_price'] = $this->language->get('column_buy_now_price');
+		$data['column_current_bid'] = $this->language->get('column_current_bid');
 		$data['column_action'] = $this->language->get('column_action');
 
 		$data['button_continue'] = $this->language->get('button_continue');
@@ -66,53 +70,58 @@ class ControllerAccountWishList extends Controller {
 			$data['success'] = '';
 		}
 
-		$data['products'] = array();
+		$data['auctions'] = array();
 
 		$results = $this->model_account_wishlist->getWishlist();
 
 		foreach ($results as $result) {
-			$product_info = $this->model_catalog_product->getProduct($result['product_id']);
+			$auction_info = $this->model_catalog_auction->getAuction($result['auction_id']);
 
-			if ($product_info) {
-				if ($product_info['image']) {
-					$image = $this->model_tool_image->resize($product_info['image'], $this->config->get($this->config->get('config_theme') . '_image_wishlist_width'), $this->config->get($this->config->get('config_theme') . '_image_wishlist_height'));
+			if ($auction_info) {
+				if ($auction_info['main_image']) {
+					$image = $this->model_tool_image->resize($auction_info['main_image'], $this->config->get($this->config->get('config_theme') . '_image_wishlist_width'), $this->config->get($this->config->get('config_theme') . '_image_wishlist_height'));
 				} else {
 					$image = false;
 				}
 
-				if ($product_info['quantity'] <= 0) {
-					$stock = $product_info['stock_status'];
-				} elseif ($this->config->get('config_stock_display')) {
-					$stock = $product_info['quantity'];
+				if ($auction_info['status'] == '1') {
+					// Auction not open yet
+					// don't show any prices or bids
+					$reserve_price = 'Not Open Yet';
+					$buy_now_price = 'Not Open Yet';
+					$currentBid = 'Not Open Yet';
+					$href = $this->url->link('account/wishlist');
+				} elseif ($auction_info['status'] == '3') {
+					// Auction is closed
+					// Only show the winning bid
+					$reserve_price = 'Closed';
+					$buy_now_price = 'Closed';
+					$currentBid = $this->currency->format($auction_info['winning_bid'], $this->session->data['currency']);
+					$href = $this->url->link('auction/closed_auctions', 'auction_id=' . $auction_info['auction_id']);
 				} else {
-					$stock = $this->language->get('text_instock');
+					// Auction is open
+					// show all the prices
+					$reserve_price = $this->currency->format($auction_info['reserve_price'], $this->session->data['currency']);
+					$buy_now_price = $this->currency->format($auction_info['buy_now_price'], $this->session->data['currency']);
+					$current_bid = $this->model_auction_bidding->getCurrentBid($result['auction_id']);
+					$currentBid = $this->currency->format($current_bid['bid_amount'], $this->session->data['currency']);
+					$href = $this->url->link('auction/auction', 'auction_id=' . $auction_info['auction_id']);
 				}
 
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
-
-				if ((float)$product_info['special']) {
-					$special = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$special = false;
-				}
-
-				$data['products'][] = array(
-					'product_id' => $product_info['product_id'],
-					'thumb'      => $image,
-					'name'       => $product_info['name'],
-					'model'      => $product_info['model'],
-					'stock'      => $stock,
-					'price'      => $price,
-					'special'    => $special,
-					'href'       => $this->url->link('product/product', 'product_id=' . $product_info['product_id']),
-					'remove'     => $this->url->link('account/wishlist', 'remove=' . $product_info['product_id'])
+				$data['auctions'][] = array(
+					'auction_id'				=> $auction_info['auction_id'],
+					'thumb'							=> $image,
+					'name'							=> $auction_info['name'],
+					'start_date'				=> $auction_info['start_date'],
+					'end_date'					=> $auction_info['end_date'],
+					'reserve_price'			=> $reserve_price,
+					'buy_now_price'			=> $buy_now_price,
+					'current_bid'				=> $currentBid,
+					'href'							=> $href,
+					'remove'						=> $this->url->link('account/wishlist', 'remove=' . $auction_info['auction_id'])
 				);
 			} else {
-				$this->model_account_wishlist->deleteWishlist($result['product_id']);
+				$this->model_account_wishlist->deleteWishlist($result['auction_id']);
 			}
 		}
 
@@ -133,24 +142,24 @@ class ControllerAccountWishList extends Controller {
 
 		$json = array();
 
-		if (isset($this->request->post['product_id'])) {
-			$product_id = $this->request->post['product_id'];
+		if (isset($this->request->post['auction_id'])) {
+			$auction_id = $this->request->post['auction_id'];
 		} else {
-			$product_id = 0;
+			$auction_id = 0;
 		}
 
-		$this->load->model('catalog/product');
+		$this->load->model('catalog/auction');
 
-		$product_info = $this->model_catalog_product->getProduct($product_id);
+		$auction_info = $this->model_catalog_auction->getAuction($auction_id);
 
-		if ($product_info) {
+		if ($auction_info) {
 			if ($this->customer->isLogged()) {
 				// Edit customers cart
 				$this->load->model('account/wishlist');
 
-				$this->model_account_wishlist->addWishlist($this->request->post['product_id']);
+				$this->model_account_wishlist->addWishlist($this->request->post['auction_id']);
 
-				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));
+				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('auction/auction', 'auction_id=' . (int)$this->request->post['auction_id']), $auction_info['name'], $this->url->link('account/wishlist'));
 
 				$json['total'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());
 			} else {
@@ -158,11 +167,11 @@ class ControllerAccountWishList extends Controller {
 					$this->session->data['wishlist'] = array();
 				}
 
-				$this->session->data['wishlist'][] = $this->request->post['product_id'];
+				$this->session->data['wishlist'][] = $this->request->post['auction_id'];
 
 				$this->session->data['wishlist'] = array_unique($this->session->data['wishlist']);
 
-				$json['success'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));
+				$json['success'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true), $this->url->link('auction/auction', 'auction_id=' . (int)$this->request->post['auction_id']), $auction_info['name'], $this->url->link('account/wishlist'));
 
 				$json['total'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));
 			}

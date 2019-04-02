@@ -511,6 +511,80 @@
                     </select>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-order-status"><span data-toggle="tooltip" title="<?php echo $help_order_status; ?>"><?php echo $entry_order_status; ?></span></label>
+                  <div class="col-sm-10">
+                    <select name="config_order_status_id" id="input-order-status" class="form-control">
+                      <?php foreach ($order_statuses as $order_status) { ?>
+                      <?php if ($order_status['order_status_id'] == $config_order_status_id) { ?>
+                      <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                      <?php } else { ?>
+                      <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                      <?php } ?>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-process-status"><span data-toggle="tooltip" title="<?php echo $help_processing_status; ?>"><?php echo $entry_processing_status; ?></span></label>
+                  <div class="col-sm-10">
+                    <div class="well well-sm" style="height: 150px; overflow: auto;">
+                      <?php foreach ($order_statuses as $order_status) { ?>
+                      <div class="checkbox">
+                        <label>
+                          <?php if (in_array($order_status['order_status_id'], $config_processing_status)) { ?>
+                          <input type="checkbox" name="config_processing_status[]" value="<?php echo $order_status['order_status_id']; ?>" checked="checked" />
+                          <?php echo $order_status['name']; ?>
+                          <?php } else { ?>
+                          <input type="checkbox" name="config_processing_status[]" value="<?php echo $order_status['order_status_id']; ?>" />
+                          <?php echo $order_status['name']; ?>
+                          <?php } ?>
+                        </label>
+                      </div>
+                      <?php } ?>
+                    </div>
+                    <?php if ($error_processing_status) { ?>
+                    <div class="text-danger"><?php echo $error_processing_status; ?></div>
+                    <?php } ?>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-complete-status"><span data-toggle="tooltip" title="<?php echo $help_complete_status; ?>"><?php echo $entry_complete_status; ?></span></label>
+                  <div class="col-sm-10">
+                    <div class="well well-sm" style="height: 150px; overflow: auto;">
+                      <?php foreach ($order_statuses as $order_status) { ?>
+                      <div class="checkbox">
+                        <label>
+                          <?php if (in_array($order_status['order_status_id'], $config_complete_status)) { ?>
+                          <input type="checkbox" name="config_complete_status[]" value="<?php echo $order_status['order_status_id']; ?>" checked="checked" />
+                          <?php echo $order_status['name']; ?>
+                          <?php } else { ?>
+                          <input type="checkbox" name="config_complete_status[]" value="<?php echo $order_status['order_status_id']; ?>" />
+                          <?php echo $order_status['name']; ?>
+                          <?php } ?>
+                        </label>
+                      </div>
+                      <?php } ?>
+                    </div>
+                    <?php if ($error_complete_status) { ?>
+                    <div class="text-danger"><?php echo $error_complete_status; ?></div>
+                    <?php } ?>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-fraud-status"><span data-toggle="tooltip" title="<?php echo $help_fraud_status; ?>"><?php echo $entry_fraud_status; ?></span></label>
+                  <div class="col-sm-10">
+                    <select name="config_fraud_status_id" id="input-fraud-status" class="form-control">
+                      <?php foreach ($order_statuses as $order_status) { ?>
+                      <?php if ($order_status['order_status_id'] == $config_fraud_status_id) { ?>
+                      <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                      <?php } else { ?>
+                      <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                      <?php } ?>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
               </fieldset>
               <fieldset>
                 <legend><?php echo $text_checkout; ?></legend>

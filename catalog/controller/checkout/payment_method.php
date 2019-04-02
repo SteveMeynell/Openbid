@@ -6,16 +6,22 @@ class ControllerCheckoutPaymentMethod extends Controller {
 		if (isset($this->session->data['payment_address'])) {
 			// Totals
 			$totals = array();
-			$taxes = $this->cart->getTaxes();
+			//$taxes = $this->cart->getTaxes();
 			$total = 0;
+
+			$auctions = $this->cart->getFees();
+			foreach($auctions as $auction) {
+				$total += $auction['total_fees'];
+			}
 
 			// Because __call can not keep var references so we put them into an array.
 			$total_data = array(
 				'totals' => &$totals,
-				'taxes'  => &$taxes,
+				//'taxes'  => &$taxes,
 				'total'  => &$total
 			);
-			
+			//debuglog("issue might be in the totals...");
+			//debuglog($total_data);
 			$this->load->model('extension/extension');
 
 			$sort_order = array();
@@ -41,17 +47,18 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			$method_data = array();
 
 			$this->load->model('extension/extension');
-
+//debuglog("ok issue is here");
 			$results = $this->model_extension_extension->getExtensions('payment');
-
-			$recurring = $this->cart->hasRecurringProducts();
-
+//debuglog($total);
+			$recurring = false; //$this->cart->hasRecurringProducts();
+			//debuglog("results:");
+//debuglog($results);
 			foreach ($results as $result) {
 				if ($this->config->get($result['code'] . '_status')) {
 					$this->load->model('extension/payment/' . $result['code']);
 
 					$method = $this->{'model_extension_payment_' . $result['code']}->getMethod($this->session->data['payment_address'], $total);
-
+//debuglog($method);
 					if ($method) {
 						if ($recurring) {
 							if (property_exists($this->{'model_extension_payment_' . $result['code']}, 'recurringPayments') && $this->{'model_extension_payment_' . $result['code']}->recurringPayments()) {
@@ -141,28 +148,13 @@ class ControllerCheckoutPaymentMethod extends Controller {
 		}
 
 		// Validate cart has products and has stock.
-		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
+		if (!$this->cart->hasFees()) {
 			$json['redirect'] = $this->url->link('checkout/cart');
 		}
+		
 
 		// Validate minimum quantity requirements.
-		$products = $this->cart->getProducts();
-
-		foreach ($products as $product) {
-			$product_total = 0;
-
-			foreach ($products as $product_2) {
-				if ($product_2['product_id'] == $product['product_id']) {
-					$product_total += $product_2['quantity'];
-				}
-			}
-
-			if ($product['minimum'] > $product_total) {
-				$json['redirect'] = $this->url->link('checkout/cart');
-
-				break;
-			}
-		}
+		$auctions = $this->cart->getFees();
 
 		if (!isset($this->request->post['payment_method'])) {
 			$json['error']['warning'] = $this->language->get('error_payment');

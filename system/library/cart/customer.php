@@ -123,7 +123,7 @@ class Customer {
 	}
 
 	public function getBalance() {
-		$query = $this->db->query("SELECT SUM(amount) AS total FROM " . DB_PREFIX . "customer_transaction WHERE customer_id = '" . (int)$this->customer_id . "'");
+		$query = $this->db->query("SELECT SUM(amount) AS total FROM " . DB_PREFIX . "cart WHERE customer_id = '" . (int)$this->customer_id . "'");
 
 		return $query->row['total'];
 	}

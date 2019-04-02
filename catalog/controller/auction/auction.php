@@ -3,6 +3,9 @@ class ControllerAuctionAuction extends Controller {
 	private $error = array();
 
 	public function index() {
+		if(!$this->isThisAuctionOpen()) {
+			$this->response->redirect($this->url->link('auction/closed_auctions', 'auction_id=' . $this->request->get['auction_id']));
+		}
 		$customerGroupId = $this->customer->getGroupId();
 		$customerOnline = $this->customer->isLogged();
 		$seePrices = $this->config->get('config_customer_price');
@@ -146,7 +149,7 @@ class ControllerAuctionAuction extends Controller {
 		$this->load->model('catalog/auction');
 
 		$auction_info = $this->model_catalog_auction->getAuction($auction_id);
-
+// steve
 		if ($auction_info) {
 			$url = '';
 			
@@ -225,6 +228,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['text_buy_now_only'] = $this->language->get('text_buy_now_only');
 			$data['text_current_bid'] = $this->language->get('text_current_bid');
 			$data['text_viewed'] = $this->language->get('text_viewed');
+			$data['text_watching'] = $this->language->get('text_watching');
 			$data['text_please_login']	= $this->language->get('text_please_login');
 			$data['text_ending_in'] = $this->language->get('text_ending_in');
 			$data['text_reserved_bid'] = $this->language->get('text_reserved_bid');
@@ -270,6 +274,8 @@ class ControllerAuctionAuction extends Controller {
 				$data['thumb'] = '';
 			}
 
+			$data['closed_image'] = $this->model_tool_image->resize('closed.png', $this->config->get($this->config->get('config_theme') . '_image_thumb_width')*2, $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
+
 			$data['images'] = array();
 
 			$results = $this->model_catalog_auction->getAuctionImages($this->request->get['auction_id']);
@@ -284,7 +290,7 @@ class ControllerAuctionAuction extends Controller {
 			$data['buy_now_only'] = $auction_info['buy_now_only'];
 			$this->load->model('auction/bidding');
 			
-			if ($this->customer->isLogged() && $this->customer->getGroupId()!='2') {
+			if ($this->customer->isLogged() && $this->customer->getGroupId()!='2' && $this->customer->getId() != $auction_info['customer_id']) {
 				$data['can_bid'] = 'yes';
 			} else {
 				$data['can_bid'] = 'no';
@@ -332,6 +338,8 @@ class ControllerAuctionAuction extends Controller {
 			
 			$data['rating'] = (int)$auction_info['rating'];
 			$data['views'] = $auction_info['viewed'];
+			$this->load->model("auction/wishlist");
+			$data['watches'] = $this->model_auction_wishlist->getTotalWatching($this->request->get['auction_id']);
 
 			// Captcha
 			if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
@@ -615,7 +623,7 @@ class ControllerAuctionAuction extends Controller {
 	public function BuyRightNow(){
 		$auction_id = $this->request->post['auction_id'];
 		$json = array();
-	
+		$this->load->language('mail/auction');
 		// things to do here
 		
 
@@ -638,7 +646,7 @@ class ControllerAuctionAuction extends Controller {
 		// mark auction as closed
 		
 		$winningInfo = $this->model_auction_auction->closeWonAuction($auction_id);
-		debuglog($winningInfo);
+		//debuglog($winningInfo);
 		$winningInfo['type'] = 'buynow';
 		//$PostOffice = $this->load->controller('common/postoffice');
 		$well = $this->sendMail($winningInfo);
@@ -674,7 +682,15 @@ class ControllerAuctionAuction extends Controller {
 		);
 		
 		$result = $this->model_auction_bidding->placeBid($thisBid);
-		
+		if($this->config->get('config_auction_extension')) {
+			if($this->model_auction_bidding->shouldExtendAuction($result)) {
+				$this->load->model('auction/auction');
+				$json['extend'] = $this->model_auction_auction->extendAuction($auction_id);
+			}
+		} else {
+			$json['extend'] = false;
+		}
+		debuglog($json);
 		// Add to activity log
 		if ($this->config->get('config_customer_activity')) {
 			$this->load->model('account/activity');
@@ -712,7 +728,7 @@ class ControllerAuctionAuction extends Controller {
 			break;
 
 			case '2':
-			debuglog("open now what");
+			//debuglog("open now what");
 			//	if time has run out
 			$winningBidder = '';
 			if ($this->model_auction_auction->hasExpired($auctionId)) {
@@ -724,25 +740,40 @@ class ControllerAuctionAuction extends Controller {
 				if ($current_bid['bid_amount'] > 0 && $testamount >= 0)  {
 					// we have a winner
 					$auctionInfo = $this->declareWinner($current_bid);
+					$this->model_auction_bidding->moveBids2History($auctionId);
+					$winningInfo = $this->model_auction_auction->closeWonAuction($auctionId);
 					$auctionInfo['type'] = 'winner';
-
 					$well = $this->sendMail($auctionInfo);
 				} elseif ($this->model_auction_auction->isRelistable($auctionId)) {
 					$auctionInfo = $this->model_auction_auction->relistAuction($auctionId);
-					$seller_info = $this->model_account_customer->getCustomerInfoById($auctionInfo['seller_id']);
+					$seller_info = $this->model_auction_auction->closeAuction($auctionId);
+					$this->model_auction_bidding->moveBids2History($auctionId);
+					//$seller_info = $this->model_account_customer->getCustomerInfoById($auctionInfo['seller_id']);
 					$seller_info['type'] = 'relist';
 					$seller_info['link'] = html_entity_decode($this->url->link('auction/edit', 'auction_id=' . $auctionInfo['auction_id'], true) . "\n\n", ENT_QUOTES, 'UTF-8');
 					$sellerInfo = array_merge($seller_info, $auctionInfo);
 					$auctionInfo['highest_bid'] = $current_bid['bid_amount'];
 					$sellerInfo['message'] = $this->getRelistMessage($auctionInfo);
-
+					$this->load->model('fees/fees');
+					$this->load->model('bookkeeping/accounting');
+					$feeInfo = array(
+						'auction_id'		=> $auctionInfo['auction_id'],
+						'customer_id'		=> $auctionInfo['seller_id'],
+						'fee_code'			=> $this->model_bookkeeping_accounting->getAccountCodeByShortCode('A-relist'),
+						'amount'				=> strval($this->config->get('fees_relist_fee'))
+					);
+					$relistFee = $this->model_fees_fees->addFee($feeInfo);
+					$this->model_fees_fees->addFeeToCart($feeInfo);
+					//$this->cart->add($auctionInfo['auction_id'], $feeInfo['amount']);
 					$well = $this->sendMail($sellerInfo);
 				} else {
 					// not relistable just close it and send emails
+					$sellerInfo = $this->model_auction_auction->closeAuction($auctionId);
+					$this->model_auction_bidding->moveBids2History($auctionId);
 				}
 
-				$sellerInfo = $this->model_auction_auction->closeAuction($auctionId);
-				$this->model_auction_bidding->moveBids2History($auctionId);
+				//$sellerInfo = $this->model_auction_auction->closeAuction($auctionId);
+				//$this->model_auction_bidding->moveBids2History($auctionId);
 			}
 			
 			break;
@@ -750,6 +781,7 @@ class ControllerAuctionAuction extends Controller {
 			default:
 			debuglog("hmmm this shouldn't happen");
 			debuglog($currentStatus);
+			$json['redirect'] = "index.php?route=auction/closed_auctions&auction_id=" . $auction_id;
 		}
 
 		$json['success'] = 'Yaaaaay it works';
@@ -758,6 +790,7 @@ class ControllerAuctionAuction extends Controller {
 	}
 	
 	public function declareWinner($bid_data) {
+		$this->model_auction_bidding->markBidWon($this->db->escape($bid_data['bid_id']));
 		$bidderInfo = $this->model_account_customer->getCustomerInfoById($this->db->escape($bid_data['bidder_id']));
 		$auction_data = $this->model_auction_auction->getAuctionInfoOfWinner($this->db->escape($bid_data['auction_id']));
 		$sellerInfo = $this->model_account_customer->getCustomerInfoById($auction_data['customer_id']);
@@ -940,5 +973,29 @@ class ControllerAuctionAuction extends Controller {
 		return $sent;
 	}
 
+	public function checkForNewBids() {
+		$json = array();
+		$json['newBids'] = false;
+		$auctionId = $this->request->get['auction_id'];
+		$currentNumberOfBids = $this->request->get['num_bids'];
+		$sql = "SELECT COUNT(*) AS bidCount FROM " . DB_PREFIX . "current_bids WHERE auction_id = '" . $auctionId . "'";
+		$query = $this->db->query($sql)->row;
+		if($query['bidCount'] > $currentNumberOfBids) {
+			$json['newBids'] = true;
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function isThisAuctionOpen(){
+		$this->load->model('auction/auction');
+		$status = $this->model_auction_auction->getAuctionStatus($this->request->get['auction_id']);
+		if ($status == '2') {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	// end of controller
 }
