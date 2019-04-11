@@ -238,7 +238,8 @@ class ControllerAuctionSearch extends Controller {
 
 
 				if ($this->config->get('config_review_status')) {
-					$rating = (int)$result['rating'];
+					$this->load->model('catalog/review');
+					$rating = $this->model_catalog_review->getTotalRateBySellerId($result['customer_id']);
 				} else {
 					$rating = false;
 				}
@@ -251,7 +252,7 @@ class ControllerAuctionSearch extends Controller {
 					'price'       => $price,
 					'views'				=> $result['viewed'],
 					'bids'         => $numBids['num_bids'],
-					'rating'      => $result['rating'],
+					'rating'      => $rating,
 					'href'        => $this->url->link('auction/auction', 'auction_id=' . $result['auction_id'])
 				);
 			}

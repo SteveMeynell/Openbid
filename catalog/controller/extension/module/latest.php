@@ -47,7 +47,7 @@ class ControllerExtensionModuleLatest extends Controller {
 				}
 				
 				if ($this->config->get('config_review_status')) {
-					$rating = $result['rating'];
+					$rating = $this->model_catalog_review->getTotalRateBySellerId($result['customer_id']);
 				} else { 
 					$rating = false;
 				}

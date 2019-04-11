@@ -23,6 +23,7 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 
 		//debuglog($setting['type']);
 		$this->load->model('catalog/auction');
+		$this->load->model('catalog/review');
 		$filter = array(
 			'limit'	=> $setting['limit'],
 			'winners'	=> $setting['type']
@@ -45,14 +46,9 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 				}
 
 				$price = $this->currency->format($auction_info['winning_bid'], $this->session->data['currency']);
-/*					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-						$price = $this->currency->format($this->tax->calculate($auction_info['price'], $auction_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					} else {
-						$price = false;
-					}
-*/
 
-				$rating = '4';
+
+				$rating = $this->model_catalog_review->getTotalRateBySellerId($auction_info['seller_id']);
 
 				$data['auctions'][] = array(
 					'auction_id'  => $auction_info['auction_id'],

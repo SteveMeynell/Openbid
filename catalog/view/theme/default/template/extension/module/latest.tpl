@@ -6,9 +6,6 @@
         <div class="image"><a href="<?php echo $auction['href']; ?>"><img src="<?php echo $auction['thumb']; ?>" alt="<?php echo $auction['name']; ?>" title="<?php echo $auction['name']; ?>" class="img-responsive" /></a></div>
         <div class="caption">
           <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['name']; ?></a></h4>
-          <p><?php echo $auction['description']; ?></p>
-          <p><?php echo $text_viewed . ' ' . $auction['views']; ?></p>
-          <?php if ($auction['rating']) { ?>
           <div class="rating">
             <?php for ($i = 1; $i <= 5; $i++) { ?>
             <?php if ($auction['rating'] < $i) { ?>
@@ -18,7 +15,8 @@
             <?php } ?>
             <?php } ?>
           </div>
-          <?php } ?>
+          <p><?php echo $auction['description']; ?></p>
+          <p><?php echo $text_viewed . ' ' . $auction['views']; ?></p>
           <p class="price">
             <?php if (!$auction['current_bid'] && !$auction['buy_now']) { ?>
               <span class="price-new"><?php echo $text_please_login; ?></span>
@@ -35,9 +33,7 @@
           </p>
         </div>
         <div class="button-group">
-          <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_bid; ?></span></button>
-          <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
-          <button type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-exchange"></i></button>
+          <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i><span class="hidden-xs hidden-sm hidden-md"><?php echo $button_wishlist; ?></span></button>
         </div>
       </div>
     </div>

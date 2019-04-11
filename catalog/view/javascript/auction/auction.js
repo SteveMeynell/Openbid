@@ -8,11 +8,6 @@ function displayTimeRemaining() {
     
     for(nodecounter=0;nodecounter<l;nodecounter++){
         try {
-            if ($("#auction-main").length) {
-                if($.isFunction(checkNewBids)) {
-                        checkNewBids();
-                }
-            }
             var myDateTime = checkTime(testtime[nodecounter].attributes.hidden.value);
             var daysRemaining = DateDiff("d",myTime,myDateTime,1);
             var hoursRemaining = DateDiff("h",myTime,myDateTime,1) - (daysRemaining*24);
@@ -44,8 +39,14 @@ function displayTimeRemaining() {
             continue;
         }
     }
+    
     t = setTimeout(function() {
         displayTimeRemaining();
+       /* if ($("#auction-main").length) {
+            if($.isFunction(checkNewBids)) {
+                    checkNewBids();
+            }
+        }*/
     }, 500);
     
 }

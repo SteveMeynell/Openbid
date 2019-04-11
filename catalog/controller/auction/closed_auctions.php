@@ -3,17 +3,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 	private $error = array();
 
 	public function index() {
-		/*
-		$customerGroupId = $this->customer->getGroupId();
-		$customerOnline = $this->customer->isLogged();
-		$seePrices = $this->config->get('config_customer_price');
-		$guestsBid = $this->config->get('config_checkout_guest');
-		debuglog("Current Settings: ");
-		debuglog("See prices: " . $seePrices);
-		debuglog("Guests Bid: " . $guestsBid);
-		debuglog("Customer Group: " . $customerGroupId);
-		debuglog("Customer Online: " . $customerOnline);
-		*/
+		
 		$this->load->language('auction/auction');
 
 		$data['breadcrumbs'] = array();
@@ -22,127 +12,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/home')
 		);
-/*
-		$this->load->model('catalog/category');
 
-		if (isset($this->request->get['path'])) {
-			$path = '';
-
-			$parts = explode('_', (string)$this->request->get['path']);
-
-			$category_id = (int)array_pop($parts);
-
-			foreach ($parts as $path_id) {
-				if (!$path) {
-					$path = $path_id;
-				} else {
-					$path .= '_' . $path_id;
-				}
-
-				$category_info = $this->model_catalog_category->getCategory($path_id);
-
-				if ($category_info) {
-					$data['breadcrumbs'][] = array(
-						'text' => $category_info['name'],
-						'href' => $this->url->link('auction/category', 'path=' . $path)
-					);
-				}
-			}
-
-			// Set the last category breadcrumb
-			$category_info = $this->model_catalog_category->getCategory($category_id);
-
-			if ($category_info) {
-				$url = '';
-
-				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
-				}
-
-				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
-				}
-
-				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
-				}
-
-				if (isset($this->request->get['limit'])) {
-					$url .= '&limit=' . $this->request->get['limit'];
-				}
-
-				$data['breadcrumbs'][] = array(
-					'text' => $category_info['name'],
-					'href' => $this->url->link('auction/category', 'path=' . $this->request->get['path'] . $url)
-				);
-			}
-		}
-
-		
-			$url = '';
-/*
-			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
-			}
-
-			if (isset($this->request->get['limit'])) {
-				$url .= '&limit=' . $this->request->get['limit'];
-			}
-
-
-		if (isset($this->request->get['search']) || isset($this->request->get['tag'])) {
-			$url = '';
-
-			if (isset($this->request->get['search'])) {
-				$url .= '&search=' . $this->request->get['search'];
-			}
-
-			if (isset($this->request->get['tag'])) {
-				$url .= '&tag=' . $this->request->get['tag'];
-			}
-
-			if (isset($this->request->get['description'])) {
-				$url .= '&description=' . $this->request->get['description'];
-			}
-
-			if (isset($this->request->get['category_id'])) {
-				$url .= '&category_id=' . $this->request->get['category_id'];
-			}
-
-			if (isset($this->request->get['sub_category'])) {
-				$url .= '&sub_category=' . $this->request->get['sub_category'];
-			}
-
-			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
-			}
-
-			if (isset($this->request->get['limit'])) {
-				$url .= '&limit=' . $this->request->get['limit'];
-			}
-
-			$data['breadcrumbs'][] = array(
-				'text' => $this->language->get('text_search'),
-				'href' => $this->url->link('auction/search', $url)
-			);
-		}
-*/
 		if (isset($this->request->get['auction_id'])) {
 			$auction_id = (int)$this->request->get['auction_id'];
 		} else {
@@ -186,30 +56,53 @@ class ControllerAuctionClosedAuctions extends Controller {
 			$data['text_num_bids'] = $this->language->get('text_num_bids');
 			$data['text_sold_for'] = $this->language->get('text_sold_for');
 
-			$data['entry_qty'] = $this->language->get('entry_qty');
+			/*$this->load->language('auction/review');
 			$data['entry_name'] = $this->language->get('entry_name');
 			$data['entry_review'] = $this->language->get('entry_review');
 			$data['entry_rating'] = $this->language->get('entry_rating');
 			$data['entry_good'] = $this->language->get('entry_good');
 			$data['entry_bad'] = $this->language->get('entry_bad');
+			
 
+			if($this->customer->isLogged() && $this->customer->getId() == $auction_info['seller_id']) {
+				// Ok its the seller
+				$data['entry_question1'] = $this->language->get('seller_question1');
+				$data['entry_question2'] = $this->language->get('seller_question2');
+				$data['entry_question3'] = $this->language->get('seller_question3');
+			} elseif ($this->customer->isLogged() && $this->customer->getId() == $winning_bid['bidder_id']) {
+				// Ok its the bidder
+				$data['entry_question1'] = $this->language->get('bidder_question1');
+				$data['entry_question2'] = $this->language->get('bidder_question2');
+				$data['entry_question3'] = $this->language->get('bidder_question3');	
+			} else {
+				// guest 
+				$data['entry_question1'] = $this->language->get('guest_question1');
+				$data['entry_question2'] = $this->language->get('guest_question2');
+				$data['entry_question3'] = $this->language->get('guest_question3');
+			}
+			
+			$data['entry_question4'] = $this->language->get('site_question1');
+			$data['entry_question5'] = $this->language->get('site_question2');
+			$data['entry_question6'] = $this->language->get('site_question3');
 			
 			$data['button_continue'] = $this->language->get('button_continue');
-
+*/
 			$this->load->model('catalog/review');
 
 			$data['tab_description'] = $this->language->get('tab_description');
 
-			if(!isset($auction_info['reviews'])) {
-				$auction_info['reviews'] = '';
-			}
-
+			
+			$auction_info['reviews'] = $this->model_catalog_review->getTotalReviewsBySellerId($auction_info['seller_id']);
+			$auction_info['seller_rating'] = $this->model_catalog_review->getTotalRateBySellerId($auction_info['seller_id']);
+				//$data['all_seller_reviews'] = $this->model_catalog_review->getReviewsBySellerId($auction_info['seller_id']);
+			
+	//debuglog($auction_info['all_seller_reviews']);
 			$data['tab_review'] = sprintf($this->language->get('tab_review'), $auction_info['reviews']);
 
 			$data['auction_id'] = (int)$this->request->get['auction_id'];
 			
 			$data['description'] = html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8');
-			
+			$data['seller_id'] = $auction_info['seller_id'];
 			$data['seller'] = $auction_info['seller'];
 			$data['num_bids'] = $auction_info['num_bids'];
 			$data['sold_for'] = (isset($winning_bid['bid_amount']) && $winning_bid['winner'])?$winning_bid['bid_amount']:'Did Not Sell!';
@@ -267,11 +160,9 @@ class ControllerAuctionClosedAuctions extends Controller {
 			}
 
 			$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$auction_info['reviews']);
-			if(!isset($auction_info['rating'])) {
-				$auction_info['rating'] = 4;
-			}
 			
-			$data['rating'] = (int)$auction_info['rating'];
+			
+			$data['rating'] = (int)$auction_info['seller_rating'];
 			$data['views'] = $auction_info['views'];
 
 			// Captcha
@@ -396,9 +287,9 @@ class ControllerAuctionClosedAuctions extends Controller {
 
 		$data['reviews'] = array();
 
-		$review_total = $this->model_catalog_review->getTotalReviewsByAuctionId($this->request->get['auction_id']);
+		$review_total = $this->model_catalog_review->getTotalReviewsBySellerId($this->request->get['seller_id']);
 
-		$results = $this->model_catalog_review->getReviewsByAuctionId($this->request->get['auction_id'], ($page - 1) * 5, 5);
+		$results = $this->model_catalog_review->getReviewsBySellerId($this->request->get['seller_id'], ($page - 1) * 5, 5);
 
 		foreach ($results as $result) {
 			$data['reviews'][] = array(
@@ -413,7 +304,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 		$pagination->total = $review_total;
 		$pagination->page = $page;
 		$pagination->limit = 5;
-		$pagination->url = $this->url->link('auction/auction/review', 'auction_id=' . $this->request->get['auction_id'] . '&page={page}');
+		$pagination->url = $this->url->link('auction/auction/review', 'seller_id=' . $this->request->get['seller_id'] . '&page={page}');
 
 		$data['pagination'] = $pagination->render();
 
@@ -422,105 +313,8 @@ class ControllerAuctionClosedAuctions extends Controller {
 		$this->response->setOutput($this->load->view('auction/review', $data));
 	}
 
-	public function write() {
-		$this->load->language('auction/auction');
+	
 
-		$json = array();
-
-		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
-				$json['error'] = $this->language->get('error_name');
-			}
-
-			if ((utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
-				$json['error'] = $this->language->get('error_text');
-			}
-
-			if (empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
-				$json['error'] = $this->language->get('error_rating');
-			}
-
-			// Captcha
-			if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
-				$captcha = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha') . '/validate');
-
-				if ($captcha) {
-					$json['error'] = $captcha;
-				}
-			}
-
-			if (!isset($json['error'])) {
-				$this->load->model('catalog/review');
-
-				$this->model_catalog_review->addReview($this->request->get['auction_id'], $this->request->post);
-
-				$json['success'] = $this->language->get('text_success');
-			}
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
-
-	public function getRecurringDescription() {
-		$this->load->language('product/product');
-		$this->load->model('catalog/product');
-
-		if (isset($this->request->post['product_id'])) {
-			$product_id = $this->request->post['product_id'];
-		} else {
-			$product_id = 0;
-		}
-
-		if (isset($this->request->post['recurring_id'])) {
-			$recurring_id = $this->request->post['recurring_id'];
-		} else {
-			$recurring_id = 0;
-		}
-
-		if (isset($this->request->post['quantity'])) {
-			$quantity = $this->request->post['quantity'];
-		} else {
-			$quantity = 1;
-		}
-
-		$auction_info = $this->model_catalog_auction->getAuction($auction_id);
-		$recurring_info = $this->model_catalog_product->getProfile($product_id, $recurring_id);
-
-		$json = array();
-
-		if ($product_info && $recurring_info) {
-			if (!$json) {
-				$frequencies = array(
-					'day'        => $this->language->get('text_day'),
-					'week'       => $this->language->get('text_week'),
-					'semi_month' => $this->language->get('text_semi_month'),
-					'month'      => $this->language->get('text_month'),
-					'year'       => $this->language->get('text_year'),
-				);
-
-				if ($recurring_info['trial_status'] == 1) {
-					$price = $this->currency->format($this->tax->calculate($recurring_info['trial_price'] * $quantity, $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					$trial_text = sprintf($this->language->get('text_trial_description'), $price, $recurring_info['trial_cycle'], $frequencies[$recurring_info['trial_frequency']], $recurring_info['trial_duration']) . ' ';
-				} else {
-					$trial_text = '';
-				}
-
-				$price = $this->currency->format($this->tax->calculate($recurring_info['price'] * $quantity, $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-
-				if ($recurring_info['duration']) {
-					$text = $trial_text . sprintf($this->language->get('text_payment_description'), $price, $recurring_info['cycle'], $frequencies[$recurring_info['frequency']], $recurring_info['duration']);
-				} else {
-					$text = $trial_text . sprintf($this->language->get('text_payment_cancel'), $price, $recurring_info['cycle'], $frequencies[$recurring_info['frequency']], $recurring_info['duration']);
-				}
-
-				$json['success'] = $text;
-			}
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
 
 	public function getBidHistory(){
 		$this->load->model('auction/bidding');
@@ -556,64 +350,6 @@ class ControllerAuctionClosedAuctions extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
-/*
-	public function BuyRightNow(){
-		$auction_id = $this->request->post['auction_id'];
-		$json = array();
-	
-		// things to do here
-		// mark auction as closed
-		$this->load->model('auction/auction');
-		$this->model_auction_auction->closeWonAuction($auction_id);
 
-		// place final winning bid of the Buy Now Price
-		$this->load->model('auction/bidding');
-		$buyNowPrice = $this->model_auction_auction->getBuyNowPrice($auction_id);
-		$thisWinningBid = array(
-			'auction_id'	=> $this->db->escape($auction_id),
-			'bidder_id'	=>	$this->customer->getId(),
-			'bid_amount'	=>	$buyNowPrice['buy_now_price'],
-			'proxy_bid_amount'	=> $buyNowPrice['buy_now_price'],
-			'winner'			=> '1'
-		);
-		$result = $this->model_auction_bidding->placeBid($thisWinningBid);
-
-		// move all bids to history
-		$this->model_auction_bidding->moveBids2History($auction_id);
-		// email seller
-		// email winning bidder
-
-
-		
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
-
-	public function PlaceBid(){
-		$auction_id = $this->request->post['auction_id'];
-		$bidAmount = $this->request->post['bid_amount'];
-		$min_bid = $this->request->post['min_bid'];
-		$last_bid = $this->model_auction_bidding->getLastBid($auction_id);
-		$next_bid = (empty($last_bid))?$this->model_auction_bidding->getNextBid($min_bid):$this->model_auction_bidding->getNextBid($last_bid['bid_amount']);
-		if(!$bidAmount){
-			$bidAmount=$next_bid;
-		}
-		$json = array();
-
-		$thisBid = array(
-			'auction_id'	=> $this->db->escape($auction_id),
-			'bidder_id'	=>	$this->customer->getId(),
-			'bid_amount'	=>	$next_bid,
-			'proxy_bid_amount'	=> $bidAmount
-		);
-		
-		$result = $this->model_auction_bidding->placeBid($thisBid);
-		
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
-*/
 	// end of controller
 }

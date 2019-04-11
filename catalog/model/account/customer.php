@@ -235,5 +235,10 @@ class ModelAccountCustomer extends Model {
 		$query = $this->db->query("SELECT CONCAT(firstname, ' ', lastname) AS fullname, email AS email_address FROM " . DB_PREFIX . "customer WHERE customer_id = '" . $this->db->escape($id) . "'");
 		return $query->row;
 	}
+
+	public function getCustomerFirstnameById($id) {
+		$query = $this->db->query("SELECT firstname FROM " . DB_PREFIX . "customer WHERE customer_id = '" . $this->db->escape($id) . "'");
+		return $query->row['firstname'];
+	}
 	// end of model
 }

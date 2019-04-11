@@ -53,7 +53,7 @@
               <td class="text-right">
                 <div class="price"><?php echo $auction['current_bid']; ?>
               </td>
-              <td class="text-right"><button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');" data-toggle="tooltip" title="<?php echo $button_cart; ?>" class="btn btn-primary"><i class="fa fa-shopping-cart"></i></button>
+              <td class="text-right"><a href="<?php echo $auction['href']; ?>" type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');" data-toggle="tooltip" title="<?php echo $button_bid; ?>" class="btn btn-primary"><i class="fa fa-gavel"></i></a>
                 <a href="<?php echo $auction['remove']; ?>" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-times"></i></a></td>
             </tr>
             <?php } ?>

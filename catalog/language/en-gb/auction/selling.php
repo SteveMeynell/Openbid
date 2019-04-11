@@ -35,6 +35,7 @@ $_['text_num_bids']             = 'Number of bids recieved:';
 $_['text_sold_for']             = 'Final Winning Bid:';
 $_['text_pricing']              = 'Set Auction Prices';
 $_['text_shipping']              = 'Set Shipping Options';
+$_['text_agree']              = 'Agree to the Selling Terms';
 
 // Entry
 $_['entry_name']               = 'Item Name';

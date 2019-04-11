@@ -20,3 +20,4 @@ $_['column_reserve_price']  = 'Reserve Price';
 $_['column_buy_now_price']  = 'Buy Now Price';
 $_['column_current_bid']  = 'Current Bid';
 $_['column_action'] = 'Action';
+

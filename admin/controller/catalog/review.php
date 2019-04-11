@@ -34,10 +34,6 @@ class ControllerCatalogReview extends Controller {
 				$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
 			}
 
-			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
-			}
-
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -80,10 +76,6 @@ class ControllerCatalogReview extends Controller {
 
 			if (isset($this->request->get['filter_author'])) {
 				$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
-			}
-
-			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
 			}
 
 			if (isset($this->request->get['filter_date_added'])) {
@@ -132,10 +124,6 @@ class ControllerCatalogReview extends Controller {
 				$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
 			}
 
-			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
-			}
-
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -171,12 +159,6 @@ class ControllerCatalogReview extends Controller {
 			$filter_author = null;
 		}
 
-		if (isset($this->request->get['filter_status'])) {
-			$filter_status = $this->request->get['filter_status'];
-		} else {
-			$filter_status = null;
-		}
-
 		if (isset($this->request->get['filter_date_added'])) {
 			$filter_date_added = $this->request->get['filter_date_added'];
 		} else {
@@ -209,10 +191,6 @@ class ControllerCatalogReview extends Controller {
 
 		if (isset($this->request->get['filter_author'])) {
 			$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_status'])) {
-			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
 		if (isset($this->request->get['filter_date_added'])) {
@@ -251,7 +229,6 @@ class ControllerCatalogReview extends Controller {
 		$filter_data = array(
 			'filter_product'    => $filter_product,
 			'filter_author'     => $filter_author,
-			'filter_status'     => $filter_status,
 			'filter_date_added' => $filter_date_added,
 			'sort'              => $sort,
 			'order'             => $order,
@@ -266,10 +243,11 @@ class ControllerCatalogReview extends Controller {
 		foreach ($results as $result) {
 			$data['reviews'][] = array(
 				'review_id'  => $result['review_id'],
-				'name'       => $result['name'],
-				'author'     => $result['author'],
-				'rating'     => $result['rating'],
-				'status'     => ($result['status']) ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
+				'seller'       => $result['seller_name'],
+				'bidder'     => $result['bidder_name'],
+				'seller_reviewed'     => $result['seller_reviewed']?$this->language->get('text_yes'):$this->language->get('text_no'),
+				'bidder_reviewed'     => $result['bidder_reviewed']?$this->language->get('text_yes'):$this->language->get('text_no'),
+				'auction'     => $result['name'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'edit'       => $this->url->link('catalog/review/edit', 'token=' . $this->session->data['token'] . '&review_id=' . $result['review_id'] . $url, true)
 			);
@@ -283,23 +261,24 @@ class ControllerCatalogReview extends Controller {
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 
-		$data['column_product'] = $this->language->get('column_product');
-		$data['column_author'] = $this->language->get('column_author');
-		$data['column_rating'] = $this->language->get('column_rating');
-		$data['column_status'] = $this->language->get('column_status');
+		$data['column_auction'] = $this->language->get('column_auction');
+		$data['column_seller'] = $this->language->get('column_seller');
+		$data['column_seller_reviewed'] = $this->language->get('column_seller_reviewed');
+		$data['column_bidder'] = $this->language->get('column_bidder');
+		$data['column_bidder_reviewed'] = $this->language->get('column_bidder_reviewed');
 		$data['column_date_added'] = $this->language->get('column_date_added');
 		$data['column_action'] = $this->language->get('column_action');
 
 		$data['entry_product'] = $this->language->get('entry_product');
 		$data['entry_author'] = $this->language->get('entry_author');
 		$data['entry_rating'] = $this->language->get('entry_rating');
-		$data['entry_status'] = $this->language->get('entry_status');
 		$data['entry_date_added'] = $this->language->get('entry_date_added');
 
 		$data['button_add'] = $this->language->get('button_add');
 		$data['button_edit'] = $this->language->get('button_edit');
 		$data['button_delete'] = $this->language->get('button_delete');
 		$data['button_filter'] = $this->language->get('button_filter');
+		
 
 		$data['token'] = $this->session->data['token'];
 
@@ -333,10 +312,6 @@ class ControllerCatalogReview extends Controller {
 			$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
 		}
 
-		if (isset($this->request->get['filter_status'])) {
-			$url .= '&filter_status=' . $this->request->get['filter_status'];
-		}
-
 		if (isset($this->request->get['filter_date_added'])) {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
@@ -354,7 +329,6 @@ class ControllerCatalogReview extends Controller {
 		$data['sort_product'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'] . '&sort=pd.name' . $url, true);
 		$data['sort_author'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'] . '&sort=r.author' . $url, true);
 		$data['sort_rating'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'] . '&sort=r.rating' . $url, true);
-		$data['sort_status'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'] . '&sort=r.status' . $url, true);
 		$data['sort_date_added'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'] . '&sort=r.date_added' . $url, true);
 
 		$url = '';
@@ -365,10 +339,6 @@ class ControllerCatalogReview extends Controller {
 
 		if (isset($this->request->get['filter_author'])) {
 			$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_status'])) {
-			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
 		if (isset($this->request->get['filter_date_added'])) {
@@ -395,7 +365,6 @@ class ControllerCatalogReview extends Controller {
 
 		$data['filter_product'] = $filter_product;
 		$data['filter_author'] = $filter_author;
-		$data['filter_status'] = $filter_status;
 		$data['filter_date_added'] = $filter_date_added;
 
 		$data['sort'] = $sort;
@@ -414,18 +383,36 @@ class ControllerCatalogReview extends Controller {
 		$data['text_form'] = !isset($this->request->get['review_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
+		$data['text_yes'] = $this->language->get('text_yes');
+		$data['text_no'] = $this->language->get('text_no');
 
-		$data['entry_product'] = $this->language->get('entry_product');
-		$data['entry_author'] = $this->language->get('entry_author');
+		$data['entry_auction'] = $this->language->get('entry_auction');
+		$data['entry_seller'] = $this->language->get('entry_seller');
+		$data['entry_seller_reviewed'] = $this->language->get('entry_seller_reviewed');
+		$data['entry_seller_question1'] = $this->language->get('entry_seller_question1');
+		$data['entry_seller_question2'] = $this->language->get('entry_seller_question2');
+		$data['entry_seller_question3'] = $this->language->get('entry_seller_question3');
+		$data['entry_seller_suggestion'] = $this->language->get('entry_seller_suggestion');
+		$data['entry_seller_date_added'] = $this->language->get('entry_seller_date_added');
+
+		$data['entry_bidder'] = $this->language->get('entry_bidder');
+		$data['entry_bidder_reviewed'] = $this->language->get('entry_bidder_reviewed');
+		$data['entry_bidder_question1'] = $this->language->get('entry_bidder_question1');
+		$data['entry_bidder_question2'] = $this->language->get('entry_bidder_question2');
+		$data['entry_bidder_question3'] = $this->language->get('entry_bidder_question3');
+		$data['entry_bidder_suggestion'] = $this->language->get('entry_bidder_suggestion');
+		$data['entry_bidder_date_added'] = $this->language->get('entry_bidder_date_added');
+
 		$data['entry_rating'] = $this->language->get('entry_rating');
-		$data['entry_date_added'] = $this->language->get('entry_date_added');
-		$data['entry_status'] = $this->language->get('entry_status');
+		$data['entry_review_date'] = $this->language->get('entry_review_date');
 		$data['entry_text'] = $this->language->get('entry_text');
 
 		$data['help_product'] = $this->language->get('help_product');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
+		$data['button_seller_reminder'] = $this->language->get('button_seller_reminder');
+		$data['button_bidder_reminder'] = $this->language->get('button_bidder_reminder');
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -433,16 +420,16 @@ class ControllerCatalogReview extends Controller {
 			$data['error_warning'] = '';
 		}
 
-		if (isset($this->error['product'])) {
-			$data['error_product'] = $this->error['product'];
+		if (isset($this->error['auction'])) {
+			$data['error_auction'] = $this->error['auction'];
 		} else {
-			$data['error_product'] = '';
+			$data['error_auction'] = '';
 		}
 
-		if (isset($this->error['author'])) {
-			$data['error_author'] = $this->error['author'];
+		if (isset($this->error['seller'])) {
+			$data['error_seller'] = $this->error['seller'];
 		} else {
-			$data['error_author'] = '';
+			$data['error_seller'] = '';
 		}
 
 		if (isset($this->error['text'])) {
@@ -465,10 +452,6 @@ class ControllerCatalogReview extends Controller {
 
 		if (isset($this->request->get['filter_author'])) {
 			$url .= '&filter_author=' . urlencode(html_entity_decode($this->request->get['filter_author'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_status'])) {
-			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
 		if (isset($this->request->get['filter_date_added'])) {
@@ -511,64 +494,133 @@ class ControllerCatalogReview extends Controller {
 			$review_info = $this->model_catalog_review->getReview($this->request->get['review_id']);
 		}
 
+		//debuglog($review_info);
 		$data['token'] = $this->session->data['token'];
 
-		$this->load->model('catalog/product');
+		//$this->load->model('catalog/product');
 
-		if (isset($this->request->post['product_id'])) {
-			$data['product_id'] = $this->request->post['product_id'];
+		$data['review_id'] = $review_info['review_id'];
+
+		if (isset($this->request->post['auction_id'])) {
+			$data['auction_id'] = $this->request->post['auction_id'];
 		} elseif (!empty($review_info)) {
-			$data['product_id'] = $review_info['product_id'];
+			$data['auction_id'] = $review_info['auction_id'];
 		} else {
-			$data['product_id'] = '';
+			$data['auction_id'] = '';
 		}
 
-		if (isset($this->request->post['product'])) {
-			$data['product'] = $this->request->post['product'];
+		if (isset($this->request->post['auction'])) {
+			$data['auction'] = $this->request->post['auction'];
 		} elseif (!empty($review_info)) {
-			$data['product'] = $review_info['product'];
+			$data['auction'] = $review_info['name'];
 		} else {
-			$data['product'] = '';
+			$data['auction'] = '';
 		}
 
-		if (isset($this->request->post['author'])) {
-			$data['author'] = $this->request->post['author'];
+		if (isset($this->request->post['seller'])) {
+			$data['seller'] = $this->request->post['seller'];
 		} elseif (!empty($review_info)) {
-			$data['author'] = $review_info['author'];
+			$data['seller'] = $review_info['seller_name'];
+			$data['seller_id']	= $review_info['seller_id'];
 		} else {
-			$data['author'] = '';
+			$data['seller'] = '';
+			$data['seller_id'] = '';
 		}
 
-		if (isset($this->request->post['text'])) {
-			$data['text'] = $this->request->post['text'];
+		if (isset($this->request->post['seller_reviewed'])) {
+			$data['seller_reviewed'] = $this->request->post['seller_reviewed'];
 		} elseif (!empty($review_info)) {
-			$data['text'] = $review_info['text'];
+			$data['seller_reviewed'] = $review_info['seller_reviewed'];
 		} else {
-			$data['text'] = '';
+			$data['seller_reviewed'] = '';
 		}
 
-		if (isset($this->request->post['rating'])) {
-			$data['rating'] = $this->request->post['rating'];
+		if (isset($this->request->post['seller_suggestion'])) {
+			$data['seller_suggestion'] = $this->request->post['seller_suggestion'];
 		} elseif (!empty($review_info)) {
-			$data['rating'] = $review_info['rating'];
+			$data['seller_suggestion'] = $review_info['seller_suggestion'];
 		} else {
-			$data['rating'] = '';
+			$data['seller_suggestion'] = '';
 		}
 
-		if (isset($this->request->post['date_added'])) {
-			$data['date_added'] = $this->request->post['date_added'];
+		if (isset($this->request->post['seller_question1'])) {
+			$data['seller_question1'] = $this->request->post['seller_question1'];
 		} elseif (!empty($review_info)) {
-			$data['date_added'] = ($review_info['date_added'] != '0000-00-00 00:00' ? $review_info['date_added'] : '');
+			$data['seller_question1'] = $review_info['seller_question1'];
 		} else {
-			$data['date_added'] = '';
+			$data['seller_question1'] = '';
 		}
 
-		if (isset($this->request->post['status'])) {
-			$data['status'] = $this->request->post['status'];
+		if (isset($this->request->post['seller_question2'])) {
+			$data['seller_question1'] = $this->request->post['seller_question2'];
 		} elseif (!empty($review_info)) {
-			$data['status'] = $review_info['status'];
+			$data['seller_question2'] = $review_info['seller_question2'];
 		} else {
-			$data['status'] = '';
+			$data['seller_question2'] = '';
+		}
+		if (isset($this->request->post['seller_question3'])) {
+			$data['seller_question3'] = $this->request->post['seller_question3'];
+		} elseif (!empty($review_info)) {
+			$data['seller_question3'] = $review_info['seller_question3'];
+		} else {
+			$data['seller_question3'] = '';
+		}
+
+		if (isset($this->request->post['bidder'])) {
+			$data['bidder'] = $this->request->post['bidder'];
+		} elseif (!empty($review_info)) {
+			$data['bidder'] = $review_info['bidder_name'];
+			$data['bidder_id'] = $review_info['bidder_id'];
+		} else {
+			$data['bidder'] = '';
+			$data['bidder_id'] = '';
+		}
+
+		if (isset($this->request->post['bidder_reviewed'])) {
+			$data['bidder_reviewed'] = $this->request->post['bidder_reviewed'];
+		} elseif (!empty($review_info)) {
+			$data['bidder_reviewed'] = $review_info['bidder_reviewed'];
+		} else {
+			$data['bidder_reviewed'] = '';
+		}
+
+		if (isset($this->request->post['bidder_suggestion'])) {
+			$data['bidder_suggestion'] = $this->request->post['bidder_suggestion'];
+		} elseif (!empty($review_info)) {
+			$data['bidder_suggestion'] = $review_info['bidder_suggestion'];
+		} else {
+			$data['bidder_suggestion'] = '';
+		}
+
+		if (isset($this->request->post['bidder_question1'])) {
+			$data['bidder_question1'] = $this->request->post['bidder_question1'];
+		} elseif (!empty($review_info)) {
+			$data['bidder_question1'] = $review_info['bidder_question1'];
+		} else {
+			$data['bidder_question1'] = '';
+		}
+
+		if (isset($this->request->post['bidder_question2'])) {
+			$data['bidder_question1'] = $this->request->post['bidder_question2'];
+		} elseif (!empty($review_info)) {
+			$data['bidder_question2'] = $review_info['bidder_question2'];
+		} else {
+			$data['bidder_question2'] = '';
+		}
+		if (isset($this->request->post['bidder_question3'])) {
+			$data['bidder_question3'] = $this->request->post['bidder_question3'];
+		} elseif (!empty($review_info)) {
+			$data['bidder_question3'] = $review_info['bidder_question3'];
+		} else {
+			$data['bidder_question3'] = '';
+		}
+
+		if (isset($this->request->post['review_date'])) {
+			$data['review_date'] = $this->request->post['review_date'];
+		} elseif (!empty($review_info)) {
+			$data['review_date'] = ($review_info['review_date'] != '0000-00-00 00:00' ? $review_info['review_date'] : '');
+		} else {
+			$data['review_date'] = '';
 		}
 
 		$data['header'] = $this->load->controller('common/header');
@@ -609,4 +661,48 @@ class ControllerCatalogReview extends Controller {
 
 		return !$this->error;
 	}
+
+	public function sendReminder(){
+		$json = array();
+
+		$mailInfo = array();
+		$this->load->model('customer/customer');
+		$customer = $this->model_customer_customer->getCustomer($this->request->post['target_id']);
+		$mailInfo['email'] = $customer['email'];
+		if($this->request->post['target'] == 'bidder_reminder') {
+			$mailInfo['message'] = 'Congratulations, please take the time to write a review of your experience with both the seller and the site.';
+			$mailInfo['subject'] = 'Please write a review';
+		} else {
+			$mailInfo['message'] = 'Congratulations, please take the time to write a review of your experience with both the bidder and the site.';
+			$mailInfo['subject'] = 'Please write a review';
+		}
+		
+		$this->sendMail($mailInfo);
+		$json['success'] = true;
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	private function sendMail($mailInfo) {
+
+		$mail = new Mail();
+						$mail->protocol = $this->config->get('config_mail_protocol');
+						$mail->parameter = $this->config->get('config_mail_parameter');
+						$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+						$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+						$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+						$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+						$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+											
+						$mail->setTo($mailInfo['email']);
+						$mail->setFrom($this->config->get('config_email'));
+						$mail->setSender('The Review Department');
+						$mail->setSubject($mailInfo['subject']);
+						$mail->setText($mailInfo['message']);
+						$mail->send();
+
+	}
+
+	// end of controller
 }

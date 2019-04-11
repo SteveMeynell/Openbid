@@ -33,7 +33,7 @@ class ControllerStartupStartup extends Controller {
 		// Currency
 		$this->registry->set('currency', new Cart\Currency($this->registry));
 	
-		// Tax
+		/* Tax
 		$this->registry->set('tax', new Cart\Tax($this->registry));
 		
 		if ($this->config->get('config_tax_default') == 'shipping') {
@@ -51,7 +51,7 @@ class ControllerStartupStartup extends Controller {
 		
 		// Length
 		//$this->registry->set('length', new Cart\Length($this->registry));
-		
+		*/
 		// Cart
 		$this->registry->set('cart', new Cart\Cart($this->registry));
 		

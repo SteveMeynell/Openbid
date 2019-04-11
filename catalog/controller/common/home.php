@@ -14,7 +14,7 @@ class ControllerCommonHome extends Controller {
 		}
 		$this->load->model('extension/module');
 		$homepage_info = $this->model_extension_module->getModuleByCode('closed_auctions');
-		debuglog($homepage_info);
+		//debuglog($homepage_info);
 		if($homepage_info) {
 			$setting_info = json_decode($homepage_info['setting'], true);
 			$data['closed_auction_data'] = $this->load->controller('extension/module/closed_auctions', $setting_info);

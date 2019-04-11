@@ -55,7 +55,7 @@ class ControllerExtensionModuleStartingSoon extends Controller {
 				$starting_in = date_diff(date_create(), date_create($result['start_date']));
 
 				if ($this->config->get('config_review_status')) {
-					$rating = $result['rating'];
+					$rating = $this->model_catalog_review->getTotalRateBySellerId($result['customer_id']);
 				} else { 
 					$rating = false;
 				}

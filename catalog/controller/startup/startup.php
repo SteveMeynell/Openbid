@@ -160,7 +160,7 @@ class ControllerStartupStartup extends Controller {
 		
 		$this->registry->set('currency', new Cart\Currency($this->registry));
 		
-		// Tax
+		/* Tax
 		$this->registry->set('tax', new Cart\Tax($this->registry));
 		
 		if (isset($this->session->data['shipping_address'])) {
@@ -182,7 +182,7 @@ class ControllerStartupStartup extends Controller {
 		
 		// Length
 		$this->registry->set('length', new Cart\Length($this->registry));
-		
+		*/
 		// Cart
 		$this->registry->set('cart', new Cart\Cart($this->registry));
 		

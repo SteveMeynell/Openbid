@@ -45,7 +45,7 @@ class ControllerAccountAccount extends Controller {
 		$data['text_auction'] = $this->language->get('text_auction');
 		$data['text_bids'] = $this->language->get('text_bids');
 		$data['text_reward'] = $this->language->get('text_reward');
-		$data['text_return'] = $this->language->get('text_return');
+		$data['text_review'] = $this->language->get('text_review');
 		$data['text_fees'] = $this->language->get('text_fees');
 		$data['text_newsletter'] = $this->language->get('text_newsletter');
 		$data['text_recurring'] = $this->language->get('text_recurring');
@@ -81,7 +81,7 @@ class ControllerAccountAccount extends Controller {
 			$data['reward'] = '';
 		}		
 		
-		$data['return'] = $this->url->link('account/return', '', true);
+		$data['reviews'] = $this->url->link('account/review', '', true);
 		$data['fees'] = $this->url->link('account/fees', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
 		$data['recurring'] = $this->url->link('account/recurring', '', true);

@@ -20,3 +20,4 @@ $_['text_fees']   = 'Your Fees';
 $_['text_newsletter']    = 'Subscribe / unsubscribe to newsletter';
 $_['text_recurring']     = 'Recurring payments';
 $_['text_transactions']  = 'Transactions';
+$_['text_review']       = 'Review Section';

@@ -33,8 +33,8 @@
           <div class="row">
             <div class="col-sm-6">
               <div class="form-group">
-                <label class="control-label" for="input-product"><?php echo $entry_product; ?></label>
-                <input type="text" name="filter_product" value="<?php echo $filter_product; ?>" placeholder="<?php echo $entry_product; ?>" id="input-product" class="form-control" />
+                <label class="control-label" for="input-auction"><?php echo $entry_auction; ?></label>
+                <input type="text" name="filter_auction" value="<?php echo $filter_auction; ?>" placeholder="<?php echo $entry_auction; ?>" id="input-auction" class="form-control" />
               </div>
               <div class="form-group">
                 <label class="control-label" for="input-author"><?php echo $entry_author; ?></label>
@@ -42,22 +42,6 @@
               </div>
             </div>
             <div class="col-sm-6">
-              <div class="form-group">
-                <label class="control-label" for="input-status"><?php echo $entry_status; ?></label>
-                <select name="filter_status" id="input-status" class="form-control">
-                  <option value="*"></option>
-                  <?php if ($filter_status) { ?>
-                  <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-                  <?php } else { ?>
-                  <option value="1"><?php echo $text_enabled; ?></option>
-                  <?php } ?>
-                  <?php if (!$filter_status && !is_null($filter_status)) { ?>
-                  <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
-                  <?php } else { ?>
-                  <option value="0"><?php echo $text_disabled; ?></option>
-                  <?php } ?>
-                </select>
-              </div>
               <div class="form-group">
                 <label class="control-label" for="input-date-added"><?php echo $entry_date_added; ?></label>
                 <div class="input-group date">
@@ -77,24 +61,29 @@
                 <tr>
                   <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
                   <td class="text-left"><?php if ($sort == 'pd.name') { ?>
-                    <a href="<?php echo $sort_product; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_product; ?></a>
+                    <a href="<?php echo $sort_product; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_auction; ?></a>
                     <?php } else { ?>
-                    <a href="<?php echo $sort_product; ?>"><?php echo $column_product; ?></a>
+                    <a href="<?php echo $sort_product; ?>"><?php echo $column_auction; ?></a>
                     <?php } ?></td>
                   <td class="text-left"><?php if ($sort == 'r.author') { ?>
-                    <a href="<?php echo $sort_author; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_author; ?></a>
+                    <a href="<?php echo $sort_author; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_seller; ?></a>
                     <?php } else { ?>
-                    <a href="<?php echo $sort_author; ?>"><?php echo $column_author; ?></a>
+                    <a href="<?php echo $sort_author; ?>"><?php echo $column_seller; ?></a>
                     <?php } ?></td>
-                  <td class="text-right"><?php if ($sort == 'r.rating') { ?>
-                    <a href="<?php echo $sort_rating; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_rating; ?></a>
+                  <td class="text-left"><?php if ($sort == 'r.author') { ?>
+                    <a href="<?php echo $sort_author; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_seller_reviewed; ?></a>
                     <?php } else { ?>
-                    <a href="<?php echo $sort_rating; ?>"><?php echo $column_rating; ?></a>
+                    <a href="<?php echo $sort_author; ?>"><?php echo $column_seller_reviewed; ?></a>
                     <?php } ?></td>
-                  <td class="text-left"><?php if ($sort == 'r.status') { ?>
-                    <a href="<?php echo $sort_status; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_status; ?></a>
+                  <td class="text-left"><?php if ($sort == 'r.rating') { ?>
+                    <a href="<?php echo $sort_rating; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_bidder; ?></a>
                     <?php } else { ?>
-                    <a href="<?php echo $sort_status; ?>"><?php echo $column_status; ?></a>
+                    <a href="<?php echo $sort_rating; ?>"><?php echo $column_bidder; ?></a>
+                    <?php } ?></td>
+                    <td class="text-left"><?php if ($sort == 'r.rating') { ?>
+                    <a href="<?php echo $sort_rating; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_bidder_reviewed; ?></a>
+                    <?php } else { ?>
+                    <a href="<?php echo $sort_rating; ?>"><?php echo $column_bidder_reviewed; ?></a>
                     <?php } ?></td>
                   <td class="text-left"><?php if ($sort == 'r.date_added') { ?>
                     <a href="<?php echo $sort_date_added; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_date_added; ?></a>
@@ -113,10 +102,11 @@
                     <?php } else { ?>
                     <input type="checkbox" name="selected[]" value="<?php echo $review['review_id']; ?>" />
                     <?php } ?></td>
-                  <td class="text-left"><?php echo $review['name']; ?></td>
-                  <td class="text-left"><?php echo $review['author']; ?></td>
-                  <td class="text-right"><?php echo $review['rating']; ?></td>
-                  <td class="text-left"><?php echo $review['status']; ?></td>
+                  <td class="text-left"><?php echo $review['auction']; ?></td>
+                  <td class="text-left"><?php echo $review['seller']; ?></td>
+                  <td class="text-left"><?php echo $review['seller_reviewed']; ?></td>
+                  <td class="text-left"><?php echo $review['bidder']; ?></td>
+                  <td class="text-left"><?php echo $review['bidder_reviewed']; ?></td>
                   <td class="text-left"><?php echo $review['date_added']; ?></td>
                   <td class="text-right"><a href="<?php echo $review['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                 </tr>

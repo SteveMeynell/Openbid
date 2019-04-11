@@ -275,6 +275,7 @@ class ModelCatalogAuction extends Model {
 	public function getClosedAuction($auction_id){
 		$sql = "SELECT 
 		a.auction_id as auction_id, 
+		a.customer_id as seller_id, 
 		c.firstname as seller, 
 		a.num_bids as num_bids, 
 		a.winning_bid as winning_bid, 
@@ -302,6 +303,7 @@ class ModelCatalogAuction extends Model {
 	public function getClosedAuctions($filter) {
 		$sql = "SELECT 
 		a.auction_id as auction_id, 
+		a.customer_id as seller_id, 
 		c.firstname as seller, 
 		a.num_bids as num_bids, 
 		a.winning_bid as winning_bid, 
@@ -662,7 +664,7 @@ class ModelCatalogAuction extends Model {
 		public function getFeaturedAuctions($settings){
 		$auctions = array();
 		
-		$sql = "SELECT a.auction_id AS auction_id, a.main_image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description, ad1.reserve_price AS reserve_price, ao.buy_now_only, a.viewed, ad1.end_date, ad1.buy_now_price 
+		$sql = "SELECT a.auction_id AS auction_id, a.customer_id, a.main_image AS image, ad2.name AS title, ad2.subname AS subtitle, ad2.description AS description, ad1.reserve_price AS reserve_price, ao.buy_now_only, a.viewed, ad1.end_date, ad1.buy_now_price 
 				FROM " . DB_PREFIX . "auctions a
 				LEFT JOIN " . DB_PREFIX . "auction_details ad1
 				ON (a.auction_id = ad1.auction_id)

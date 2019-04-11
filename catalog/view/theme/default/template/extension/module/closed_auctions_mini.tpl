@@ -14,7 +14,6 @@
         <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['subtitle']; ?></a></h4>
         <p><?php echo $auction['description']; ?></p>
         <p>Seller: <?php echo $auction['seller']; ?></p>
-        <?php if ($auction['rating']) { ?>
         <div class="rating">
           <?php for ($i = 1; $i <= 5; $i++) { ?>
           <?php if ($auction['rating'] < $i) { ?>
@@ -24,7 +23,6 @@
           <?php } ?>
           <?php } ?>
         </div>
-        <?php } ?>
         <?php if ($auction['price']) { ?>
         <p class="price">Winning Bid: 
           <?php echo $auction['price']; ?>

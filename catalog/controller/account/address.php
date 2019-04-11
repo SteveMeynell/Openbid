@@ -41,7 +41,7 @@ class ControllerAccountAddress extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			
-			debuglog($this->request->post['sellerWish']);
+			//debuglog($this->request->post['sellerWish']);
 
 			$this->model_account_address->addAddress($this->request->post);
 			

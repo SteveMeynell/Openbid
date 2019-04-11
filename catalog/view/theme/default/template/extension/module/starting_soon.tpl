@@ -9,14 +9,6 @@
             </div>
             <div class="caption">
               <h4><?php echo $auction['name']; ?></a></h4>
-              <div class="text-justify"><?php echo $auction['description']; ?></div>
-              <h3><?php echo $text_starting_in; ?></h3>
-              <h4>
-                <div id="auction-id" class="auction-id" hidden="<?php echo $auction['auction_id']; ?>"></div>
-                <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $auction['start_date']; ?>"></div>
-                <div class="startingTime" id="time_remaining"></div>
-              </h4>
-              <?php if ($auction['rating']) { ?>
               <div class="rating">
                 <?php for ($i = 1; $i <= 5; $i++) { ?>
                   <?php if ($auction['rating'] < $i) { ?>
@@ -26,11 +18,16 @@
                   <?php } ?>
                 <?php } ?>
               </div>
-              <?php } ?>
+              <div class="text-justify"><?php echo $auction['description']; ?></div>
+              <h3><?php echo $text_starting_in; ?></h3>
+              <h4>
+                <div id="auction-id" class="auction-id" hidden="<?php echo $auction['auction_id']; ?>"></div>
+                <div id="starting_in_time" class="starting_in_time" hidden="<?php echo $auction['start_date']; ?>"></div>
+                <div class="startingTime" id="time_remaining"></div>
+              </h4>
             </div>
             <div class="button-group">
-              <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
-              <button type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-exchange"></i></button>
+              <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_wishlist; ?></span></button>
             </div>
           </div>
         </div>

@@ -61,8 +61,8 @@ class ControllerExtensionModuleFeatured extends Controller {
 						$price = false;
 					}
 */
-
-				$rating = '4';
+				$this->load->model('catalog/review');
+				$rating = $this->model_catalog_review->getTotalRateBySellerId($auction_info['customer_id']);
 
 				$data['auctions'][] = array(
 					'auction_id'  => $auction_info['auction_id'],

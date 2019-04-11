@@ -7,8 +7,6 @@
       <div class="caption">
         <h3><a href="<?php echo $auction['href']; ?>"><?php echo $auction['title']; ?></a></h3>
         <h4><a href="<?php echo $auction['href']; ?>"><?php echo $auction['subtitle']; ?></a></h4>
-        <p><?php echo $auction['description']; ?></p>
-        <?php if ($auction['rating']) { ?>
         <div class="rating">
           <?php for ($i = 1; $i <= 5; $i++) { ?>
           <?php if ($auction['rating'] < $i) { ?>
@@ -18,7 +16,7 @@
           <?php } ?>
           <?php } ?>
         </div>
-        <?php } ?>
+        <p><?php echo $auction['description']; ?></p>
         <p class="price">
               <?php if (!$auction['current_bid'] && !$auction['buy_now']) { ?>
                 <span class="price-new"><?php echo $text_please_login; ?></span>
@@ -35,9 +33,7 @@
             </p>
       </div>
       <div class="button-group">
-        <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_bid; ?></span></button>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-exchange"></i></button>
+        <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_wishlist; ?></span></button>
       </div>
     </div>
   </div>

@@ -761,6 +761,7 @@ class ControllerSaleOrder extends Controller {
 
 		$order_info = $this->model_sale_order->getOrder($order_id);
 
+		debuglog($order_info);
 		if ($order_info) {
 			$this->load->language('sale/order');
 

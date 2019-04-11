@@ -1,10 +1,10 @@
 <?php
 // Text
 $_['text_search']              = 'Search';
-$_['text_reviews']             = '%s reviews';
+$_['text_reviews']             = '%s Seller reviews';
 $_['text_write']               = 'Write a review';
 $_['text_login']               = 'Please <a href="%s">login</a> or <a href="%s">register</a> to review';
-$_['text_no_reviews']          = 'There are no reviews for this product.';
+$_['text_no_reviews']          = 'There are no reviews for this Seller.';
 $_['text_note']                = '<span class="text-danger">Note:</span> HTML is not translated!';
 $_['text_success']             = 'Thank you for your review. It has been submitted to the webmaster for approval.';
 $_['text_tags']                = 'Tags:';
@@ -39,8 +39,7 @@ $_['entry_bad']                = 'Bad';
 
 // Tabs
 $_['tab_description']          = 'Description';
-$_['tab_attribute']            = 'Specification';
-$_['tab_review']               = 'Reviews (%s)';
+$_['tab_review']               = 'Seller Reviews (%s)';
 
 // Error
 $_['error_name']               = 'Warning: Review Name must be between 3 and 25 characters!';

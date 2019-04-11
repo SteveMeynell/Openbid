@@ -1,52 +1,5 @@
 <?php
 class ModelCatalogReview extends Model {
-	public function addReview($product_id, $data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "review SET author = '" . $this->db->escape($data['name']) . "', customer_id = '" . (int)$this->customer->getId() . "', product_id = '" . (int)$product_id . "', text = '" . $this->db->escape($data['text']) . "', rating = '" . (int)$data['rating'] . "', date_added = NOW()");
-
-		$review_id = $this->db->getLastId();
-
-		if (in_array('review', (array)$this->config->get('config_mail_alert'))) {
-			$this->load->language('mail/review');
-			$this->load->model('catalog/product');
-			
-			$product_info = $this->model_catalog_product->getProduct($product_id);
-
-			$subject = sprintf($this->language->get('text_subject'), html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
-
-			$message  = $this->language->get('text_waiting') . "\n";
-			$message .= sprintf($this->language->get('text_product'), html_entity_decode($product_info['name'], ENT_QUOTES, 'UTF-8')) . "\n";
-			$message .= sprintf($this->language->get('text_reviewer'), html_entity_decode($data['name'], ENT_QUOTES, 'UTF-8')) . "\n";
-			$message .= sprintf($this->language->get('text_rating'), $data['rating']) . "\n";
-			$message .= $this->language->get('text_review') . "\n";
-			$message .= html_entity_decode($data['text'], ENT_QUOTES, 'UTF-8') . "\n\n";
-
-			$mail = new Mail();
-			$mail->protocol = $this->config->get('config_mail_protocol');
-			$mail->parameter = $this->config->get('config_mail_parameter');
-			$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
-			$mail->smtp_username = $this->config->get('config_mail_smtp_username');
-			$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
-			$mail->smtp_port = $this->config->get('config_mail_smtp_port');
-			$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
-
-			$mail->setTo($this->config->get('config_email'));
-			$mail->setFrom($this->config->get('config_email'));
-			$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject($subject);
-			$mail->setText($message);
-			$mail->send();
-
-			// Send to additional alert emails
-			$emails = explode(',', $this->config->get('config_alert_email'));
-
-			foreach ($emails as $email) {
-				if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					$mail->setTo($email);
-					$mail->send();
-				}
-			}
-		}
-	}
 
 	public function getReviewsByProductId($product_id, $start = 0, $limit = 20) {
 		if ($start < 0) {
@@ -67,4 +20,90 @@ class ModelCatalogReview extends Model {
 
 		return $query->row['total'];
 	}
+
+	public function getReviewsBySellerId($seller_id, $start = 0, $limit = 20) {
+		if ($start < 0) {
+			$start = 0;
+		}
+
+		if ($limit < 1) {
+			$limit = 20;
+		}
+
+		//debuglog("SELECT r.bidder_review_id, r.review_id, r.bidder_id, bc.firstname, r.bidder_suggestion, r.date_added FROM " . DB_PREFIX . "bidder_reviews r LEFT JOIN " . DB_PREFIX . "customer bc ON (bc.customer_id = r.bidder_id) WHERE r.seller_id = '" . (int)$seller_id . "' ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+
+		$sql = "SELECT r.bidder_review_id, r.review_id, r.bidder_id,	bc.firstname,	r.bidder_suggestion, DATE_FORMAT(r.date_added,'%a %b %e, %Y') FROM " . DB_PREFIX . "bidder_reviews r LEFT JOIN " . DB_PREFIX . "customer bc ON (bc.customer_id = r.bidder_id) WHERE r.seller_id = '" . (int)$seller_id . "' ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit;
+		//debuglog($sql);
+		$query = $this->db->query("SELECT 
+		r.bidder_review_id, 
+		r.review_id, 
+		r.bidder_id, 
+		bc.firstname,	
+		r.bidder_suggestion, 
+		DATE_FORMAT(r.date_added,'%a %b %e, %Y') as date_added
+		FROM " . DB_PREFIX . "bidder_reviews r 
+		LEFT JOIN " . DB_PREFIX . "customer bc 
+		ON (bc.customer_id = r.bidder_id) 
+		WHERE r.seller_id = '" . (int)$seller_id . "' 
+		ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+
+		$reviews = $query->rows;
+		foreach($reviews as $index => $review) {
+			$questions = $this->db->query("SELECT 
+			ROUND(AVG(bidder_question1)) as communications, 
+			ROUND(AVG(bidder_question2)) as shipping, 
+			ROUND(AVG(bidder_question3)) as quality 
+			FROM " . DB_PREFIX . "bidder_reviews 
+			WHERE seller_id = '" . $seller_id . "' AND bidder_id = '" . $review['bidder_id'] . "'");
+			$reviews[$index]['ratings'] = $questions->row;
+		}
+
+		return $reviews;
+	}
+
+	public function getTotalReviewsBySellerId($seller_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "bidder_reviews 
+		WHERE seller_id = '" . (int)$seller_id . "'");
+
+		return $query->row['total'];
+	}
+
+	public function getTotalRateBySellerId($seller_id) {
+		$query = $this->db->query("SELECT AVG(bidder_question1) AS rating FROM " . DB_PREFIX . "bidder_reviews 
+		WHERE seller_id = '" . (int)$seller_id . "'");
+		$rating = $query->row['rating'];
+		$query = $this->db->query("SELECT AVG(bidder_question2) AS rating FROM " . DB_PREFIX . "bidder_reviews 
+		WHERE seller_id = '" . (int)$seller_id . "'");
+		$rating += $query->row['rating'];
+		$query = $this->db->query("SELECT AVG(bidder_question3) AS rating FROM " . DB_PREFIX . "bidder_reviews 
+		WHERE seller_id = '" . (int)$seller_id . "'");
+		$rating += $query->row['rating'];
+
+		return round($rating/3, 0, PHP_ROUND_HALF_UP);
+	}
+
+	public function getTotalReviewsByBidderId($bidder_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "seller_reviews 
+		WHERE bidder_id = '" . (int)$bidder_id . "'");
+
+		return $query->row['total'];
+	}
+
+	public function getTotalRateByBidderId($bidder_id) {
+		$query = $this->db->query("SELECT AVG(seller_question1) AS rating FROM " . DB_PREFIX . "seller_reviews 
+		WHERE bidder_id = '" . (int)$bidder_id . "'");
+		$rating = $query->row['rating'];
+		$query = $this->db->query("SELECT AVG(seller_question2) AS rating FROM " . DB_PREFIX . "seller_reviews 
+		WHERE bidder_id = '" . (int)$bidder_id . "'");
+		$rating += $query->row['rating'];
+		$query = $this->db->query("SELECT AVG(seller_question3) AS rating FROM " . DB_PREFIX . "seller_reviews 
+		WHERE bidder_id = '" . (int)$bidder_id . "'");
+		$rating += $query->row['rating'];
+
+		return round($rating/3, 0, PHP_ROUND_HALF_UP);
+	}
+
+	
+
+	// end of model
 }

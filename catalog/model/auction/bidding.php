@@ -7,6 +7,8 @@ class ModelAuctionBidding extends Model {
     
     public function placeBid($bid) {
 
+        debuglog("model bidding - placeBid - entry - bid ");
+        debuglog($bid);
         $leadingBid = $this->getCurrentBid($this->db->escape($bid['auction_id']));
         
         $bidNewAmount = $this->db->escape($bid['bid_amount']);
@@ -49,10 +51,11 @@ class ModelAuctionBidding extends Model {
             $result = $this->db->getLastId();
             $howmany +=1;
         } else {
+            debuglog("bid not a winner");
             $proxyInfo = $this->model_account_customer->getCustomer($leadingBid['proxy_bidder_id']);
             // Proxy bids are equal.  Place first bid then rebid with the same bid amount but from the current leader.
             if($bidNewProxyAmount == $leadingBid['proxy_bid_amount']) {
-                // works debuglog("proxy bids are equal");
+                debuglog("proxy bids are equal");
                 // Place New Bid 
                 $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
@@ -100,7 +103,8 @@ class ModelAuctionBidding extends Model {
 
             // New Proxy bid does not meet the current leading Proxy bid
             if($bidNewProxyAmount < $leadingBid['proxy_bid_amount']) {
-                // works debuglog("does not meet proxy bid");
+                debuglog("does not meet proxy bid");
+                debuglog("bidNewProxyAmount " . $bidNewProxyAmount);
                 // Place New Bid 
                 $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
@@ -124,6 +128,10 @@ class ModelAuctionBidding extends Model {
                 }
                 // Place Proxy Bid
                 $newBid = $this->model_auction_bidding->getNextBid($bidNewProxyAmount);
+                debuglog("New proxy bid should be higher that the previous bid by the bid increment - " . $newBid);
+                debuglog("Leading Proxy Bid amount - " . $leadingBid['proxy_bid_amount']);
+                debuglog("The amount that should be placed - " . min($newBid, $leadingBid['proxy_bid_amount']));
+
                 $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                 SET
                 auction_id = '" . $auction_id . "',
@@ -149,8 +157,12 @@ class ModelAuctionBidding extends Model {
 
             // New proxy bid is greater than the current leading proxy bid
             if($bidNewProxyAmount > $leadingBid['proxy_bid_amount']) {
-                // works debuglog("new proxy is bigger than the proceeding one");
+                debuglog("new proxy is bigger than the proceeding one");
                 if($bidNewAmount == $bidNewProxyAmount || $leadingBid['bid_amount'] == $leadingBid['proxy_bid_amount']) {
+                    debuglog("normal bid - " . $bidNewAmount);
+                    debuglog("bidNewProxy - " . $bidNewProxyAmount);
+                    debuglog("leadingBid amount - " . $leadingBid['bid_amount']);
+                    debuglog("leadingBid proxy amount - " . $leadingBid['proxy_bid_amount']);
                     // Just a normal bid
                     //Place new bid
                     $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
@@ -175,6 +187,12 @@ class ModelAuctionBidding extends Model {
                         $this->model_account_activity->addActivity('placing_bidder', $activity_data);
                     }
                 } else {
+                    debuglog("I think this is the area");
+                    debuglog("normal bid - " . $bidNewAmount);
+                    debuglog("bidNewProxy - " . $bidNewProxyAmount);
+                    debuglog("leadingBid amount - " . $leadingBid['bid_amount']);
+                    debuglog("leadingBid proxy amount - " . $leadingBid['proxy_bid_amount']);
+                    debuglog("Places bidNewAmount first");
                     //Place new bid
                     $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
@@ -197,6 +215,7 @@ class ModelAuctionBidding extends Model {
                         $this->model_account_activity->addActivity('placing_bidder', $activity_data);
                     }
                     // Place proxy bid
+                    debuglog("Then places leadingBid proxy amount");
                     $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
                     auction_id = '" . $auction_id . "',
@@ -219,6 +238,7 @@ class ModelAuctionBidding extends Model {
                     }
                     // Place new proxy bid
                     $newBid = $this->model_auction_bidding->getNextBid($leadingBid['proxy_bid_amount']);
+                    debuglog("gets the next bid from the leadingBid proxy amount - " . $newBid . " and places it.");
                     $sql = $this->db->query("INSERT INTO " . DB_PREFIX . "current_bids
                     SET
                     auction_id = '" . $auction_id . "',
@@ -303,7 +323,8 @@ class ModelAuctionBidding extends Model {
     }
     public function getAllBids($auction_id) {
         $sql = "SELECT * FROM " . DB_PREFIX . "current_bids 
-        WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
+        WHERE auction_id = '" . $this->db->escape($auction_id) . "' 
+        ORDER BY bid_date, bid_id";
         $bids = $this->db->query($sql);
 
         return $bids->rows;

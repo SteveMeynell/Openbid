@@ -235,6 +235,7 @@ class ModelAuctionAuction extends Model {
     public function closeWonAuction($auction_id){
         $query = "SELECT  
             ad.title AS title, 
+            s.customer_id AS seller, 
             bh.bidder_id AS bidder, 
             bh.bid_amount AS bid_amount, 
             CONCAT(s.firstname, ' ', s.lastname) AS seller_name, 
@@ -258,6 +259,13 @@ class ModelAuctionAuction extends Model {
         WHERE auction_id = '" . $this->db->escape($auction_id) . "'";
         $this->db->query($sql);
 
+        // write a general review record with auctionId, sellersId, biddersId.  The other columns will be default.
+        $sql = "INSERT INTO " . DB_PREFIX . "reviews 
+        SET 
+        auction_id = '" . $this->db->escape($auction_id) . "', 
+        seller_id = '" . $auctionInfo['seller'] . "', 
+        bidder_id = '" . $auctionInfo['bidder'] . "'";
+        $this->db->query($sql);
         return $auctionInfo;
     }
 

@@ -23,35 +23,86 @@ class ModelCatalogReview extends Model {
 	}
 
 	public function getReview($review_id) {
-		$query = $this->db->query("SELECT DISTINCT *, (SELECT pd.name FROM " . DB_PREFIX . "product_description pd WHERE pd.product_id = r.product_id AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS product FROM " . DB_PREFIX . "review r WHERE r.review_id = '" . (int)$review_id . "'");
+
+		$sql = "SELECT 
+		r.review_id, 
+		r.seller_id, 
+		r.seller_reviewed, 
+		r.bidder_id, 
+		r.bidder_reviewed, 
+		r.date_added AS review_date, 
+		r.auction_id, 
+		ad.name, 
+		sr.seller_review_id, 
+		sr.seller_question1, 
+		sr.seller_question2, 
+		sr.seller_question3, 
+		sr.seller_suggestion, 
+		CONCAT(sc.firstname, ' ', sc.lastname) AS seller_name,
+		sr.date_added AS seller_review_date, 
+		br.bidder_review_id, 
+		br.bidder_question1, 
+		br.bidder_question2, 
+		br.bidder_question3, 
+		br.bidder_suggestion, 
+		CONCAT(bc.firstname, ' ', bc.lastname) AS bidder_name,
+		br.date_added AS bidder_review_date 
+		FROM " . DB_PREFIX . "reviews r 
+		LEFT JOIN " . DB_PREFIX . "auction_description ad ON(ad.auction_id = r.auction_id) 
+		LEFT JOIN " . DB_PREFIX . "seller_reviews sr ON(sr.seller_id = r.seller_id) 
+		LEFT JOIN " . DB_PREFIX . "bidder_reviews br ON(br.bidder_id = r.bidder_id) 
+		LEFT JOIN " . DB_PREFIX . "customer sc ON(sc.customer_id = r.seller_id) 
+		LEFT JOIN " . DB_PREFIX . "customer bc ON(bc.customer_id = r.bidder_id) 
+		WHERE r.review_id = '" . (int)$review_id . "' AND ad.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+		//debuglog($sql);
+
+		$query = $this->db->query($sql);
 
 		return $query->row;
 	}
 
 	public function getReviews($data = array()) {
-		$sql = "SELECT r.review_id, pd.name, r.author, r.rating, r.status, r.date_added FROM " . DB_PREFIX . "review r LEFT JOIN " . DB_PREFIX . "product_description pd ON (r.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT 
+		r.review_id, 
+		r.seller_id, 
+		r.bidder_id, 
+		r.seller_reviewed, 
+		r.bidder_reviewed, 
+		r.date_added, 
+		r.auction_id, 
+		ad.name, 
+		CONCAT(cs.firstname, ' ', cs.lastname) AS seller_name, 
+		CONCAT(cb.firstname, ' ', cb.lastname) AS bidder_name 
+		FROM " . DB_PREFIX . "reviews r 
+		LEFT JOIN " . DB_PREFIX . "auction_description ad 
+		ON (r.auction_id = ad.auction_id) 
+		LEFT JOIN " . DB_PREFIX . "customer cs 
+		ON (r.seller_id = cs.customer_id) 
+		LEFT JOIN " . DB_PREFIX . "customer cb 
+		ON (r.bidder_id = cb.customer_id) 
+		WHERE ad.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
 
 		if (!empty($data['filter_product'])) {
-			$sql .= " AND pd.name LIKE '" . $this->db->escape($data['filter_product']) . "%'";
+			$where .= " AND pd.name LIKE '" . $this->db->escape($data['filter_product']) . "%'";
 		}
 
 		if (!empty($data['filter_author'])) {
-			$sql .= " AND r.author LIKE '" . $this->db->escape($data['filter_author']) . "%'";
-		}
-
-		if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
-			$sql .= " AND r.status = '" . (int)$data['filter_status'] . "'";
+			$where .= " AND r.author LIKE '" . $this->db->escape($data['filter_author']) . "%'";
 		}
 
 		if (!empty($data['filter_date_added'])) {
-			$sql .= " AND DATE(r.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+			$where .= " AND DATE(r.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+		}
+
+		if(isset($where)) {
+			$sql += $where;
 		}
 
 		$sort_data = array(
-			'pd.name',
-			'r.author',
-			'r.rating',
-			'r.status',
+			'seller_name',
+			'bidder_name',
 			'r.date_added'
 		);
 
@@ -85,23 +136,7 @@ class ModelCatalogReview extends Model {
 	}
 
 	public function getTotalReviews($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r LEFT JOIN " . DB_PREFIX . "product_description pd ON (r.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
-
-		if (!empty($data['filter_product'])) {
-			$sql .= " AND pd.name LIKE '" . $this->db->escape($data['filter_product']) . "%'";
-		}
-
-		if (!empty($data['filter_author'])) {
-			$sql .= " AND r.author LIKE '" . $this->db->escape($data['filter_author']) . "%'";
-		}
-
-		if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
-			$sql .= " AND r.status = '" . (int)$data['filter_status'] . "'";
-		}
-
-		if (!empty($data['filter_date_added'])) {
-			$sql .= " AND DATE(r.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
-		}
+		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "reviews";
 
 		$query = $this->db->query($sql);
 

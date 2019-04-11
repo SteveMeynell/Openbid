@@ -46,7 +46,13 @@ class ModelBookkeepingAccounting extends Model {
         $query = $this->db->query("SELECT account_code FROM " . DB_PREFIX . "chart_of_accounts 
         WHERE short_code = '" . $shortCode . "'");
 
-        return strval($query->row['account_code']);
+        $account_code = $query->row['account_code'];
+        if($account_code) {
+            return strval($account_code);
+        } else {
+            return '0000';
+        }
+
     }
 
     public function addTransaction($data) {
