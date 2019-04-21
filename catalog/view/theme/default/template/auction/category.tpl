@@ -175,7 +175,6 @@
                     <?php } ?>
                   </div>
                   <div class="button-group">
-                    <button type="button" onclick="cart.add('<?php echo $auction['auction_id']; ?>', '<?php echo $auction['current_bid']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
                     <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $auction['auction_id']; ?>');"><i class="fa fa-heart"></i></button>
                   </div>
                 </div>

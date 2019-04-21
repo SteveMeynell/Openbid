@@ -1,11 +1,11 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost/OpenBid/admin/');
-define('HTTP_CATALOG', 'http://localhost/OpenBid/');
+define('HTTP_SERVER', 'http://localhost/openbid/admin/');
+define('HTTP_CATALOG', 'http://localhost/openbid/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost/OpenBid/admin/');
-define('HTTPS_CATALOG', 'http://localhost/OpenBid/');
+define('HTTPS_SERVER', 'http://localhost/openbid/admin/');
+define('HTTPS_CATALOG', 'http://localhost/openbid/');
 
 // DIR
 define('DIR_APPLICATION', 'D:/xampp/htdocs/OpenBid/admin/');

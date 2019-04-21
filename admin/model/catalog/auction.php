@@ -93,7 +93,7 @@ class ModelCatalogAuction extends Model {
 	}
 	
 	public function getAuctions($data = array()) {
-		$sql = "SELECT *, aus.name AS status_name, CONCAT(c.lastname, ' ', c.firstname) AS seller  FROM " . DB_PREFIX . "auctions a
+		$sql = "SELECT *, aus.name AS status_name, CONCAT(c.firstname, ' ', c.lastname) AS seller  FROM " . DB_PREFIX . "auctions a
 		LEFT JOIN " . DB_PREFIX . "auction_details ad
 		ON (a.auction_id = ad.auction_id) 
 		LEFT JOIN " . DB_PREFIX . "auction_description ades

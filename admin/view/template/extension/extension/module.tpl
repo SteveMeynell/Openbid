@@ -29,7 +29,7 @@
             <?php if ($extension['module']) { ?>
             <a href="<?php echo $extension['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i></a>
             <?php } else { ?>
-            <a href="<?php echo $extension['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
+            <a href="<?php echo $extension['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fas fa-pencil-alt"></i></a>
             <?php } ?>
             <?php } else { ?>
             <button type="button" class="btn btn-primary" disabled="disabled"><i class="fa fa-pencil"></i></button>
@@ -44,7 +44,7 @@
         <?php foreach ($extension['module'] as $module) { ?>
         <tr>
           <td class="text-left">&nbsp;&nbsp;&nbsp;<i class="fa fa-folder-open"></i>&nbsp;&nbsp;&nbsp;<?php echo $module['name']; ?></td>
-          <td class="text-right"><a href="<?php echo $module['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-info"><i class="fa fa-pencil"></i></a> <a href="<?php echo $module['delete']; ?>" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-warning"><i class="fa fa-trash-o"></i></a></td>
+          <td class="text-right"><a href="<?php echo $module['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-info"><i class="fas fa-pencil-alt"></i></a> <a href="<?php echo $module['delete']; ?>" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-warning"><i class="fas fa-trash"></i></a></td>
         </tr>
         <?php } ?>
         <?php } ?>

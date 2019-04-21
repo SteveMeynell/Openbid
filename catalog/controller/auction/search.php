@@ -211,9 +211,9 @@ class ControllerAuctionSearch extends Controller {
 				'limit'               => $limit
 			);
 
-			$auction_total = $this->model_catalog_auction->getTotalAuctions($filter_data);
+			$auction_total = $this->model_catalog_auction->getTotalAllAuctions($filter_data);
 
-			$results = $this->model_catalog_auction->getAuctions($filter_data);
+			$results = $this->model_catalog_auction->getAllAuctions($filter_data);
 
 			//debuglog($results);
 
@@ -225,7 +225,7 @@ class ControllerAuctionSearch extends Controller {
 				}
 
 				$highest_bid = $this->model_auction_bidding->getLastBid($result['auction_id']);
-				$numBids = $this->model_auction_bidding->getNumBids($result['auction_id']);
+				//$numBids = $this->model_auction_bidding->getNumBids($result['auction_id']);
 				//debuglog($numBids);
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
@@ -251,7 +251,7 @@ class ControllerAuctionSearch extends Controller {
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_auction_description_length')) . '..',
 					'price'       => $price,
 					'views'				=> $result['viewed'],
-					'bids'         => $numBids['num_bids'],
+					'bids'         => $result['num_bids'],
 					'rating'      => $rating,
 					'href'        => $this->url->link('auction/auction', 'auction_id=' . $result['auction_id'])
 				);

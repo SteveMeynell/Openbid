@@ -170,7 +170,7 @@ class ModelAccountReview extends Model {
 					$reviews['seller'][$index]['view'] = 'Thank you for Reviewing';
 				} else {
 					$reviews['seller'][$index]['state'] = 'remind';
-					$reviews['seller'][$index]['link'] = $this->url->link('account/review/sendReminder', 'review_id=' . $review['review_id'], true);
+					//$reviews['seller'][$index]['link'] = $this->url->link('account/review/sendReminder', 'review_id=' . $review['review_id'], true);
 					$reviews['seller'][$index]['view'] = 'Bidder Not Reviewed';
 				}
 			}
@@ -354,10 +354,13 @@ class ModelAccountReview extends Model {
 		LEFT JOIN " . DB_PREFIX . "customer c ON(c.customer_id = r.seller_id) 
 		WHERE review_id = '" . (int)$reviewId . "' AND bidder_reviewed = '0'");
 
-		$reminders = array(
-			'sellers'	=> $sellers->row,
-			'bidders'	=> $bidders->row
-		);
+		$reminders = array();
+		if($sellers->num_rows) {
+			$reminders['sellers']	= $sellers->row;
+		}
+		if($bidders->num_rows) {
+			$reminders['bidders']	= $bidders->row;
+		}
 
 		return $reminders;
 	}

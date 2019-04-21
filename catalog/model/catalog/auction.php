@@ -272,6 +272,156 @@ class ModelCatalogAuction extends Model {
 		return $auction_data;
 	}
 
+	public function getAllAuctions($data = array()) {
+		$sql = "
+		SELECT a.auction_id, a.customer_id, a.auction_type, a.status, a.main_image AS image, a.viewed, a.num_bids, 
+		ad1.start_date AS start_date,
+		ad1.end_date AS end_date,
+		ad1.min_bid AS min_bid,
+		ad1.shipping_cost AS shipping_cost,
+		ad1.additional_shipping AS additional_shipping,
+		ad1.reserve_price AS reserve_price,
+		ad1.buy_now_price AS buy_now_price,
+		ad1.quantity AS quantity,
+		ad1.shipping AS shipping_allowed,
+		ad1.international_shipping AS international_allowed,
+		ad2.name AS name,
+		ad2.subname AS subname,
+		ad2.description AS description,
+		ad2.tag AS tag,
+		ao.buy_now_only AS buy_now_only, 
+		ao.bolded_item AS bolded, 
+		ao.highlighted AS highlighted 
+								FROM " . DB_PREFIX . "auctions a
+								  LEFT JOIN " . DB_PREFIX . "auction_description ad2
+								  ON (a.auction_id = ad2.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+								  ON (a.auction_id = a2s.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_details ad1
+								  ON (a.auction_id = ad1.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_options ao
+								  ON (a.auction_id = ao.auction_id)
+								  LEFT JOIN " . DB_PREFIX . "auction_to_category a2c
+								  ON (a.auction_id = a2c.auction_id) 
+								  WHERE ad2.language_id = '" . (int)$this->config->get('config_language_id') . "'
+								  AND ad1.start_date <= NOW() 
+								  AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+								  
+		if (!empty($data['filter_category_id'])) {
+			$sql .= " AND a2c.category_id = '" . $data['filter_category_id'] . "' ";
+		}
+
+
+		if (!empty($data['filter_name']) || !empty($data['filter_tag'])) {
+			$sql .= " AND (";
+
+			if (!empty($data['filter_name'])) {
+				$implode = array();
+
+				$words = explode(' ', trim(preg_replace('/\s+/', ' ', $data['filter_name'])));
+
+				foreach ($words as $word) {
+					$implode[] = "ad2.name LIKE '%" . $this->db->escape($word) . "%'";
+				}
+
+				if ($implode) {
+					$sql .= " " . implode(" AND ", $implode) . "";
+				}
+
+				if (!empty($data['filter_description'])) {
+					$sql .= " OR ad2.description LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+				}
+			}
+
+			if (!empty($data['filter_name']) && !empty($data['filter_tag'])) {
+				$sql .= " OR ";
+			}
+
+			if (!empty($data['filter_tag'])) {
+				$implode = array();
+
+				$words = explode(' ', trim(preg_replace('/\s+/', ' ', $data['filter_tag'])));
+
+				foreach ($words as $word) {
+					$implode[] = "ad2.tag LIKE '%" . $this->db->escape($word) . "%'";
+				}
+
+				if ($implode) {
+					$sql .= " " . implode(" AND ", $implode) . "";
+				}
+			}
+
+			$sql .= ")";
+		}
+		
+		if (isset($data['filter_featured'])) {
+			$sql .= " AND ao.featured = '1' ";
+		}
+		if (isset($data['filter_no_featured'])) {
+			$sql .= " AND ao.featured = '0' ";
+		}
+		
+		if (isset($data['filter_bolded'])) {
+			$sql .= " AND ao.bolded_item = '1' ";
+		}
+		if (isset($data['filter_no_bolded'])) {
+			$sql .= " AND ao.bolded_item = '0' ";
+		}
+		
+		if (isset($data['filter_highlighted'])) {
+			$sql .= " AND ao.highlighted = '1' ";
+		}
+		if (isset($data['filter_no_highlighted'])) {
+			$sql .= " AND ao.highlighted = '0' ";
+		}
+		
+
+		$sql .= " GROUP BY a.auction_id";
+
+		$sort_data = array(
+			'ad2.name',
+			'ad1.min_bid',
+			'ad1.start_date'
+		);
+
+		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+			if ($data['sort'] == 'ad2.name') {
+				$sql .= " ORDER BY LCASE(" . $data['sort'] . ")";
+			} elseif ($data['sort'] == 'ad1.min_bid') {
+				$sql .= " ORDER BY ad1.min_bid";
+			} else {
+				$sql .= " ORDER BY " . $data['sort'];
+			}
+		} else {
+			$sql .= " ORDER BY ad1.start_date";
+		}
+
+		if (isset($data['order']) && ($data['order'] == 'DESC')) {
+			$sql .= " DESC, LCASE(ad2.name) DESC";
+		} else {
+			$sql .= " ASC, LCASE(ad2.name) ASC";
+		}
+
+		if (isset($data['start']) || isset($data['limit'])) {
+			if ($data['start'] < 0) {
+				$data['start'] = 0;
+			}
+
+			if ($data['limit'] < 1) {
+				$data['limit'] = 20;
+			}
+
+			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+		}
+
+		$auction_data = array();
+
+		$auction_data = $this->db->query($sql)->rows;
+		
+		
+		return $auction_data;
+	}
+
 	public function getClosedAuction($auction_id){
 		$sql = "SELECT 
 		a.auction_id as auction_id, 
@@ -530,6 +680,86 @@ class ModelCatalogAuction extends Model {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "auction_to_category WHERE auction_id = '" . (int)$auction_id . "'");
 
 		return $query->rows;
+	}
+
+	public function getTotalAllAuctions($data = array()) {
+		$sql = "SELECT COUNT(DISTINCT a.auction_id) AS total";
+
+		if (!empty($data['filter_category_id'])) {
+			if (!empty($data['filter_sub_category'])) {
+				$sql .= " FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "auction_to_category a2c ON (cp.category_id = a2c.category_id)";
+			} else {
+				$sql .= " FROM " . DB_PREFIX . "auction_to_category a2c";
+			}
+
+				$sql .= " LEFT JOIN " . DB_PREFIX . "auctions a ON (a2c.auction_id = a.auction_id)";
+		} else {
+			$sql .= " FROM " . DB_PREFIX . "auctions a";
+		}
+
+		$sql .= " LEFT JOIN " . DB_PREFIX . "auction_description ad
+		ON (a.auction_id = ad.auction_id)
+		LEFT JOIN " . DB_PREFIX . "auction_details ads
+		ON (a.auction_id = ads.auction_id) 
+		LEFT JOIN " . DB_PREFIX . "auction_to_store a2s
+		ON (a.auction_id = a2s.auction_id)
+		WHERE ad.language_id = '" . (int)$this->config->get('config_language_id') . "'
+		AND ads.start_date <= NOW()
+		AND a2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+
+		if (!empty($data['filter_category_id'])) {
+			if (!empty($data['filter_sub_category'])) {
+				$sql .= " AND cp.path_id = '" . (int)$data['filter_category_id'] . "'";
+			} else {
+				$sql .= " AND a2c.category_id = '" . (int)$data['filter_category_id'] . "'";
+			}
+		}
+
+		if (!empty($data['filter_name']) || !empty($data['filter_tag'])) {
+			$sql .= " AND (";
+
+			if (!empty($data['filter_name'])) {
+				$implode = array();
+
+				$words = explode(' ', trim(preg_replace('/\s+/', ' ', $data['filter_name'])));
+
+				foreach ($words as $word) {
+					$implode[] = "ad.name LIKE '%" . $this->db->escape($word) . "%'";
+				}
+
+				if ($implode) {
+					$sql .= " " . implode(" AND ", $implode) . "";
+				}
+
+				if (!empty($data['filter_description'])) {
+					$sql .= " OR ad.description LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+				}
+			}
+
+			if (!empty($data['filter_name']) && !empty($data['filter_tag'])) {
+				$sql .= " OR ";
+			}
+
+			if (!empty($data['filter_tag'])) {
+				$implode = array();
+
+				$words = explode(' ', trim(preg_replace('/\s+/', ' ', $data['filter_tag'])));
+
+				foreach ($words as $word) {
+					$implode[] = "ad.tag LIKE '%" . $this->db->escape($word) . "%'";
+				}
+
+				if ($implode) {
+					$sql .= " " . implode(" AND ", $implode) . "";
+				}
+			}
+			
+			$sql .= ")";
+		}
+
+		$query = $this->db->query($sql);
+
+		return $query->row['total'];
 	}
 
 	public function getTotalAuctions($data = array()) {

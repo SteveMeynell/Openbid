@@ -199,18 +199,20 @@ class ModelFeesFees extends Model {
           ));
         }
       }
-    }
 
-    foreach($buy_now_fee as $currentFee) {
-      if ($buyNowPrice >= $currentFee['from'] && $buyNowPrice <= $currentFee['to'] && $currentFee['status']) {
-        if($currentFee['type'] == 'flat') {
-          $serviceCharge = $currentFee['fee'];
-        } else {
-          $serviceCharge = $buyNowPrice * ($currentFee['fee']/100);
+      foreach($buy_now_fee as $currentFee) {
+        if ($buyNowPrice >= $currentFee['from'] && $buyNowPrice <= $currentFee['to'] && $currentFee['status']) {
+          if($currentFee['type'] == 'flat') {
+            $serviceCharge = $currentFee['fee'];
+          } else {
+            $serviceCharge = $buyNowPrice * ($currentFee['fee']/100);
+          }
         }
       }
+      return strval($serviceCharge);
+    } else {
+      return NULL;
     }
-     return strval($serviceCharge);
     
   }
 
@@ -238,18 +240,20 @@ class ModelFeesFees extends Model {
           ));
         }
       }
-    }
     
-    foreach($reserve_fee as $currentFee) {
-      if ($reserve_bid >= $currentFee['from'] && $reserve_bid <= $currentFee['to'] && $currentFee['status']) {
-        if($currentFee['type'] == 'flat') {
-          $serviceCharge = $currentFee['fee'];
-        } else {
-          $serviceCharge = $reserve_bid * ($currentFee['fee']/100);
+      foreach($reserve_fee as $currentFee) {
+        if ($reserve_bid >= $currentFee['from'] && $reserve_bid <= $currentFee['to'] && $currentFee['status']) {
+          if($currentFee['type'] == 'flat') {
+            $serviceCharge = $currentFee['fee'];
+          } else {
+            $serviceCharge = $reserve_bid * ($currentFee['fee']/100);
+          }
         }
       }
+      return strval($serviceCharge); //$reserve_fee;
+    } else {
+      return NULL;
     }
-     return strval($serviceCharge); //$reserve_fee;
   }
 
   public function getTotalFees($fees) {

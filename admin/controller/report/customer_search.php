@@ -115,7 +115,7 @@ class ControllerReportCustomerSearch extends Controller {
 
 			$data['searches'][] = array(
 				'keyword'     => $result['keyword'],
-				'products'    => $result['products'],
+				'auctions'    => $result['auctions'],
 				'category'    => $category,
 				'customer'    => $customer,
 				'ip'          => $result['ip'],
@@ -130,7 +130,7 @@ class ControllerReportCustomerSearch extends Controller {
 		$data['text_confirm'] = $this->language->get('text_confirm');
 
 		$data['column_keyword'] = $this->language->get('column_keyword');
-		$data['column_products'] = $this->language->get('column_products');
+		$data['column_auctions'] = $this->language->get('column_auctions');
 		$data['column_category'] = $this->language->get('column_category');
 		$data['column_customer'] = $this->language->get('column_customer');
 		$data['column_ip'] = $this->language->get('column_ip');

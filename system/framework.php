@@ -15,6 +15,9 @@ $registry->set('event', $event);
 // Event Register
 if ($config->has('action_event')) {
 	foreach ($config->get('action_event') as $key => $value) {
+		/*debuglog("Framework: ");
+		debuglog($key);
+		debuglog($value);*/
 		$event->register($key, new Action($value));
 	}
 }

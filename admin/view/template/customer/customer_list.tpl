@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right"><a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-customer').submit() : false;"><i class="fa fa-trash-o"></i></button>
+        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-customer').submit() : false;"><i class="fas fa-trash"></i></button>
       </div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -162,12 +162,12 @@
                   <td class="text-left"><?php echo $customer['ip']; ?></td>
                   <td class="text-left"><?php echo $customer['date_added']; ?></td>
                   <td class="text-right"><?php if ($customer['approve']) { ?>
-                    <a href="<?php echo $customer['approve']; ?>" data-toggle="tooltip" title="<?php echo $button_approve; ?>" class="btn btn-success"><i class="fa fa-thumbs-o-up"></i></a>
+                    <a href="<?php echo $customer['approve']; ?>" data-toggle="tooltip" title="<?php echo $button_approve; ?>" class="btn btn-success"><i class="far fa-thumbs-up"></i></a>
                     <?php } else { ?>
-                    <button type="button" class="btn btn-success" disabled><i class="fa fa-thumbs-o-up"></i></button>
+                    <button type="button" class="btn btn-success" disabled><i class="far fa-thumbs-up"></i></button>
                     <?php } ?>
                     <div class="btn-group" data-toggle="tooltip" title="<?php echo $button_login; ?>">
-                      <button type="button" data-toggle="dropdown" class="btn btn-info dropdown-toggle"><i class="fa fa-lock"></i></button>
+                      <button type="button" data-toggle="dropdown" class="btn btn-info dropdown-toggle"><i class="fas fa-lock"></i></button>
                       <ul class="dropdown-menu pull-right">
                         <li><a href="index.php?route=customer/customer/login&token=<?php echo $token; ?>&customer_id=<?php echo $customer['customer_id']; ?>&store_id=0" target="_blank"><?php echo $text_default; ?></a></li>
                         <?php foreach ($stores as $store) { ?>
@@ -176,11 +176,11 @@
                       </ul>
                     </div>
                     <?php if ($customer['unlock']) { ?>
-                    <a href="<?php echo $customer['unlock']; ?>" data-toggle="tooltip" title="<?php echo $button_unlock; ?>" class="btn btn-warning"><i class="fa fa-unlock"></i></a>
+                    <a href="<?php echo $customer['unlock']; ?>" data-toggle="tooltip" title="<?php echo $button_unlock; ?>" class="btn btn-warning"><i class="fas fa-unlock"></i></a>
                     <?php } else { ?>
-                    <button type="button" class="btn btn-warning" disabled><i class="fa fa-unlock"></i></button>
+                    <button type="button" class="btn btn-warning" disabled><i class="fas fa-unlock"></i></button>
                     <?php } ?>
-                    <a href="<?php echo $customer['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                    <a href="<?php echo $customer['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fas fa-pencil-alt"></i></a></td>
                 </tr>
                 <?php } ?>
                 <?php } else { ?>

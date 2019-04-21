@@ -60,7 +60,7 @@
             <thead>
               <tr>
                 <td class="text-left"><?php echo $column_keyword; ?></td>
-                <td class="text-left"><?php echo $column_products; ?></td>
+                <td class="text-left"><?php echo $column_auctions; ?></td>
                 <td class="text-left"><?php echo $column_category; ?></td>
                 <td class="text-left"><?php echo $column_customer; ?></td>
                 <td class="text-left"><?php echo $column_ip; ?></td>
@@ -72,7 +72,7 @@
               <?php foreach ($searches as $search) { ?>
               <tr>
                 <td class="text-left"><?php echo $search['keyword']; ?></td>
-                <td class="text-left"><?php echo $search['products']; ?></td>
+                <td class="text-left"><?php echo $search['auctions']; ?></td>
                 <td class="text-left"><?php echo $search['category']; ?></td>
                 <td class="text-left"><?php echo $search['customer']; ?></td>
                 <td class="text-left"><?php echo $search['ip']; ?></td>

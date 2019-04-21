@@ -404,53 +404,85 @@ class ControllerAuctionSelling extends Controller {
 
     $data = $this->request->post;
     $options_used = explode(',', $data['options_used']);
-    $json['auction_setup_fee'] = $this->currency->format($this->model_fees_fees->getAuctionSetupFee(),$this->session->data['currency']);
-    $json['subtitle_fee'] = empty($data['subtitle'])?NULL:$this->currency->format($this->model_fees_fees->getSubtitleFee($data['subtitle']),$this->session->data['currency']);
 
+    $auctionSetupFee = $this->model_fees_fees->getAuctionSetupFee();
+    if(!is_null($auctionSetupFee)) {
+      $json['auction_setup_fee'] = $this->currency->format($auctionSetupFee,$this->session->data['currency']);
+    }
     
-    if($data['reserve_bid']) {
-      $json['reserve_fee'] = $this->currency->format($this->model_fees_fees->getReserveFee($data['reserve_bid']),$this->session->data['currency']);
+    $subtitleFee = $this->model_fees_fees->getSubtitleFee($data['subtitle']);
+    if(!is_null($subtitleFee)) {
+      $json['subtitle_fee'] = $this->currency->format($subtitleFee,$this->session->data['currency']);
+    }
+
+    $reserveFee = $this->model_fees_fees->getReserveFee($data['reserve_bid']);
+    if(!is_null($reserveFee)) {
+      $json['reserve_fee'] = $this->currency->format($reserveFee,$this->session->data['currency']);
     }
 
     // photo counter
-    $json['photo_fee'] = empty($data['photo_counter'])?NULL:$this->currency->format($this->model_fees_fees->getPhotoFee($data['photo_counter']),$this->session->data['currency']);
+    $photoFee = $this->model_fees_fees->getPhotoFee($data['photo_counter']);
+    if(!is_null($photoFee)) {
+      $json['photo_fee'] = $this->currency->format($photoFee,$this->session->data['currency']);
+    }
 
     // category counter
-    $json['category_fee'] = empty($data['category_counter'])?NULL:$this->currency->format($this->model_fees_fees->getCategoryFee($data['category_counter']),$this->session->data['currency']);
+    $categoryFee = $this->model_fees_fees->getCategoryFee($data['category_counter']);
+    if(!is_null($categoryFee)) {
+    $json['category_fee'] = $this->currency->format($categoryFee,$this->session->data['currency']);
+    }
     
 
     foreach($options_used as $option) {
       switch ($option) {
         case 'featured-option':
-        $json['featured_fee'] = $this->currency->format($this->model_fees_fees->getFeaturedFee(),$this->session->data['currency']);
+        $featureFee = $this->model_fees_fees->getFeaturedFee();
+        if(!is_null($featureFee)) {
+          $json['featured_fee'] = $this->currency->format($featureFee,$this->session->data['currency']);
+        }
         break;
         case 'carousel-option':
-        $json['carousel_fee'] = $this->currency->format($this->model_fees_fees->getCarouselFee(),$this->session->data['currency']);
+        $carouselFee = $this->model_fees_fees->getCarouselFee();
+        if(!is_null($carouselFee)) {
+          $json['carousel_fee'] = $this->currency->format($carouselFee,$this->session->data['currency']);
+        }
         break;
         case 'bolded-option':
-        $json['bolded_fee'] = $this->currency->format($this->model_fees_fees->getBoldedFee(),$this->session->data['currency']);
+        $boldedFee = $this->model_fees_fees->getBoldedFee();
+        if(!is_null($boldedFee)) {
+          $json['bolded_fee'] = $this->currency->format($boldedFee,$this->session->data['currency']);
+        }
         break;
         case 'highlighted-option':
-        $json['highlighted_fee'] = $this->currency->format($this->model_fees_fees->getHighlightedFee(),$this->session->data['currency']);
+        $highlightedFee = $this->model_fees_fees->getHighlightedFee();
+        if(!is_null($highlightedFee)) {
+          $json['highlighted_fee'] = $this->currency->format($highlighted,$this->session->data['currency']);
+        }
         break;
         case 'social-option':
-        $json['social_fee'] = $this->currency->format($this->model_fees_fees->getSocialFee(),$this->session->data['currency']);
+        $socialFee = $this->model_fees_fees->getSocialFee();
+        if(!is_null($socialFee)) {
+          $json['social_fee'] = $this->currency->format($socialFee,$this->session->data['currency']);
+        }
         break;
         case 'auto-relist':
         $relist_amounts = $this->model_fees_fees->getRelistFee($data['num_relist']);
         if (!is_null($relist_amounts)) {
           $json['auto_relist_fee']['total_relist_fee']  = $this->currency->format($relist_amounts['relist_total'],$this->session->data['currency']);
           $json['auto_relist_fee']['each_relisting']    = $this->currency->format($relist_amounts['each_relist'],$this->session->data['currency']);
-        } else {
-          $json['auto_relist_fee']['total_relist_fee']  = NULL;
-          $json['auto_relist_fee']['each_relisting']    = NULL;
-        }
+        } 
         break;
         case 'slideshow-option':
-        $json['slideshow_fee'] = $this->currency->format($this->model_fees_fees->getSlideshowFee(),$this->session->data['currency']);
+        $slideshowFee = $this->model_fees_fees->getSlideshowFee();
+        if (!is_null($slideshowFee)) {
+          $json['slideshow_fee'] = $this->currency->format($slideshowFee,$this->session->data['currency']);
+        }
         break;
         case 'buy-now-only':
-        $json['buy_now_only_fee'] = $this->currency->format($this->model_fees_fees->getBuyNowOnlyFee($data['buy_now_price']),$this->session->data['currency']);
+        $buynowonlyFee = $this->model_fees_fees->getBuyNowOnlyFee($data['buy_now_price']);
+        if (!is_null($buynowonlyFee)) {
+          $json['buy_now_only_fee'] = $this->currency->format($buynowonlyFee,$this->session->data['currency']);
+        }
         break;
         default:
         debuglog("shouldn't get here");

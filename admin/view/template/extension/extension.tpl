@@ -13,7 +13,7 @@
   <div class="container-fluid">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-puzzle-piece"></i> <?php echo $text_list; ?></h3>
+        <h3 class="panel-title"><i class="fas fa-puzzle-piece"></i> <?php echo $text_list; ?></h3>
       </div>
       <div class="panel-body">
         <fieldset>
@@ -29,7 +29,7 @@
                 <?php } ?>
                 <?php } ?>
               </select>
-              <span class="input-group-addon"><i class="fa fa-filter"></i> <?php echo $text_filter; ?></span>
+              <span class="input-group-addon"><i class="fas fa-filter"></i> <?php echo $text_filter; ?></span>
             </div>
           </div>
         </fieldset>

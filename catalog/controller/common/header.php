@@ -1,6 +1,10 @@
 <?php
 class ControllerCommonHeader extends Controller {
 	public function index() {
+		//if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+			// Take the user to a different screen here.
+			//debuglog(navigator.userAgent);
+	
 		// Analytics
 		$this->load->model('extension/extension');
 
@@ -32,6 +36,7 @@ class ControllerCommonHeader extends Controller {
 		$data['links'] = $this->document->getLinks();
 		$data['styles'] = $this->document->getStyles();
 		$data['scripts'] = $this->document->getScripts();
+		
 		$data['lang'] = $this->language->get('code');
 		$data['direction'] = $this->language->get('direction');
 

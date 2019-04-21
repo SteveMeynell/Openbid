@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right"><a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-api').submit() : false;"><i class="fa fa-trash-o"></i></button>
+        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-api').submit() : false;"><i class="fas fa-trash"></i></button>
       </div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -26,7 +26,7 @@
     <?php } ?>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-list"></i> <?php echo $text_list; ?></h3>
+        <h3 class="panel-title"><i class="fas fa-list"></i> <?php echo $text_list; ?></h3>
       </div>
       <div class="panel-body">
         <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form-api">
@@ -65,7 +65,7 @@
                   <td class="text-left"><?php echo $api['name']; ?></td>
                   <td class="text-left"><?php echo $api['status']; ?></td>
                   <td class="text-left"><?php echo $api['date_added']; ?></td>
-                  <td class="text-right"><a href="<?php echo $api['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                  <td class="text-right"><a href="<?php echo $api['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fas fa-pencil-alt"></i></a></td>
                 </tr>
                 <?php } ?>
                 <?php } else { ?>

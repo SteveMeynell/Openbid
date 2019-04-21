@@ -15,12 +15,12 @@ class ControllerExtensionModuleAccount extends Controller {
 		$data['text_address'] = $this->language->get('text_address');
 		$data['text_wishlist'] = $this->language->get('text_wishlist');
 		$data['text_order'] = $this->language->get('text_order');
-		$data['text_download'] = $this->language->get('text_download');
-		$data['text_reward'] = $this->language->get('text_reward');
-		$data['text_return'] = $this->language->get('text_return');
+		$data['text_auction'] = $this->language->get('text_auction');
+		$data['text_bid'] = $this->language->get('text_bid');
+		$data['text_review'] = $this->language->get('text_review');
+		$data['text_fee'] = $this->language->get('text_fee');
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_newsletter'] = $this->language->get('text_newsletter');
-		$data['text_recurring'] = $this->language->get('text_recurring');
 
 		$data['logged'] = $this->customer->isLogged();
 		$data['register'] = $this->url->link('account/register', '', true);
@@ -31,14 +31,14 @@ class ControllerExtensionModuleAccount extends Controller {
 		$data['edit'] = $this->url->link('account/edit', '', true);
 		$data['password'] = $this->url->link('account/password', '', true);
 		$data['address'] = $this->url->link('account/address', '', true);
+		$data['auctions'] = $this->url->link('account/auctions', '', true);
+		$data['bids'] = $this->url->link('account/bids', '', true);
+		$data['reviews'] = $this->url->link('account/review', '', true);
+		$data['fees'] = $this->url->link('account/fees', '', true);
 		$data['wishlist'] = $this->url->link('account/wishlist');
 		$data['order'] = $this->url->link('account/order', '', true);
-		$data['download'] = $this->url->link('account/download', '', true);
-		$data['reward'] = $this->url->link('account/reward', '', true);
-		$data['return'] = $this->url->link('account/return', '', true);
 		$data['transaction'] = $this->url->link('account/transaction', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
-		$data['recurring'] = $this->url->link('account/recurring', '', true);
 
 		return $this->load->view('extension/module/account', $data);
 	}

@@ -137,7 +137,18 @@ class ModelReportSale extends Model {
 	}
 
 	public function getOrders($data = array()) {
-		$sql = "SELECT MIN(o.date_added) AS date_start, MAX(o.date_added) AS date_end, COUNT(*) AS `orders`, SUM((SELECT SUM(op.quantity) FROM `" . DB_PREFIX . "order_product` op WHERE op.order_id = o.order_id GROUP BY op.order_id)) AS products, SUM((SELECT SUM(ot.value) FROM `" . DB_PREFIX . "order_total` ot WHERE ot.order_id = o.order_id AND ot.code = 'tax' GROUP BY ot.order_id)) AS tax, SUM(o.total) AS `total` FROM `" . DB_PREFIX . "order` o";
+		$sql = "SELECT 
+		MIN(o.date_added) AS date_start, 
+		MAX(o.date_added) AS date_end, 
+		COUNT(*) AS `orders`, 
+		SUM((SELECT SUM(oa.num_fees) 
+		FROM `" . DB_PREFIX . "order_auction` oa 
+		WHERE oa.order_id = o.order_id GROUP BY oa.order_id)) AS fees, 
+		SUM((SELECT SUM(ot.value) 
+		FROM `" . DB_PREFIX . "order_total` ot 
+		WHERE ot.order_id = o.order_id 
+		GROUP BY ot.order_id)) AS total 
+		FROM `" . DB_PREFIX . "order` o";
 
 		if (!empty($data['filter_order_status_id'])) {
 			$sql .= " WHERE o.order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
@@ -203,17 +214,25 @@ class ModelReportSale extends Model {
 
 		switch($group) {
 			case 'day';
-				$sql = "SELECT COUNT(DISTINCT YEAR(date_added), MONTH(date_added), DAY(date_added)) AS total FROM `" . DB_PREFIX . "order`";
+				$sql = "SELECT 
+				COUNT(DISTINCT YEAR(date_added), MONTH(date_added), DAY(date_added)) AS total 
+				FROM `" . DB_PREFIX . "order`";
 				break;
 			default:
 			case 'week':
-				$sql = "SELECT COUNT(DISTINCT YEAR(date_added), WEEK(date_added)) AS total FROM `" . DB_PREFIX . "order`";
+				$sql = "SELECT 
+				COUNT(DISTINCT YEAR(date_added), WEEK(date_added)) AS total 
+				FROM `" . DB_PREFIX . "order`";
 				break;
 			case 'month':
-				$sql = "SELECT COUNT(DISTINCT YEAR(date_added), MONTH(date_added)) AS total FROM `" . DB_PREFIX . "order`";
+				$sql = "SELECT 
+				COUNT(DISTINCT YEAR(date_added), MONTH(date_added)) AS total 
+				FROM `" . DB_PREFIX . "order`";
 				break;
 			case 'year':
-				$sql = "SELECT COUNT(DISTINCT YEAR(date_added)) AS total FROM `" . DB_PREFIX . "order`";
+				$sql = "SELECT 
+				COUNT(DISTINCT YEAR(date_added)) AS total 
+				FROM `" . DB_PREFIX . "order`";
 				break;
 		}
 
@@ -236,6 +255,7 @@ class ModelReportSale extends Model {
 		return $query->row['total'];
 	}
 
+	/*
 	public function getTaxes($data = array()) {
 		$sql = "SELECT MIN(o.date_added) AS date_start, MAX(o.date_added) AS date_end, ot.title, SUM(ot.value) AS total, COUNT(o.order_id) AS `orders` FROM `" . DB_PREFIX . "order` o LEFT JOIN `" . DB_PREFIX . "order_total` ot ON (ot.order_id = o.order_id) WHERE ot.code = 'tax'";
 
@@ -435,4 +455,6 @@ class ModelReportSale extends Model {
 
 		return $query->row['total'];
 	}
+
+*/
 }

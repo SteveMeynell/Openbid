@@ -81,9 +81,9 @@
                 <td class="text-left"><?php echo $customer['customer_group']; ?></td>
                 <td class="text-left"><?php echo $customer['status']; ?></td>
                 <td class="text-right"><?php echo $customer['orders']; ?></td>
-                <td class="text-right"><?php echo $customer['products']; ?></td>
+                <td class="text-right"><?php echo $customer['fees']; ?></td>
                 <td class="text-right"><?php echo $customer['total']; ?></td>
-                <td class="text-right"><a href="<?php echo $customer['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                <td class="text-right"><a href="<?php echo $customer['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fas fa-pencil-alt"></i></a></td>
               </tr>
               <?php } ?>
               <?php } else { ?>

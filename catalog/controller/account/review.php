@@ -65,7 +65,6 @@ class ControllerAccountReview extends Controller {
 		$data['pagination'] = $pagination->render();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($review_total - 10)) ? $review_total : ((($page - 1) * 10) + 10), $review_total, ceil($review_total / 10));
-
     $data['continue'] = $this->url->link('account/account', '', true);
     
     $data['column_left'] = $this->load->controller('common/column_left');
@@ -188,15 +187,16 @@ class ControllerAccountReview extends Controller {
     $this->load->model('account/review');
     $this->load->language('mail/review');
     $reminders = $this->model_account_review->getWhoToRemind($reviewId);
+    //debuglog($reminders);
     foreach($reminders as $group => $info) {
       $mailInfo['email'] = $info['email'];
       $mailInfo['subject'] = $this->language->get($group . '_reminder_subject');
       $mailInfo['message'] = $this->language->get($group . '_reminder_message');
-      $this->mailReminder($mailInfo);
+      $well = $this->mailReminder($mailInfo);
     }
     $json = array();
 
-    $json['success'] = 'yes testing';
+    $json['success'] = 'Thank you, your email has been sent.';
 
     $this->response->addHeader('Content-Type: application/json');
     $this->response->setOutput(json_encode($json));
@@ -217,8 +217,11 @@ class ControllerAccountReview extends Controller {
 		$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
 		$mail->setSubject($mailInfo['subject']);
 		$mail->setText($mailInfo['message']);
-		$mail->send();
+    $mail->send();
+    
+    return true;
   }
+
   protected function getList() {
 
     

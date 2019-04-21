@@ -91,8 +91,7 @@ class ControllerReportSaleOrder extends Controller {
 				'date_start' => date($this->language->get('date_format_short'), strtotime($result['date_start'])),
 				'date_end'   => date($this->language->get('date_format_short'), strtotime($result['date_end'])),
 				'orders'     => $result['orders'],
-				'products'   => $result['products'],
-				'tax'        => $this->currency->format($result['tax'], $this->config->get('config_currency')),
+				'fees'   => $result['fees'],
 				'total'      => $this->currency->format($result['total'], $this->config->get('config_currency'))
 			);
 		}
@@ -107,8 +106,7 @@ class ControllerReportSaleOrder extends Controller {
 		$data['column_date_start'] = $this->language->get('column_date_start');
 		$data['column_date_end'] = $this->language->get('column_date_end');
 		$data['column_orders'] = $this->language->get('column_orders');
-		$data['column_products'] = $this->language->get('column_products');
-		$data['column_tax'] = $this->language->get('column_tax');
+		$data['column_fees'] = $this->language->get('column_fees');
 		$data['column_total'] = $this->language->get('column_total');
 
 		$data['entry_date_start'] = $this->language->get('entry_date_start');

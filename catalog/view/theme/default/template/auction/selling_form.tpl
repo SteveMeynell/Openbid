@@ -491,14 +491,16 @@
         $('#fee-list').empty();
         $('#auction-fee-total').remove();
         
-        $('#fee-list').append('<li id="auction-fee">Auction Setup Fee: ' + json['auction_setup_fee'] + '</li>');
-        if(json['subtitle_fee'] !== null) {
+        if(json.hasOwnProperty('auction_setup_fee')) {
+          $('#fee-list').append('<li id="auction-fee">Auction Setup Fee: ' + json['auction_setup_fee'] + '</li>');
+        }
+        if(json.hasOwnProperty('subtitle_fee')) {
           $('#fee-list').append('<li id="auction-fee">Adding Sub Title Fee: ' + json['subtitle_fee'] + '</li>');
         }
-        if(json['category_fee'] !== null) {
+        if(json.hasOwnProperty('category_fee')) {
           $('#fee-list').append('<li id="auction-fee">Adding Extra Category Fee: ' + json['category_fee'] + '</li>');
         }
-        if(json['photo_fee'] !== null) {
+        if(json.hasOwnProperty('photo_fee')) {
           $('#fee-list').append('<li id="auction-fee">Adding Extra Photos Fee: ' + json['photo_fee'] + '</li>');
         }
         if(json.hasOwnProperty('featured_fee')) {

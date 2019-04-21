@@ -81,11 +81,11 @@ class ControllerReportCustomerOrder extends Controller {
 			'start'						=> ($page - 1) * $this->config->get('config_limit_admin'),
 			'limit'						=> $this->config->get('config_limit_admin')
 		);
-
+debuglog("ok got here");
 		$customer_total = $this->model_report_customer->getTotalOrders($filter_data);
 
 		$results = $this->model_report_customer->getOrders($filter_data);
-
+debuglog($results);
 		foreach ($results as $result) {
 			$data['customers'][] = array(
 				'customer'       => $result['customer'],
@@ -93,7 +93,7 @@ class ControllerReportCustomerOrder extends Controller {
 				'customer_group' => $result['customer_group'],
 				'status'         => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
 				'orders'         => $result['orders'],
-				'products'       => $result['products'],
+				'fees'       => $result['fees'],
 				'total'          => $this->currency->format($result['total'], $this->config->get('config_currency')),
 				'edit'           => $this->url->link('customer/customer/edit', 'token=' . $this->session->data['token'] . '&customer_id=' . $result['customer_id'] . $url, true)
 			);

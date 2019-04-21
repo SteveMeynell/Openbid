@@ -46,11 +46,15 @@
                     <td class="text-left"><?php echo $items['sellername']; ?></td>
                     <td class="text-left"><?php echo $items['biddername']; ?></td>
                     <td class="text-right"><?php echo $items['date_added']; ?></td>
-                    <?php if($items['state'] == 'view') { ?>
-                    <td class="text-right">
-                      <button type="button" id="button-view" class="btn btn-<?php echo $btnClass; ?> button-view" data-toggle="tooltip" title="<?php echo $items['view']; ?>" data-review-id="<?php echo $items['review_id']; ?>" data-loading-text="<i class='icon-spinner icon-spin icon-large'></i>">
-                      <i class="fa fa-<?php echo $faClass; ?>"></i></button>
-                    </td>
+                    <?php if($items['state'] == 'review') { ?>
+                      <td class="text-right">
+                        <a href="<?php echo $items['link']; ?>" id="button-review" class="btn btn-<?php echo $btnClass; ?> button-review" data-toggle="tooltip" title="<?php echo $items['view']; ?>" data-review-id="<?php echo $items['review_id']; ?>" data-loading-text="<i class='icon-spinner icon-spin icon-large'></i>"><i class="fa fa-<?php echo $faClass; ?>"></i></a>
+                      </td>
+                    <?php } elseif($items['state'] == 'view') { ?>
+                      <td class="text-right">
+                        <button type="button" id="button-view" class="btn btn-<?php echo $btnClass; ?> button-view" data-toggle="tooltip" title="<?php echo $items['view']; ?>" data-review-id="<?php echo $items['review_id']; ?>" data-loading-text="<i class='icon-spinner icon-spin icon-large'></i>">
+                        <i class="fa fa-<?php echo $faClass; ?>"></i></button>
+                      </td>
                     <?php } else { ?>
                       <td class="text-right">
                       <button type="button" id="button-remind" class="btn btn-<?php echo $btnClass; ?> button-remind" data-toggle="tooltip" title="<?php echo $items['view']; ?>" data-review-id="<?php echo $items['review_id']; ?>" data-loading-text="<i class='icon-spinner icon-spin icon-large'></i>">
@@ -216,8 +220,8 @@ $('.button-remind').click(function (e) {
 });
 
 function countingStars(rating) {
-  var zeroStar = '<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>';
-  var oneStar = '<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>';
+  var zeroStar = '<span class="fa fa-stack"><i class="far fa-star fa-stack-1x"></i></span>';
+  var oneStar = '<span class="fa fa-stack"><i class="fas fa-star fa-stack-1x"></i><i class="far fa-star fa-stack-1x"></i></span>';
   var starRating="";
   for(starCount=1;starCount<=5;starCount++) {
             if(rating < starCount) {

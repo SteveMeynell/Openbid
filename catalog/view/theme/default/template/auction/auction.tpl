@@ -73,9 +73,9 @@
             <p>
               <?php for ($i = 1; $i <= 5; $i++) { ?>
                 <?php if ($rating < $i) { ?>
-                  <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+                  <span class="fa fa-stack"><i class="far fa-star fa-stack-1x"></i></span>
                 <?php } else { ?>
-                  <span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+                  <span class="fa fa-stack"><i class="fas fa-star fa-stack-1x"></i><i class="far fa-star fa-stack-1x"></i></span>
                 <?php } ?>
               <?php } ?>
               <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;"><?php echo $reviews; ?></a></p>
@@ -240,7 +240,7 @@ $(document).ready(function() {
 		dataType: 'json',
     data: {auction_id: '<?php echo $auction_id; ?>', min_bid: '<?php echo $min_bid; ?>'},
     success: function(json){
-      var zeroStar = '<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>';
+      var zeroStar = '<span class="fa fa-stack"><i class="far fa-star fa-stack-1x"></i></span>';
       var oneStar = '<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>';
       var checkMark = '<span class="fa fa-stack"><i class="fa fa-gavel fa-stack-1x"></i></span>';
       if(json['currentWinner'] == '1') {

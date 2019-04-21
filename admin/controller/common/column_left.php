@@ -34,7 +34,7 @@ class ControllerCommonColumnLeft extends Controller {
 			// Menu
 			$data['menus'][] = array(
 				'id'       => 'menu-dashboard',
-				'icon'	   => 'fa-dashboard',
+				'icon'	   => 'fa-clipboard',
 				'name'	   => $this->language->get('text_dashboard'),
 				'href'     => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true),
 				'children' => array()
@@ -253,7 +253,7 @@ class ControllerCommonColumnLeft extends Controller {
 			if ($design) {
 				$data['menus'][] = array(
 					'id'       => 'menu-design',
-					'icon'	   => 'fa-television', 
+					'icon'	   => 'fa-tv', 
 					'name'	   => $this->language->get('text_design'),
 					'href'     => '',
 					'children' => $design
@@ -329,7 +329,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);	
 			}
-			
+			/*
 			if ($this->user->hasPermission('access', 'sale/recurring')) {	
 				$sale[] = array(
 					'name'	   => $this->language->get('text_recurring'),
@@ -346,7 +346,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);	
 			}
 			
-			// Voucher
+			 Voucher
 			$voucher = array();
 			
 			if ($this->user->hasPermission('access', 'sale/voucher')) {
@@ -372,6 +372,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => $voucher		
 				);		
 			}
+			*/
 			
 			if ($sale) {
 				$data['menus'][] = array(
@@ -541,7 +542,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);
 			}
-			
+			/*
 			if ($this->user->hasPermission('access', 'localisation/stock_status')) {
 				$localisation[] = array(
 					'name'	   => $this->language->get('text_stock_status'),
@@ -549,7 +550,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);
 			}
-			
+			*/
 			if ($this->user->hasPermission('access', 'localisation/order_status')) {
 				$localisation[] = array(
 					'name'	   => $this->language->get('text_order_status'),
@@ -560,7 +561,7 @@ class ControllerCommonColumnLeft extends Controller {
 			
 			
 			
-			// Returns
+			/* Returns
 			$return = array();
 			
 			if ($this->user->hasPermission('access', 'localisation/return_status')) {
@@ -594,7 +595,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => $return		
 				);
 			}
-			
+			*/
 			if ($this->user->hasPermission('access', 'localisation/country')) {
 				$localisation[] = array(
 					'name'	   => $this->language->get('text_country'),
@@ -619,7 +620,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
-			// Tax		
+			/* Tax		
 			$tax = array();
 			
 			if ($this->user->hasPermission('access', 'localisation/tax_class')) {
@@ -661,7 +662,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()
 				);
 			}
-			
+			*/
 			if ($localisation) {																
 				$system[] = array(
 					'name'	   => $this->language->get('text_localisation'),
@@ -744,7 +745,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()
 				);
 			}
-			
+			/*
 			if ($this->user->hasPermission('access', 'report/sale_tax')) {
 				$report_sale[] = array(
 					'name'	   => $this->language->get('text_report_sale_tax'),
@@ -776,7 +777,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()
 				);
 			}
-			
+			*/
 			if ($report_sale) {
 				$report[] = array(
 					'name'	   => $this->language->get('text_report_sale'),
@@ -785,7 +786,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);			
 			}
 			
-			// Report Products			
+			/* Report Products			
 			$report_product = array();	
 			
 			if ($this->user->hasPermission('access', 'report/product_viewed')) {
@@ -811,7 +812,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => $report_product	
 				);		
 			}
-			
+			*/
 			// Report Customers				
 			$report_customer = array();
 			
@@ -846,7 +847,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()
 				);
 			}
-			
+			/*
 			if ($this->user->hasPermission('access', 'report/customer_reward')) {
 				$report_customer[] = array(
 					'name'	   => $this->language->get('text_report_customer_reward'),
@@ -862,7 +863,7 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()
 				);
 			}
-			
+			*/
 			if ($report_customer) {	
 				$report[] = array(
 					'name'	   => $this->language->get('text_report_customer'),
@@ -909,35 +910,14 @@ class ControllerCommonColumnLeft extends Controller {
 			if ($report) {	
 				$data['menus'][] = array(
 					'id'       => 'menu-report',
-					'icon'	   => 'fa-bar-chart-o', 
+					'icon'	   => 'fa-chart-bar', 
 					'name'	   => $this->language->get('text_reports'),
 					'href'     => '',
 					'children' => $report
 				);	
 			}
 			
-			/*
-			// Feedback
-			if ($this->user->hasPermission('access', 'catalog/feedback')) {
-				$data['menus'][] = array(
-					'id'		=> 'menu-feedback',
-					'icon'		=> 'fa-comments',
-					'name'		=> $this->language->get('text_feedback'),
-					'href'		=> $this->url->link('catalog/feedback', 'token=' . $this->session->data['token'], true),
-					'children'	=> ''
-				);
-			}
-			// Guestbook
-			if ($this->user->hasPermission('access', 'catalog/guestbook')) {
-				$data['menus'][] = array(
-					'id'		=> 'menu-guestbook',
-					'icon'		=> 'fa-book',
-					'name'		=> $this->language->get('text_guestbook'),
-					'href'		=> $this->url->link('catalog/guestbook', 'token=' . $this->session->data['token'], true),
-					'children'	=> ''
-				);
-			}
-			*/
+			
 			// Stats
 			$data['text_created_auction_status'] = $this->language->get('text_created_auction_status');
 			$data['text_closed_auction_status'] = $this->language->get('text_closed_auction_status');
@@ -960,44 +940,7 @@ class ControllerCommonColumnLeft extends Controller {
 			$data['closed_auction_status']	=	$auction_totals['3'];
 			$data['suspend_status']			=	$auction_totals['4'];
 			$data['status_total']			=	array_sum($auction_totals);
-			/*
-	
-			//$complete_total = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_complete_status'))));
 			
-			if ($complete_total) {
-				$data['complete_status'] = round(($complete_total / $order_total) * 100);
-			} else {
-				$data['complete_status'] = 0;
-			}
-	
-			$processing_total = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_processing_status'))));
-	
-			if ($processing_total) {
-				$data['processing_status'] = round(($processing_total / $order_total) * 100);
-			} else {
-				$data['processing_status'] = 0;
-			}
-	
-			$this->load->model('localisation/order_status');
-	
-			$order_status_data = array();
-	
-			$results = $this->model_localisation_order_status->getOrderStatuses();
-	
-			foreach ($results as $result) {
-				if (!in_array($result['order_status_id'], array_merge($this->config->get('config_complete_status'), $this->config->get('config_processing_status')))) {
-					$order_status_data[] = $result['order_status_id'];
-				}
-			}
-	
-			$other_total = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $order_status_data)));
-	
-			if ($other_total) {
-				$data['other_status'] = round(($other_total / $order_total) * 100);
-			} else {
-				$data['other_status'] = 0;
-			}
-			*/
 			return $this->load->view('common/column_left', $data);
 		}
 	}

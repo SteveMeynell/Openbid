@@ -1,9 +1,9 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost/OpenBid/');
+define('HTTP_SERVER', 'http://192.168.1.148:8080/openbid/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost/OpenBid/');
+define('HTTPS_SERVER', 'http://192.168.1.148:8080/openbid/');
 
 // DIR
 define('DIR_APPLICATION', 'D:/xampp/htdocs/OpenBid/catalog/');

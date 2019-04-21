@@ -11,10 +11,21 @@
 <meta name="keywords" content="<?php echo $keywords; ?>" />
 <?php } ?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+
 <script type="text/javascript" src="view/javascript/jquery/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
 <link href="view/stylesheet/bootstrap.css" type="text/css" rel="stylesheet" />
-<link href="view/javascript/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+<!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
+<!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">-->
+
+<link href="view/javascript/font-awesome/css/all.min.css" type="text/css" rel="stylesheet" />
+<script defer src="view/javascript/font-awesome/js/all.js"></script>
+
 <script src="view/javascript/jquery/datetimepicker/moment.js" type="text/javascript"></script>
 <script src="view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <link href="view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" media="screen" />
@@ -36,7 +47,7 @@
 <header id="header" class="navbar navbar-static-top">
   <div class="navbar-header">
     <?php if ($logged) { ?>
-    <a type="button" id="button-menu" class="pull-left"><i class="fa fa-indent fa-lg"></i></a>
+    <a type="button" id="button-menu" class="pull-left"><i class="fas fa-outdent fa-lg"></i></a>
     <?php } ?>
     <a href="<?php echo $home; ?>" class="navbar-brand"><img src="view/image/logo.png" alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" /></a>
     <label>Current Date and Time </label><label id="TimeDate"></label>
@@ -84,7 +95,7 @@
         <li><a href="http://forum.openbid.com" target="_blank"><?php echo $text_support; ?></a></li>
       </ul>
     </li>
-    <li><a href="<?php echo $logout; ?>"><span class="hidden-xs hidden-sm hidden-md"><?php echo $text_logout; ?></span> <i class="fa fa-sign-out fa-lg"></i></a></li>
+    <li><a href="<?php echo $logout; ?>"><span class="hidden-xs hidden-sm hidden-md"><?php echo $text_logout; ?></span> <i class="fas fa-sign-out-alt fa-lg"></i></a></li>
   </ul>
   <?php } ?>
 </header>
