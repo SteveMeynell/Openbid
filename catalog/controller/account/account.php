@@ -48,7 +48,7 @@ class ControllerAccountAccount extends Controller {
 		$data['text_review'] = $this->language->get('text_review');
 		$data['text_fees'] = $this->language->get('text_fees');
 		$data['text_newsletter'] = $this->language->get('text_newsletter');
-		$data['text_recurring'] = $this->language->get('text_recurring');
+		$data['text_payment'] = $this->language->get('text_payment');
 
 		$data['edit'] = $this->url->link('account/edit', '', true);
 		$data['password'] = $this->url->link('account/password', '', true);
@@ -84,7 +84,7 @@ class ControllerAccountAccount extends Controller {
 		$data['reviews'] = $this->url->link('account/review', '', true);
 		$data['fees'] = $this->url->link('account/fees', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
-		$data['recurring'] = $this->url->link('account/recurring', '', true);
+		$data['payment'] = $this->url->link('account/order', '', true);
 		
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');

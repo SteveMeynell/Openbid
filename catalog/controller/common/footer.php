@@ -9,14 +9,13 @@ class ControllerCommonFooter extends Controller {
 		$data['text_service'] = $this->language->get('text_service');
 		$data['text_extra'] = $this->language->get('text_extra');
 		$data['text_contact'] = $this->language->get('text_contact');
-		$data['text_feedback'] = $this->language->get('text_feedback');
-		$data['text_quote'] = $this->language->get('text_quote');
-		$data['text_return'] = $this->language->get('text_return');
+		
 		$data['text_sitemap'] = $this->language->get('text_sitemap');
-		$data['text_manufacturer'] = $this->language->get('text_manufacturer');
-		$data['text_voucher'] = $this->language->get('text_voucher');
+		
 		$data['text_affiliate'] = $this->language->get('text_affiliate');
-		$data['text_special'] = $this->language->get('text_special');
+		$data['text_sellers_instructions'] = $this->language->get('text_sellers_instructions');
+		$data['text_bidders_instructions'] = $this->language->get('text_bidders_instructions');
+		
 		$data['text_account'] = $this->language->get('text_account');
 		$data['text_order'] = $this->language->get('text_order');
 		$data['text_wishlist'] = $this->language->get('text_wishlist');
@@ -36,14 +35,12 @@ class ControllerCommonFooter extends Controller {
 		}
 
 		$data['contact'] = $this->url->link('information/contact');
-		$data['feedback'] = $this->url->link('information/feedback');
-		$data['quote'] = $this->url->link('information/quote');
-		$data['return'] = $this->url->link('account/return/add', '', true);
+
 		$data['sitemap'] = $this->url->link('information/sitemap');
-		$data['manufacturer'] = $this->url->link('auction/manufacturer');
-		$data['voucher'] = $this->url->link('account/voucher', '', true);
+		$data['sellers_instructions'] = $this->url->link('information/sellers_instructions');
+		$data['bidders_instructions'] = $this->url->link('information/bidders_instructions');
+
 		$data['affiliate'] = $this->url->link('affiliate/account', '', true);
-		$data['special'] = $this->url->link('auction/special');
 		$data['account'] = $this->url->link('account/account', '', true);
 		$data['order'] = $this->url->link('account/order', '', true);
 		$data['wishlist'] = $this->url->link('account/wishlist', '', true);

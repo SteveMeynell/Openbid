@@ -104,6 +104,7 @@ class ControllerAuctionClosedAuctions extends Controller {
 			$data['description'] = html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8');
 			$data['seller_id'] = $auction_info['seller_id'];
 			$data['seller'] = $auction_info['seller'];
+			$data['seller_link'] = $this->url->link('account/user', 'user=' . $auction_info['seller_id'], true);
 			$data['num_bids'] = $auction_info['num_bids'];
 			$data['sold_for'] = (isset($winning_bid['bid_amount']) && $winning_bid['winner'])?$winning_bid['bid_amount']:'Did Not Sell!';
 			$data['sold'] = $winning_bid['winner'];

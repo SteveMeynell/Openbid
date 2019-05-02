@@ -58,6 +58,7 @@ class ControllerExtensionModuleClosedAuctions extends Controller {
 					'subtitle'        => $auction_info['subtitle'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($auction_info['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
 					'seller'			=> $auction_info['seller'],
+					'seller_link'	=> $this->url->link('account/user', 'user=' . $auction_info['seller_id'], true),
 					'price'       => $price,
 					'rating'      => $rating,
 					'href'        => $this->url->link('auction/closed_auctions', 'auction_id=' . $auction_info['auction_id'])

@@ -44,7 +44,15 @@ class ModelAccountFees extends Model {
 	}
 
 	public function getMyTotalFees() {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "fees_charged` WHERE customer_id = '" . (int)$this->customer->getId() . "' GROUP BY auction_id");
+		/*
+		I have to fix this.  What I am looking for is fees that are in the current cart to be displayed as unpaid and historic 
+		fees displayed as paid.
+		*/
+		$query = $this->db->query("
+		SELECT COUNT(*) AS total 
+		FROM `" . DB_PREFIX . "fees_charged` 
+		WHERE customer_id = '" . (int)$this->customer->getId() . "' 
+		GROUP BY auction_id");
 
 		if($query->num_rows) {
 			return $query->row['total'];

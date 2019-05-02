@@ -338,27 +338,6 @@
                 </div>
               </fieldset>
               <fieldset>
-                <legend><?php echo $text_voucher; ?></legend>
-                <div class="form-group required">
-                  <label class="col-sm-2 control-label" for="input-voucher-min"><span data-toggle="tooltip" title="<?php echo $help_voucher_min; ?>"><?php echo $entry_voucher_min; ?></span></label>
-                  <div class="col-sm-10">
-                    <input type="text" name="config_voucher_min" value="<?php echo $config_voucher_min; ?>" placeholder="<?php echo $entry_voucher_min; ?>" id="input-voucher-min" class="form-control" />
-                    <?php if ($error_voucher_min) { ?>
-                    <div class="text-danger"><?php echo $error_voucher_min; ?></div>
-                    <?php } ?>
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <label class="col-sm-2 control-label" for="input-voucher-max"><span data-toggle="tooltip" title="<?php echo $help_voucher_max; ?>"><?php echo $entry_voucher_max; ?></span></label>
-                  <div class="col-sm-10">
-                    <input type="text" name="config_voucher_max" value="<?php echo $config_voucher_max; ?>" placeholder="<?php echo $entry_voucher_max; ?>" id="input-voucher-max" class="form-control" />
-                    <?php if ($error_voucher_max) { ?>
-                    <div class="text-danger"><?php echo $error_voucher_max; ?></div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
                 <legend><?php echo $text_account; ?></legend>
                 <div class="form-group">
                   <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_customer_online; ?>"><?php echo $entry_customer_online; ?></span></label>

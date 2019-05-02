@@ -70,55 +70,30 @@
           <thead>
             <tr>
               <td class="text-left"><?php echo $column_name; ?></td>
-              <td class="text-left"><?php echo $column_model; ?></td>
-              <td class="text-right"><?php echo $column_quantity; ?></td>
+              <td class="text-right"><?php echo $column_num_fees; ?></td>
               <td class="text-right"><?php echo $column_price; ?></td>
-              <td class="text-right"><?php echo $column_total; ?></td>
-              <?php if ($products) { ?>
-              <td style="width: 20px;"></td>
-              <?php } ?>
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($products as $product) { ?>
+            <?php foreach ($auctions as $auction) { ?>
             <tr>
-              <td class="text-left"><?php echo $product['name']; ?>
-                <?php foreach ($product['option'] as $option) { ?>
+              <td class="text-left"><?php echo $auction['name']; ?>
+                <?php foreach ($auction['fees'] as $fee) { ?>
                 <br />
-                &nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
+                &nbsp;<small> - <?php echo $fee['description']; ?>: <?php echo $fee['value']; ?></small>
                 <?php } ?></td>
-              <td class="text-left"><?php echo $product['model']; ?></td>
-              <td class="text-right"><?php echo $product['quantity']; ?></td>
-              <td class="text-right"><?php echo $product['price']; ?></td>
-              <td class="text-right"><?php echo $product['total']; ?></td>
-              <td class="text-right" style="white-space: nowrap;"><?php if ($product['reorder']) { ?>
-                <a href="<?php echo $product['reorder']; ?>" data-toggle="tooltip" title="<?php echo $button_reorder; ?>" class="btn btn-primary"><i class="fa fa-shopping-cart"></i></a>
-                <?php } ?>
-                <a href="<?php echo $product['return']; ?>" data-toggle="tooltip" title="<?php echo $button_return; ?>" class="btn btn-danger"><i class="fa fa-reply"></i></a></td>
+              <td class="text-right"><?php echo $auction['num_fees']; ?></td>
+              <td class="text-right"><?php echo $auction['total']; ?></td>
             </tr>
             <?php } ?>
-            <?php foreach ($vouchers as $voucher) { ?>
-            <tr>
-              <td class="text-left"><?php echo $voucher['description']; ?></td>
-              <td class="text-left"></td>
-              <td class="text-right">1</td>
-              <td class="text-right"><?php echo $voucher['amount']; ?></td>
-              <td class="text-right"><?php echo $voucher['amount']; ?></td>
-              <?php if ($products) { ?>
-              <td></td>
-              <?php } ?>
             </tr>
-            <?php } ?>
           </tbody>
           <tfoot>
             <?php foreach ($totals as $total) { ?>
             <tr>
-              <td colspan="3"></td>
+              <td colspan="1"></td>
               <td class="text-right"><b><?php echo $total['title']; ?></b></td>
               <td class="text-right"><?php echo $total['text']; ?></td>
-              <?php if ($products) { ?>
-              <td></td>
-              <?php } ?>
             </tr>
             <?php } ?>
           </tfoot>

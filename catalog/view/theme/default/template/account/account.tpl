@@ -41,7 +41,7 @@
         <?php } ?>
         <li><a href="<?php echo $reviews; ?>"><?php echo $text_review; ?></a></li>
         <li><a href="<?php echo $fees; ?>"><?php echo $text_fees; ?></a></li>
-        <li><a href="<?php echo $recurring; ?>"><?php echo $text_recurring; ?></a></li>
+        <li><a href="<?php echo $payment; ?>"><?php echo $text_payment; ?></a></li>
       </ul>
       <h2><?php echo $text_my_newsletter; ?></h2>
       <ul class="list-unstyled">

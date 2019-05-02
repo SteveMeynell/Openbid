@@ -85,7 +85,7 @@
           <?php } ?>
           <p><?php echo $text_viewed . ' ' . $views; ?></p>
           <p><?php echo $text_num_bids . ' ' . $num_bids; ?></p>
-          <p><?php echo $text_seller . ' ' . $seller; ?></p>
+          <p><?php echo $text_seller . ' ';?><a href="<?php echo $seller_link; ?>"><?php echo $seller; ?></a></p>
           <?php if($winning_bidder) { ?>
             <h3><span class="price-new"> Congratulations!  You are the winning bidder. </span></h3>
           <?php } else {?>

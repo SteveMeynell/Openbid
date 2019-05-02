@@ -35,7 +35,7 @@ class ControllerSettingSetting extends Controller {
 		$data['text_no'] = $this->language->get('text_no');
 		//$data['text_auction'] = $this->language->get('text_auction');
 		$data['text_review'] = $this->language->get('text_review');
-		$data['text_voucher'] = $this->language->get('text_voucher');
+		//$data['text_voucher'] = $this->language->get('text_voucher');
 		$data['text_tax'] = $this->language->get('text_tax');
 		$data['text_account'] = $this->language->get('text_account');
 		$data['text_checkout'] = $this->language->get('text_checkout');
@@ -86,8 +86,8 @@ class ControllerSettingSetting extends Controller {
 		//$data['entry_auction_count'] = $this->language->get('entry_auction_count');
 		$data['entry_review'] = $this->language->get('entry_review');
 		$data['entry_review_guest'] = $this->language->get('entry_review_guest');
-		$data['entry_voucher_min'] = $this->language->get('entry_voucher_min');
-		$data['entry_voucher_max'] = $this->language->get('entry_voucher_max');
+		//$data['entry_voucher_min'] = $this->language->get('entry_voucher_min');
+		//$data['entry_voucher_max'] = $this->language->get('entry_voucher_max');
 		$data['entry_tax'] = $this->language->get('entry_tax');
 		$data['entry_tax_default'] = $this->language->get('entry_tax_default');
 		$data['entry_tax_customer'] = $this->language->get('entry_tax_customer');
@@ -163,8 +163,8 @@ class ControllerSettingSetting extends Controller {
 		//$data['help_auction_count'] = $this->language->get('help_auction_count');
 		$data['help_review'] = $this->language->get('help_review');
 		$data['help_review_guest'] = $this->language->get('help_review_guest');
-		$data['help_voucher_min'] = $this->language->get('help_voucher_min');
-		$data['help_voucher_max'] = $this->language->get('help_voucher_max');
+		//$data['help_voucher_min'] = $this->language->get('help_voucher_min');
+		//$data['help_voucher_max'] = $this->language->get('help_voucher_max');
 		//$data['help_tax_default'] = $this->language->get('help_tax_default');
 		//$data['help_tax_customer'] = $this->language->get('help_tax_customer');
 		$data['help_customer_online'] = $this->language->get('help_customer_online');
@@ -292,6 +292,7 @@ class ControllerSettingSetting extends Controller {
 			$data['error_login_attempts'] = '';
 		}
 
+		/*
 		if (isset($this->error['voucher_min'])) {
 			$data['error_voucher_min'] = $this->error['voucher_min'];
 		} else {
@@ -303,6 +304,7 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$data['error_voucher_max'] = '';
 		}
+		*/
 
 		if (isset($this->error['processing_status'])) {
 			$data['error_processing_status'] = $this->error['processing_status'];
@@ -627,6 +629,7 @@ class ControllerSettingSetting extends Controller {
 			$data['config_review_guest'] = $this->config->get('config_review_guest');
 		}
 
+		/*
 		if (isset($this->request->post['config_voucher_min'])) {
 			$data['config_voucher_min'] = $this->request->post['config_voucher_min'];
 		} else {
@@ -639,7 +642,7 @@ class ControllerSettingSetting extends Controller {
 			$data['config_voucher_max'] = $this->config->get('config_voucher_max');
 		}
 
-/*		if (isset($this->request->post['config_tax'])) {
+		if (isset($this->request->post['config_tax'])) {
 			$data['config_tax'] = $this->request->post['config_tax'];
 		} else {
 			$data['config_tax'] = $this->config->get('config_tax');
@@ -1196,6 +1199,7 @@ class ControllerSettingSetting extends Controller {
 			$this->error['login_attempts'] = $this->language->get('error_login_attempts');
 		}
 
+		/*
 		if (!$this->request->post['config_voucher_min']) {
 			$this->error['voucher_min'] = $this->language->get('error_voucher_min');
 		}
@@ -1203,6 +1207,8 @@ class ControllerSettingSetting extends Controller {
 		if (!$this->request->post['config_voucher_max']) {
 			$this->error['voucher_max'] = $this->language->get('error_voucher_max');
 		}
+		*/
+
 
 		if (!isset($this->request->post['config_processing_status'])) {
 			$this->error['processing_status'] = $this->language->get('error_processing_status');

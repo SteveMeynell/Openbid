@@ -33,7 +33,7 @@ class ControllerInformationSitemap extends Controller {
 		$data['text_contact'] = $this->language->get('text_contact');
 
 		$this->load->model('catalog/category');
-		$this->load->model('catalog/product');
+		$this->load->model('catalog/auction');
 
 		$data['categories'] = array();
 
@@ -52,25 +52,25 @@ class ControllerInformationSitemap extends Controller {
 				foreach ($categories_3 as $category_3) {
 					$level_3_data[] = array(
 						'name' => $category_3['name'],
-						'href' => $this->url->link('product/category', 'path=' . $category_1['category_id'] . '_' . $category_2['category_id'] . '_' . $category_3['category_id'])
+						'href' => $this->url->link('auction/category', 'path=' . $category_1['category_id'] . '_' . $category_2['category_id'] . '_' . $category_3['category_id'])
 					);
 				}
 
 				$level_2_data[] = array(
 					'name'     => $category_2['name'],
 					'children' => $level_3_data,
-					'href'     => $this->url->link('product/category', 'path=' . $category_1['category_id'] . '_' . $category_2['category_id'])
+					'href'     => $this->url->link('auction/category', 'path=' . $category_1['category_id'] . '_' . $category_2['category_id'])
 				);
 			}
 
 			$data['categories'][] = array(
 				'name'     => $category_1['name'],
 				'children' => $level_2_data,
-				'href'     => $this->url->link('product/category', 'path=' . $category_1['category_id'])
+				'href'     => $this->url->link('auction/category', 'path=' . $category_1['category_id'])
 			);
 		}
 
-		$data['special'] = $this->url->link('product/special');
+		//$data['special'] = $this->url->link('product/special');
 		$data['account'] = $this->url->link('account/account', '', true);
 		$data['edit'] = $this->url->link('account/edit', '', true);
 		$data['password'] = $this->url->link('account/password', '', true);
@@ -79,7 +79,7 @@ class ControllerInformationSitemap extends Controller {
 		$data['download'] = $this->url->link('account/download', '', true);
 		$data['cart'] = $this->url->link('checkout/cart');
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
-		$data['search'] = $this->url->link('product/search');
+		$data['search'] = $this->url->link('auction/search');
 		$data['contact'] = $this->url->link('information/contact');
 
 		$this->load->model('catalog/information');

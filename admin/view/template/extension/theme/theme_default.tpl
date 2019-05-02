@@ -57,6 +57,23 @@
             </div>
           </fieldset>
           <fieldset>
+            <legend><?php echo $text_homepage; ?></legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-homepage"><span data-toggle="tooltip" title="<?php echo $help_homepage; ?>"><?php echo $entry_homepage; ?></span></label>
+              <div class="col-sm-10">
+                <select name="theme_default_homepage" id="input-homepage" class="form-control">
+                  <?php foreach ($homepages as $index => $homepage) { ?>
+                  <?php if ($homepage == $theme_default_homepage) { ?>
+                  <option value="<?php echo $index; ?>" selected="selected"><?php echo $homepage; ?></option>
+                  <?php } else { ?>
+                  <option value="<?php echo $index; ?>"><?php echo $homepage; ?></option>
+                  <?php } ?>
+                  <?php } ?>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
             <legend><?php echo $text_product; ?></legend>
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-catalog-limit"><span data-toggle="tooltip" title="<?php echo $help_product_limit; ?>"><?php echo $entry_product_limit; ?></span></label>
@@ -156,38 +173,6 @@
                 </div>
                 <?php if ($error_image_additional) { ?>
                 <div class="text-danger"><?php echo $error_image_additional; ?></div>
-                <?php } ?>
-              </div>
-            </div>
-            <div class="form-group required">
-              <label class="col-sm-2 control-label" for="input-image-related"><?php echo $entry_image_related; ?></label>
-              <div class="col-sm-10">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <input type="text" name="theme_default_image_related_width" value="<?php echo $theme_default_image_related_width; ?>" placeholder="<?php echo $entry_width; ?>" id="input-image-related" class="form-control" />
-                  </div>
-                  <div class="col-sm-6">
-                    <input type="text" name="theme_default_image_related_height" value="<?php echo $theme_default_image_related_height; ?>" placeholder="<?php echo $entry_height; ?>" class="form-control" />
-                  </div>
-                </div>
-                <?php if ($error_image_related) { ?>
-                <div class="text-danger"><?php echo $error_image_related; ?></div>
-                <?php } ?>
-              </div>
-            </div>
-            <div class="form-group required">
-              <label class="col-sm-2 control-label" for="input-image-compare"><?php echo $entry_image_compare; ?></label>
-              <div class="col-sm-10">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <input type="text" name="theme_default_image_compare_width" value="<?php echo $theme_default_image_compare_width; ?>" placeholder="<?php echo $entry_width; ?>" id="input-image-compare" class="form-control" />
-                  </div>
-                  <div class="col-sm-6">
-                    <input type="text" name="theme_default_image_compare_height" value="<?php echo $theme_default_image_compare_height; ?>" placeholder="<?php echo $entry_height; ?>" class="form-control" />
-                  </div>
-                </div>
-                <?php if ($error_image_compare) { ?>
-                <div class="text-danger"><?php echo $error_image_compare; ?></div>
                 <?php } ?>
               </div>
             </div>

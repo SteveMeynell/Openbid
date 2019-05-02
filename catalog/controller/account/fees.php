@@ -60,6 +60,10 @@ class ControllerAccountFees extends Controller {
 		);
 
 		$transaction_total = $this->model_account_fees->getMyTotalFees();
+		/*
+		I have to fix this.  What I am looking for is fees that are in the current cart to be displayed as unpaid and historic 
+		fees displayed as paid.
+		*/
 
 		$results = $this->model_account_fees->getMyFees($filter_data);
 

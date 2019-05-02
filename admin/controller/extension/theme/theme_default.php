@@ -10,6 +10,7 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			debuglog($this->request->post);
 			$this->model_setting_setting->editSetting('theme_default', $this->request->post, $this->request->get['store_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -25,18 +26,18 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 		$data['text_product'] = $this->language->get('text_product');
 		$data['text_image'] = $this->language->get('text_image');
 		$data['text_general'] = $this->language->get('text_general');
+		$data['text_homepage'] = $this->language->get('text_homepage');
 		
 		$data['entry_directory'] = $this->language->get('entry_directory');
 		$data['entry_status'] = $this->language->get('entry_status');		
 		$data['entry_product_limit'] = $this->language->get('entry_product_limit');
+		$data['entry_homepage'] = $this->language->get('entry_homepage');
 		$data['entry_product_description_length'] = $this->language->get('entry_product_description_length');
 		$data['entry_image_category'] = $this->language->get('entry_image_category');
 		$data['entry_image_thumb'] = $this->language->get('entry_image_thumb');
 		$data['entry_image_popup'] = $this->language->get('entry_image_popup');
 		$data['entry_image_product'] = $this->language->get('entry_image_product');
 		$data['entry_image_additional'] = $this->language->get('entry_image_additional');
-		$data['entry_image_related'] = $this->language->get('entry_image_related');
-		$data['entry_image_compare'] = $this->language->get('entry_image_compare');
 		$data['entry_image_wishlist'] = $this->language->get('entry_image_wishlist');
 		$data['entry_image_cart'] = $this->language->get('entry_image_cart');
 		$data['entry_image_location'] = $this->language->get('entry_image_location');
@@ -46,6 +47,7 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 		$data['help_product_limit'] = $this->language->get('help_product_limit');
 		$data['help_product_description_length'] = $this->language->get('help_product_description_length');
 		$data['help_directory'] = $this->language->get('help_directory');
+		$data['help_homepage'] = $this->language->get('help_homepage');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
@@ -96,18 +98,6 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 			$data['error_image_additional'] = $this->error['image_additional'];
 		} else {
 			$data['error_image_additional'] = '';
-		}
-
-		if (isset($this->error['image_related'])) {
-			$data['error_image_related'] = $this->error['image_related'];
-		} else {
-			$data['error_image_related'] = '';
-		}
-
-		if (isset($this->error['image_compare'])) {
-			$data['error_image_compare'] = $this->error['image_compare'];
-		} else {
-			$data['error_image_compare'] = '';
 		}
 
 		if (isset($this->error['image_wishlist'])) {
@@ -168,6 +158,11 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 		foreach ($directories as $directory) {
 			$data['directories'][] = basename($directory);
 		}
+
+		$data['homepages'] = array(
+			'Just Created Auctions'
+		);
+
 
 		if (isset($this->request->post['theme_default_product_limit'])) {
 			$data['theme_default_product_limit'] = $this->request->post['theme_default_product_limit'];
@@ -273,38 +268,6 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 			$data['theme_default_image_additional_height'] = 74;
 		}
 		
-		if (isset($this->request->post['theme_default_image_related_width'])) {
-			$data['theme_default_image_related_width'] = $this->request->post['theme_default_image_related_width'];
-		} elseif (isset($setting_info['theme_default_image_related_width'])) {
-			$data['theme_default_image_related_width'] = $this->config->get('theme_default_image_related_width');
-		} else {
-			$data['theme_default_image_related_width'] = 80;
-		}
-		
-		if (isset($this->request->post['theme_default_image_related_height'])) {
-			$data['theme_default_image_related_height'] = $this->request->post['theme_default_image_related_height'];
-		} elseif (isset($setting_info['theme_default_image_related_height'])) {
-			$data['theme_default_image_related_height'] = $this->config->get('theme_default_image_related_height');
-		} else {
-			$data['theme_default_image_related_height'] = 80;
-		}
-		
-		if (isset($this->request->post['theme_default_image_compare_width'])) {
-			$data['theme_default_image_compare_width'] = $this->request->post['theme_default_image_compare_width'];
-		} elseif (isset($setting_info['theme_default_image_compare_width'])) {
-			$data['theme_default_image_compare_width'] = $this->config->get('theme_default_image_compare_width');
-		} else {
-			$data['theme_default_image_compare_width'] = 90;
-		}
-		
-		if (isset($this->request->post['theme_default_image_compare_height'])) {
-			$data['theme_default_image_compare_height'] = $this->request->post['theme_default_image_compare_height'];
-		} elseif (isset($setting_info['theme_default_image_compare_height'])) {
-			$data['theme_default_image_compare_height'] = $this->config->get('theme_default_image_compare_height');
-		} else {
-			$data['theme_default_image_compare_height'] = 90;
-		}
-		
 		if (isset($this->request->post['theme_default_image_wishlist_width'])) {
 			$data['theme_default_image_wishlist_width'] = $this->request->post['theme_default_image_wishlist_width'];
 		} elseif (isset($setting_info['theme_default_image_wishlist_width'])) {
@@ -391,14 +354,6 @@ class ControllerExtensionThemeThemeDefault extends Controller {
 
 		if (!$this->request->post['theme_default_image_additional_width'] || !$this->request->post['theme_default_image_additional_height']) {
 			$this->error['image_additional'] = $this->language->get('error_image_additional');
-		}
-
-		if (!$this->request->post['theme_default_image_related_width'] || !$this->request->post['theme_default_image_related_height']) {
-			$this->error['image_related'] = $this->language->get('error_image_related');
-		}
-
-		if (!$this->request->post['theme_default_image_compare_width'] || !$this->request->post['theme_default_image_compare_height']) {
-			$this->error['image_compare'] = $this->language->get('error_image_compare');
 		}
 
 		if (!$this->request->post['theme_default_image_wishlist_width'] || !$this->request->post['theme_default_image_wishlist_height']) {

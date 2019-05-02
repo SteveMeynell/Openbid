@@ -7,8 +7,8 @@ class ModelAuctionBidding extends Model {
     
     public function placeBid($bid) {
 
-        debuglog("model bidding - placeBid - entry - bid ");
-        debuglog($bid);
+        //debuglog("model bidding - placeBid - entry - bid ");
+        //debuglog($bid);
         $leadingBid = $this->getCurrentBid($this->db->escape($bid['auction_id']));
         
         $bidNewAmount = $this->db->escape($bid['bid_amount']);

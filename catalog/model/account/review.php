@@ -243,6 +243,9 @@ class ModelAccountReview extends Model {
 
 		$reviews = $query->rows;
 		foreach($reviews as $index => $review) {
+			if($review['bidder_suggestion'] == '') {
+				$reviews[$index]['bidder_suggestion'] = 'No Comment';
+			}
 			$questions = $this->db->query("SELECT 
 			ROUND(AVG(bidder_question1)) as communications, 
 			ROUND(AVG(bidder_question2)) as shipping, 
@@ -274,6 +277,60 @@ class ModelAccountReview extends Model {
 		$rating += $query->row['rating'];
 
 		return round($rating/3, 0, PHP_ROUND_HALF_UP);
+	}
+
+	public function getReviewsByBidderId($bidder_id, $start = 0, $limit = 20) {
+		if ($start < 0) {
+			$start = 0;
+		}
+
+		if ($limit < 1) {
+			$limit = 20;
+		}
+
+		//debuglog("SELECT r.bidder_review_id, r.review_id, r.bidder_id, bc.firstname, r.bidder_suggestion, r.date_added FROM " . DB_PREFIX . "bidder_reviews r LEFT JOIN " . DB_PREFIX . "customer bc ON (bc.customer_id = r.bidder_id) WHERE r.seller_id = '" . (int)$seller_id . "' ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+
+		$sql = "SELECT 
+		r.seller_review_id, 
+		r.review_id, 
+		r.seller_id,	
+		bc.firstname,	
+		r.seller_suggestion, 
+		DATE_FORMAT(r.date_added,'%a %b %e, %Y') 
+		FROM " . DB_PREFIX . "seller_reviews r 
+		LEFT JOIN " . DB_PREFIX . "customer bc ON (bc.customer_id = r.seller_id) 
+		WHERE r.bidder_id = '" . (int)$bidder_id . "' 
+		ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit;
+		//debuglog($sql);
+
+		$query = $this->db->query("SELECT 
+		r.seller_review_id, 
+		r.review_id, 
+		r.seller_id, 
+		bc.firstname,	
+		r.seller_suggestion, 
+		DATE_FORMAT(r.date_added,'%a %b %e, %Y') as date_added
+		FROM " . DB_PREFIX . "seller_reviews r 
+		LEFT JOIN " . DB_PREFIX . "customer bc 
+		ON (bc.customer_id = r.seller_id) 
+		WHERE r.bidder_id = '" . (int)$bidder_id . "' 
+		ORDER BY r.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+
+		$reviews = $query->rows;
+		foreach($reviews as $index => $review) {
+			if($review['seller_suggestion'] == '') {
+				$reviews[$index]['seller_suggestion'] = 'No Comment';
+			}
+			$questions = $this->db->query("SELECT 
+			ROUND(AVG(seller_question1)) as communications, 
+			ROUND(AVG(seller_question2)) as shipping, 
+			ROUND(AVG(seller_question3)) as quality 
+			FROM " . DB_PREFIX . "seller_reviews 
+			WHERE bidder_id = '" . $bidder_id . "' AND seller_id = '" . $review['seller_id'] . "'");
+			$reviews[$index]['ratings'] = $questions->row;
+		}
+
+		return $reviews;
 	}
 
 	public function getTotalReviewsByBidderId($bidder_id) {

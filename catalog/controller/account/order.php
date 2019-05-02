@@ -40,7 +40,8 @@ class ControllerAccountOrder extends Controller {
 
 		$data['column_order_id'] = $this->language->get('column_order_id');
 		$data['column_customer'] = $this->language->get('column_customer');
-		$data['column_product'] = $this->language->get('column_product');
+		$data['column_auctions'] = $this->language->get('column_auctions');
+		$data['column_num_fees'] = $this->language->get('column_num_fees');
 		$data['column_total'] = $this->language->get('column_total');
 		$data['column_status'] = $this->language->get('column_status');
 		$data['column_date_added'] = $this->language->get('column_date_added');
@@ -63,15 +64,15 @@ class ControllerAccountOrder extends Controller {
 		$results = $this->model_account_order->getOrders(($page - 1) * 10, 10);
 
 		foreach ($results as $result) {
-			$product_total = $this->model_account_order->getTotalOrderProductsByOrderId($result['order_id']);
-			$voucher_total = $this->model_account_order->getTotalOrderVouchersByOrderId($result['order_id']);
+			$auction_totals = $this->model_account_order->getTotalOrderAuctionsByOrderId($result['order_id']);
 
 			$data['orders'][] = array(
 				'order_id'   => $result['order_id'],
 				'name'       => $result['firstname'] . ' ' . $result['lastname'],
 				'status'     => $result['status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'products'   => ($product_total + $voucher_total),
+				'auctions'   => $auction_totals['total'],
+				'fees'				=> $auction_totals['fees'],
 				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'view'       => $this->url->link('account/order/info', 'order_id=' . $result['order_id'], true),
 			);
@@ -117,7 +118,7 @@ class ControllerAccountOrder extends Controller {
 		$this->load->model('account/order');
 
 		$order_info = $this->model_account_order->getOrder($order_id);
-
+		
 		if ($order_info) {
 			$this->document->setTitle($this->language->get('text_order'));
 
@@ -164,17 +165,14 @@ class ControllerAccountOrder extends Controller {
 			$data['text_no_results'] = $this->language->get('text_no_results');
 
 			$data['column_name'] = $this->language->get('column_name');
-			$data['column_model'] = $this->language->get('column_model');
-			$data['column_quantity'] = $this->language->get('column_quantity');
+
+			$data['column_num_fees'] = $this->language->get('column_num_fees');
 			$data['column_price'] = $this->language->get('column_price');
 			$data['column_total'] = $this->language->get('column_total');
-			$data['column_action'] = $this->language->get('column_action');
 			$data['column_date_added'] = $this->language->get('column_date_added');
 			$data['column_status'] = $this->language->get('column_status');
 			$data['column_comment'] = $this->language->get('column_comment');
 
-			$data['button_reorder'] = $this->language->get('button_reorder');
-			$data['button_return'] = $this->language->get('button_return');
 			$data['button_continue'] = $this->language->get('button_continue');
 
 			if (isset($this->session->data['error'])) {
@@ -274,67 +272,33 @@ class ControllerAccountOrder extends Controller {
 
 			$data['shipping_method'] = $order_info['shipping_method'];
 
-			$this->load->model('catalog/product');
+			$this->load->model('catalog/auction');
 			$this->load->model('tool/upload');
 
-			// Products
-			$data['products'] = array();
+			// Auctions
+			$data['auctions'] = array();
 
-			$products = $this->model_account_order->getOrderProducts($this->request->get['order_id']);
+			$auctions = $this->model_account_order->getOrderAuctions($this->request->get['order_id']);
+			
 
-			foreach ($products as $product) {
-				$option_data = array();
+			foreach ($auctions as $auction) {
+				$fee_data = array();
 
-				$options = $this->model_account_order->getOrderOptions($this->request->get['order_id'], $product['order_product_id']);
+				$fees = $this->model_account_order->getOrderFees($this->request->get['order_id'], $auction['order_auction_id']);
 
-				foreach ($options as $option) {
-					if ($option['type'] != 'file') {
-						$value = $option['value'];
-					} else {
-						$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
-
-						if ($upload_info) {
-							$value = $upload_info['name'];
-						} else {
-							$value = '';
-						}
-					}
-
-					$option_data[] = array(
-						'name'  => $option['name'],
-						'value' => (utf8_strlen($value) > 20 ? utf8_substr($value, 0, 20) . '..' : $value)
+				foreach($fees as $fee) {
+					$fee_data[] = array(
+						'description'  => $fee['description'],
+						'value' => $this->currency->format($fee['amount'], $order_info['currency_code'], $order_info['currency_value']),
+						'date_added'	=> $fee['date_added']
 					);
 				}
 
-				$product_info = $this->model_catalog_product->getProduct($product['product_id']);
-
-				if ($product_info) {
-					$reorder = $this->url->link('account/order/reorder', 'order_id=' . $order_id . '&order_product_id=' . $product['order_product_id'], true);
-				} else {
-					$reorder = '';
-				}
-
-				$data['products'][] = array(
-					'name'     => $product['name'],
-					'model'    => $product['model'],
-					'option'   => $option_data,
-					'quantity' => $product['quantity'],
-					'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
-					'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
-					'reorder'  => $reorder,
-					'return'   => $this->url->link('account/return/add', 'order_id=' . $order_info['order_id'] . '&product_id=' . $product['product_id'], true)
-				);
-			}
-
-			// Voucher
-			$data['vouchers'] = array();
-
-			$vouchers = $this->model_account_order->getOrderVouchers($this->request->get['order_id']);
-
-			foreach ($vouchers as $voucher) {
-				$data['vouchers'][] = array(
-					'description' => $voucher['description'],
-					'amount'      => $this->currency->format($voucher['amount'], $order_info['currency_code'], $order_info['currency_value'])
+				$data['auctions'][] = array(
+					'name'     => $auction['name'],
+					'fees'			=> $fee_data,
+					'num_fees' => $auction['num_fees'],
+					'total'    => $this->currency->format($auction['total'], $order_info['currency_code'], $order_info['currency_value'])
 				);
 			}
 
@@ -350,6 +314,7 @@ class ControllerAccountOrder extends Controller {
 				);
 			}
 
+			
 			$data['comment'] = nl2br($order_info['comment']);
 
 			// History
@@ -364,7 +329,7 @@ class ControllerAccountOrder extends Controller {
 					'comment'    => $result['notify'] ? nl2br($result['comment']) : ''
 				);
 			}
-
+			debuglog($data);
 			$data['continue'] = $this->url->link('account/order', '', true);
 
 			$data['column_left'] = $this->load->controller('common/column_left');
@@ -419,64 +384,4 @@ class ControllerAccountOrder extends Controller {
 		}
 	}
 
-	public function reorder() {
-		$this->load->language('account/order');
-
-		if (isset($this->request->get['order_id'])) {
-			$order_id = $this->request->get['order_id'];
-		} else {
-			$order_id = 0;
-		}
-
-		$this->load->model('account/order');
-
-		$order_info = $this->model_account_order->getOrder($order_id);
-
-		if ($order_info) {
-			if (isset($this->request->get['order_product_id'])) {
-				$order_product_id = $this->request->get['order_product_id'];
-			} else {
-				$order_product_id = 0;
-			}
-
-			$order_product_info = $this->model_account_order->getOrderProduct($order_id, $order_product_id);
-
-			if ($order_product_info) {
-				$this->load->model('catalog/product');
-
-				$product_info = $this->model_catalog_product->getProduct($order_product_info['product_id']);
-
-				if ($product_info) {
-					$option_data = array();
-
-					$order_options = $this->model_account_order->getOrderOptions($order_product_info['order_id'], $order_product_id);
-
-					foreach ($order_options as $order_option) {
-						if ($order_option['type'] == 'select' || $order_option['type'] == 'radio' || $order_option['type'] == 'image') {
-							$option_data[$order_option['product_option_id']] = $order_option['product_option_value_id'];
-						} elseif ($order_option['type'] == 'checkbox') {
-							$option_data[$order_option['product_option_id']][] = $order_option['product_option_value_id'];
-						} elseif ($order_option['type'] == 'text' || $order_option['type'] == 'textarea' || $order_option['type'] == 'date' || $order_option['type'] == 'datetime' || $order_option['type'] == 'time') {
-							$option_data[$order_option['product_option_id']] = $order_option['value'];
-						} elseif ($order_option['type'] == 'file') {
-							$option_data[$order_option['product_option_id']] = $this->encryption->encrypt($order_option['value']);
-						}
-					}
-
-					$this->cart->add($order_product_info['product_id'], $order_product_info['quantity'], $option_data);
-
-					$this->session->data['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $product_info['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
-
-					unset($this->session->data['shipping_method']);
-					unset($this->session->data['shipping_methods']);
-					unset($this->session->data['payment_method']);
-					unset($this->session->data['payment_methods']);
-				} else {
-					$this->session->data['error'] = sprintf($this->language->get('error_reorder'), $order_product_info['name']);
-				}
-			}
-		}
-
-		$this->response->redirect($this->url->link('account/order/info', 'order_id=' . $order_id));
-	}
 }

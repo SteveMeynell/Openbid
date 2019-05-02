@@ -128,12 +128,18 @@ class ModelLocalisationCurrency extends Model {
 		$currentRates = $XML->Cube->Cube->Cube;
 		$currate_date = $XML->Cube->Cube['time'];
 		
+		//debuglog($currentRates);
 			foreach ($currentRates as $rate) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "historic_currency SET 
+				code = '" . strval($rate['currency']) . "', 
+				value = '" . floatval($rate['rate']) . "'");
 				if(in_array($rate['currency'], $data)) {
 					$currencyCodes[] = strval($rate['currency']);
 					$currencyRates[] = floatval($rate['rate']);
 				} else {
 					// Save as historical records maybe?
+					//debuglog("Hmm what could I save here?  ");
+					//debuglog($rate);
 				}; 
 			}
 			if(in_array("EUR", $data)){
@@ -147,9 +153,15 @@ class ModelLocalisationCurrency extends Model {
 			// If not then the currency rates are CCRates/ConRate and the EUR if it is in the list is 1/ConRate
 			if($this->config->get('config_currency') != "EUR") {
 				$baseRate = $Rates[$this->config->get('config_currency')];
+				//debuglog($Rates);
 				foreach ($Rates as $CCode => $otherRate) {
 					$updatedRate[$CCode] = $otherRate/$baseRate;
 					$this->db->query("UPDATE " . DB_PREFIX . "currency SET value = '" . (float)$updatedRate[$CCode] . "', date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "' WHERE code = '" . $this->db->escape($CCode) . "'");
+					/*
+					$this->db->query("INSERT INTO " . DB_PREFIX . "historic_currency 
+					SET value = '" . (float)$updatedRate[$CCode] . "', 
+					date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "'");
+					*/
 				}
 			} else {
 				foreach($Rates as $CCode => $otherRate) {
