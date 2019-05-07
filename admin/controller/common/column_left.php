@@ -681,6 +681,14 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);	
 			}
+
+			if ($this->user->hasPermission('access', 'tool/facebook_test')) {
+				$tool[] = array(
+					'name'	   => $this->language->get('text_facebook_test'),
+					'href'     => $this->url->link('tool/facebook_test', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);	
+			}
 			
 			if ($this->user->hasPermission('access', 'tool/upload')) {
 				$tool[] = array(

@@ -91,8 +91,12 @@ function modification($filename) {
 }
 
 // Autoloader
-if (is_file(DIR_SYSTEM . '../../vendor/autoload.php')) {
-	require_once(\VQMod::modCheck(DIR_SYSTEM . '../../vendor/autoload.php'));
+/*if (is_file(DIR_SYSTEM . '../vendor/autoload.php')) {
+	require_once(\VQMod::modCheck(DIR_SYSTEM . '../vendor/autoload.php'));
+} */
+
+if (is_file(DIR_SYSTEM . '../vendor/Facebook/autoload.php')) {
+	require_once(\VQMod::modCheck(DIR_SYSTEM . '../vendor/Facebook/autoload.php'));
 }
 
 function library($class) {

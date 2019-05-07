@@ -98,3 +98,4 @@ $_['text_debuglog']                 = 'Debugging Log';
 $_['text_simulate_data']                 = 'Simulate Data';
 $_['text_auction_duration']         = 'Auction Duration';
 $_['text_bid_increments']         = 'Bid Increments';
+$_['text_facebook_test']                 = 'Facebook Test';
